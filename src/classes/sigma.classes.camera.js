@@ -111,10 +111,7 @@
         (node[read + 'y'] || 0) * relSin +
         xOffset;
       node[write + 'y'] =
-        (node[read + 'y'] || 0) * relCos -
-        (node[read + 'x'] || 0) * relSin +
-        yOffset;
-      node[write + 'size'] =
+      node[write + 'size'] = node['fixedSize'] ? (node[read + 'size'] || 0) :
         (node[read + 'size'] || 0) /
         nodeRatio;
     }
