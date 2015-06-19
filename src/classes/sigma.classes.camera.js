@@ -112,7 +112,7 @@
           ((node[read + 'y'] || 0) - this.y) * cos -
           ((node[read + 'x'] || 0) - this.x) * sin
         ) / this.ratio + (options.height || 0) / 2;
-      node[write + 'size'] =
+      node[write + 'size'] = node['fixedSize'] ? (node[read + 'size'] || 0) :
         (node[read + 'size'] || 0) /
         Math.pow(this.ratio, this.settings('nodesPowRatio'));
     }
