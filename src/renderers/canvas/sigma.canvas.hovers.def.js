@@ -36,18 +36,18 @@
       (node.color || settings('defaultNodeColor')) :
       settings('defaultHoverLabelBGColor');
 
-    if (node.label && settings('labelHoverShadow')) {
+    if (node.hover_label && settings('labelHoverShadow')) {
       context.shadowOffsetX = 0;
       context.shadowOffsetY = 0;
       context.shadowBlur = 8;
       context.shadowColor = settings('labelHoverShadowColor');
     }
 
-    if (node.label && typeof node.label === 'string') {
+    if (node.hover_label && typeof node.hover_label === 'string') {
       x = Math.round(node[prefix + 'x'] - fontSize / 2 - 2);
       y = Math.round(node[prefix + 'y'] - fontSize / 2 - 2);
       w = Math.round(
-        context.measureText(node.label).width + fontSize / 2 + size + 7
+        context.measureText(node.hover_label).width + fontSize / 2 + size + 7
       );
       h = Math.round(fontSize + 4);
       e = Math.round(fontSize / 2 + 2);
@@ -91,13 +91,13 @@
     nodeRenderer(node, context, settings);
 
     // Display the label:
-    if (node.label && typeof node.label === 'string') {
+    if (node.hover_label && typeof node.hover_label === 'string') {
       context.fillStyle = (settings('labelHoverColor') === 'node') ?
         (node.color || settings('defaultNodeColor')) :
         settings('defaultLabelHoverColor');
 
       context.fillText(
-        node.label,
+        node.hover_label,
         Math.round(node[prefix + 'x'] + size + 3),
         Math.round(node[prefix + 'y'] + fontSize / 3)
       );
