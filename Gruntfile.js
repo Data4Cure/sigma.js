@@ -32,6 +32,7 @@ module.exports = function(grunt) {
     // Sub functions per engine:
     'src/renderers/webgl/sigma.webgl.nodes.def.js',
     'src/renderers/webgl/sigma.webgl.nodes.fast.js',
+    'src/renderers/webgl/sigma.webgl.nodes.equilateral.js',
     'src/renderers/webgl/sigma.webgl.edges.def.js',
     'src/renderers/webgl/sigma.webgl.edges.fast.js',
     'src/renderers/webgl/sigma.webgl.edges.arrow.js',
