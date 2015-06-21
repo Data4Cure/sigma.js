@@ -26,7 +26,7 @@
       data[i++] = node[prefix + 'y'];
       data[i++] = node[prefix + 'size'];
       data[i++] = color;
-      data[i++] = 0;
+      data[i++] = Math.PI / 2;
 
       data[i++] = node[prefix + 'x'];
       data[i++] = node[prefix + 'y'];
