@@ -26,19 +26,19 @@
       data[i++] = node[prefix + 'y'];
       data[i++] = node[prefix + 'size'];
       data[i++] = color;
-      data[i++] = Math.PI / 2;
+      data[i++] = Math.PI / 6;
 
       data[i++] = node[prefix + 'x'];
       data[i++] = node[prefix + 'y'];
       data[i++] = node[prefix + 'size'];
       data[i++] = color;
-      data[i++] = 7 * Math.PI / 6;
+      data[i++] = 5 * Math.PI / 6;
 
       data[i++] = node[prefix + 'x'];
       data[i++] = node[prefix + 'y'];
       data[i++] = node[prefix + 'size'];
       data[i++] = color;
-      data[i++] = 11 * Math.PI / 6;
+      data[i++] = 3 * Math.PI / 2;
     },
     render: function(gl, program, data, params) {
       var buffer;
@@ -151,7 +151,8 @@
             'center = vec2(center.x, u_scale * u_resolution.y - center.y);',
 
             'position = position +',
-              '2.0 * radius * vec2(cos(a_angle), sin(a_angle));',
+              //'2.0 * radius * vec2(cos(a_angle), sin(a_angle));',
+              'radius * vec2(cos(a_angle), sin(a_angle));',
             'position = (position / u_resolution * 2.0 - 1.0) * vec2(1, -1);',
 
             'radius = radius * u_scale;',
