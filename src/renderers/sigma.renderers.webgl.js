@@ -248,7 +248,7 @@
         graph = this.graph,
         nodesGl = this.contexts.nodes,
         edgesGl = this.contexts.edges,
-        matrices = this.camera.getMatrix(),
+        matrix = this.camera.getMatrix(),
         options = sigma.utils.extend(params, this.options),
         drawLabels = this.settings(options, 'drawLabels'),
         drawEdges = this.settings(options, 'drawEdges'),
@@ -265,13 +265,9 @@
     // Clear canvases:
     this.clear();
 
-    // Translate matrices to [width/2, height/2]:
-    matrices.scaled = sigma.utils.matrices.multiply(
-      matrices.scaled,
-      sigma.utils.matrices.translation(this.width / 2, this.height / 2)
-    );
-    matrices.unscaled = sigma.utils.matrices.multiply(
-      matrices.unscaled,
+    // Translate matrix to [width/2, height/2]:
+    matrix = sigma.utils.matrices.multiply(
+      matrix,
       sigma.utils.matrices.translation(this.width / 2, this.height / 2)
     );
 
@@ -323,7 +319,7 @@
                 arr,
                 {
                   settings: this.settings,
-                  matrix: matrices.scaled,
+                  matrix: matrix,
                   width: this.width,
                   height: this.height,
                   ratio: this.camera.ratio,
@@ -386,7 +382,7 @@
               this.edgeFloatArrays[k].array,
               {
                 settings: this.settings,
-                matrix: matrices.scaled,
+                matrix: matrix,
                 width: this.width,
                 height: this.height,
                 ratio: this.camera.ratio,
@@ -419,8 +415,7 @@
             this.nodeFloatArrays[k].array,
             {
               settings: this.settings,
-              matrix: matrices.scaled,
-              umatrix: matrices.unscaled,
+              matrix: matrix,
               width: this.width,
               height: this.height,
               ratio: this.camera.ratio,

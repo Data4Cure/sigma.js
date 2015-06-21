@@ -187,7 +187,7 @@
    * especially useful to apply the camera view directly in shaders, in case of
    * WebGL rendering.
    *
-   * @return {object} The transformation matrices - with and without scaling.
+   * @return {array} The transformation matrix.
    */
   sigma.classes.camera.prototype.getMatrix = function() {
     var scale = sigma.utils.matrices.scale(1 / this.ratio),
@@ -199,16 +199,9 @@
             rotation,
             scale
           )
-        ),
-        umatrix = sigma.utils.matrices.multiply(
-          translation,
-          rotation
         );
 
-    return {
-	scaled: matrix,
-	unscaled: umatrix,
-    };
+    return matrix;
   };
 
   /**
