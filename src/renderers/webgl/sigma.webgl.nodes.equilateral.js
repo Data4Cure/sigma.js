@@ -32,13 +32,13 @@
       data[i++] = node[prefix + 'y'];
       data[i++] = node[prefix + 'size'];
       data[i++] = color;
-      data[i++] = 2 * Math.PI / 3;
+      data[i++] = 7 * Math.PI / 6;
 
       data[i++] = node[prefix + 'x'];
       data[i++] = node[prefix + 'y'];
       data[i++] = node[prefix + 'size'];
       data[i++] = color;
-      data[i++] = 4 * Math.PI / 3;
+      data[i++] = 11 * Math.PI / 6;
     },
     render: function(gl, program, data, params) {
       var buffer;
@@ -72,7 +72,7 @@
         //1 / Math.pow(params.ratio, params.settings('nodesPowRatio'))
       );
       gl.uniform1f(scaleLocation, params.scalingRatio);
-      gl.uniformMatrix3fv(matrixLocation, false, params.umatrix);
+      gl.uniformMatrix3fv(matrixLocation, false, params.matrix);
 
       gl.enableVertexAttribArray(positionLocation);
       gl.enableVertexAttribArray(sizeLocation);
