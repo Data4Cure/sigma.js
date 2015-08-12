@@ -14,58 +14,35 @@
    * renderer will oversample the rendering through the webglOversamplingRatio
    * value).
    */
-  sigma.webgl.nodes.rectangle = {
-    POINTS: 6,
+  sigma.webgl.nodes.triangle = {
+    POINTS: 3,
     ATTRIBUTES: 6,
     addNode: function(node, data, i, prefix, settings) {
       var color = sigma.utils.floatColor(
         node.color || settings('defaultNodeColor')
       );
-      var angle = node.angle // argument (on the complex plane) for the first rectangle vertex
       var rotate = node.rotate || 0
 
       data[i++] = node[prefix + 'x'];
       data[i++] = node[prefix + 'y'];
       data[i++] = node[prefix + 'size'];
       data[i++] = color;
-      data[i++] = angle;
+      data[i++] = Math.PI / 6;
       data[i++] = rotate
 
       data[i++] = node[prefix + 'x'];
       data[i++] = node[prefix + 'y'];
       data[i++] = node[prefix + 'size'];
       data[i++] = color;
-      data[i++] = Math.PI - angle
+      data[i++] = 5 * Math.PI / 6;
       data[i++] = rotate
 
       data[i++] = node[prefix + 'x'];
       data[i++] = node[prefix + 'y'];
       data[i++] = node[prefix + 'size'];
       data[i++] = color;
-      data[i++] = Math.PI + angle;
+      data[i++] = 3 * Math.PI / 2;
       data[i++] = rotate
-
-      data[i++] = node[prefix + 'x'];
-      data[i++] = node[prefix + 'y'];
-      data[i++] = node[prefix + 'size'];
-      data[i++] = color;
-      data[i++] = Math.PI + angle;
-      data[i++] = rotate
-
-      data[i++] = node[prefix + 'x'];
-      data[i++] = node[prefix + 'y'];
-      data[i++] = node[prefix + 'size'];
-      data[i++] = color;
-      data[i++] = -angle;
-      data[i++] = rotate
-
-      data[i++] = node[prefix + 'x'];
-      data[i++] = node[prefix + 'y'];
-      data[i++] = node[prefix + 'size'];
-      data[i++] = color;
-      data[i++] = angle;
-      data[i++] = rotate
-
     },
     render: function(gl, program, data, params) {
       var buffer;
