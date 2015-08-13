@@ -64,7 +64,7 @@
           alphaLocation =
             gl.getAttribLocation(program, 'a_alpha'),
           indexLocation =
-            gl.getAttribLocation(program, 'a_index'),
+            gl.getAttribLocation(program, 'a_indexasdf'),
           angleLocation =
             gl.getAttribLocation(program, 'a_angle'),
           rotateLocation =
@@ -174,7 +174,7 @@
           'attribute float a_size;',
           'attribute float a_color;',
           'attribute float a_alpha;',
-          'attribute float a_index;',
+          'attribute float a_indexasdf;',
           'attribute float a_angle;',
           'attribute float a_rotate;',
 
@@ -216,9 +216,9 @@
             //'color.a = 1.0;',
             'color.a = a_alpha;',
 
-	    'vBC.x = a_index == 0;',
-	    'vBC.y = a_index == 1;',
-	    'vBC.z = a_index == 2;',
+	    'vBC.x = a_indexasdf == 0;',
+	    'vBC.y = a_indexasdf == 1;',
+	    'vBC.z = a_indexasdf == 2;',
           '}'
         ].join('\n'),
         gl.VERTEX_SHADER
