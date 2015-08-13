@@ -16,7 +16,7 @@
    */
   sigma.webgl.nodes.rectangle = {
     POINTS: 6,
-    ATTRIBUTES: 8,
+    ATTRIBUTES: 7,
     addNode: function(node, data, i, prefix, settings) {
       var color = sigma.utils.floatColor(
         node.color || settings('defaultNodeColor')
