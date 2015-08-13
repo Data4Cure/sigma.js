@@ -16,11 +16,12 @@
    */
   sigma.webgl.nodes.rectangle = {
     POINTS: 6,
-    ATTRIBUTES: 6,
+    ATTRIBUTES: 8,
     addNode: function(node, data, i, prefix, settings) {
       var color = sigma.utils.floatColor(
         node.color || settings('defaultNodeColor')
       );
+      var alpha = sigma.utils.alpha(node.color || settings('defaultNodeColor'))
       var angle = node.angle // argument (on the complex plane) for the first rectangle vertex
       var rotate = node.rotate || 0
 
@@ -28,6 +29,7 @@
       data[i++] = node[prefix + 'y'];
       data[i++] = node[prefix + 'size'];
       data[i++] = color;
+      data[i++] = alpha;
       data[i++] = angle;
       data[i++] = rotate
 
@@ -35,6 +37,7 @@
       data[i++] = node[prefix + 'y'];
       data[i++] = node[prefix + 'size'];
       data[i++] = color;
+      data[i++] = alpha;
       data[i++] = Math.PI - angle
       data[i++] = rotate
 
@@ -42,6 +45,7 @@
       data[i++] = node[prefix + 'y'];
       data[i++] = node[prefix + 'size'];
       data[i++] = color;
+      data[i++] = alpha;
       data[i++] = Math.PI + angle;
       data[i++] = rotate
 
@@ -49,6 +53,7 @@
       data[i++] = node[prefix + 'y'];
       data[i++] = node[prefix + 'size'];
       data[i++] = color;
+      data[i++] = alpha;
       data[i++] = Math.PI + angle;
       data[i++] = rotate
 
@@ -56,6 +61,7 @@
       data[i++] = node[prefix + 'y'];
       data[i++] = node[prefix + 'size'];
       data[i++] = color;
+      data[i++] = alpha;
       data[i++] = -angle;
       data[i++] = rotate
 
@@ -63,6 +69,7 @@
       data[i++] = node[prefix + 'y'];
       data[i++] = node[prefix + 'size'];
       data[i++] = color;
+      data[i++] = alpha;
       data[i++] = angle;
       data[i++] = rotate
 
@@ -77,6 +84,8 @@
             gl.getAttribLocation(program, 'a_size'),
           colorLocation =
             gl.getAttribLocation(program, 'a_color'),
+          alphaLocation =
+            gl.getAttribLocation(program, 'a_alpha'),
           angleLocation =
             gl.getAttribLocation(program, 'a_angle'),
           rotateLocation =
@@ -106,6 +115,7 @@
       gl.enableVertexAttribArray(positionLocation);
       gl.enableVertexAttribArray(sizeLocation);
       gl.enableVertexAttribArray(colorLocation);
+      gl.enableVertexAttribArray(alphaLocation);
       gl.enableVertexAttribArray(angleLocation);
       gl.enableVertexAttribArray(rotateLocation);
 
@@ -134,7 +144,7 @@
         12
       );
       gl.vertexAttribPointer(
-        angleLocation,
+        alphaLocation,
         1,
         gl.FLOAT,
         false,
@@ -142,12 +152,20 @@
         16
       );
       gl.vertexAttribPointer(
-        rotateLocation,
+        angleLocation,
         1,
         gl.FLOAT,
         false,
         this.ATTRIBUTES * Float32Array.BYTES_PER_ELEMENT,
         20
+      );
+      gl.vertexAttribPointer(
+        rotateLocation,
+        1,
+        gl.FLOAT,
+        false,
+        this.ATTRIBUTES * Float32Array.BYTES_PER_ELEMENT,
+        24
       );
 
       gl.drawArrays(
@@ -167,6 +185,7 @@
           'attribute vec2 a_position;',
           'attribute float a_size;',
           'attribute float a_color;',
+          'attribute float a_alpha;',
           'attribute float a_angle;',
           'attribute float a_rotate;',
 
@@ -203,7 +222,8 @@
             'color.b = mod(c, 256.0); c = floor(c / 256.0);',
             'color.g = mod(c, 256.0); c = floor(c / 256.0);',
             'color.r = mod(c, 256.0); c = floor(c / 256.0); color /= 255.0;',
-            'color.a = 1.0;',
+            //'color.a = 1.0;',
+            'color.a = a_alpha;',
           '}'
         ].join('\n'),
         gl.VERTEX_SHADER
