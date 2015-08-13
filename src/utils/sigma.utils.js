@@ -157,9 +157,9 @@
   };
 
   sigma.utils.alpha = function(val) {
-      if (val.match(/^ *rgba? *\(/)) {
+      if (val.match(/^ *rgba *\(/)) {
 	  val = val.match(
-		  /^ *rgba? *\( *([0-9]*) *, *([0-9]*) *, *([0-9]*) *(,.*)?\) *$/
+		  /^ *rgba *\( *([0-9]*) *, *([0-9]*) *, *([0-9]*) *, *(.*)\) *$/
 	  );
 	  return +val[4];
       };
