@@ -21,7 +21,7 @@
       var color = sigma.utils.floatColor(
         node.color || settings('defaultNodeColor')
       );
-      var alpha = sigma.utils.alpha(node.color)
+      var alpha = sigma.utils.alpha(node.color || settings('defaultNodeColor'))
       var rotate = node.rotate || 0
 
       data[i++] = node[prefix + 'x'];

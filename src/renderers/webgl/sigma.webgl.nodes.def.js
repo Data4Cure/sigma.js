@@ -16,28 +16,32 @@
    */
   sigma.webgl.nodes.def = {
     POINTS: 3,
-    ATTRIBUTES: 5,
+    ATTRIBUTES: 6,
     addNode: function(node, data, i, prefix, settings) {
       var color = sigma.utils.floatColor(
         node.color || settings('defaultNodeColor')
       );
+      var alpha = sigma.utils.alpha(node.color || settings('defaultNodeColor'))
 
       data[i++] = node[prefix + 'x'];
       data[i++] = node[prefix + 'y'];
       data[i++] = node[prefix + 'size'];
       data[i++] = color;
+      data[i++] = alpha;
       data[i++] = 0;
 
       data[i++] = node[prefix + 'x'];
       data[i++] = node[prefix + 'y'];
       data[i++] = node[prefix + 'size'];
       data[i++] = color;
+      data[i++] = alpha;
       data[i++] = 2 * Math.PI / 3;
 
       data[i++] = node[prefix + 'x'];
       data[i++] = node[prefix + 'y'];
       data[i++] = node[prefix + 'size'];
       data[i++] = color;
+      data[i++] = alpha;
       data[i++] = 4 * Math.PI / 3;
     },
     render: function(gl, program, data, params) {
@@ -50,6 +54,8 @@
             gl.getAttribLocation(program, 'a_size'),
           colorLocation =
             gl.getAttribLocation(program, 'a_color'),
+          alphaLocation =
+            gl.getAttribLocation(program, 'a_alpha'),
           angleLocation =
             gl.getAttribLocation(program, 'a_angle'),
           resolutionLocation =
@@ -76,6 +82,7 @@
       gl.enableVertexAttribArray(positionLocation);
       gl.enableVertexAttribArray(sizeLocation);
       gl.enableVertexAttribArray(colorLocation);
+      gl.enableVertexAttribArray(alphaLocation);
       gl.enableVertexAttribArray(angleLocation);
 
       gl.vertexAttribPointer(
@@ -103,12 +110,20 @@
         12
       );
       gl.vertexAttribPointer(
-        angleLocation,
+        alphaLocation,
         1,
         gl.FLOAT,
         false,
         this.ATTRIBUTES * Float32Array.BYTES_PER_ELEMENT,
         16
+      );
+      gl.vertexAttribPointer(
+        angleLocation,
+        1,
+        gl.FLOAT,
+        false,
+        this.ATTRIBUTES * Float32Array.BYTES_PER_ELEMENT,
+        20
       );
 
       gl.drawArrays(
@@ -128,6 +143,7 @@
           'attribute vec2 a_position;',
           'attribute float a_size;',
           'attribute float a_color;',
+          'attribute float a_alpha;',
           'attribute float a_angle;',
 
           'uniform vec2 u_resolution;',
@@ -162,7 +178,8 @@
             'color.b = mod(c, 256.0); c = floor(c / 256.0);',
             'color.g = mod(c, 256.0); c = floor(c / 256.0);',
             'color.r = mod(c, 256.0); c = floor(c / 256.0); color /= 255.0;',
-            'color.a = 1.0;',
+            //'color.a = 1.0;',
+            'color.a = a_alpha;',
           '}'
         ].join('\n'),
         gl.VERTEX_SHADER
