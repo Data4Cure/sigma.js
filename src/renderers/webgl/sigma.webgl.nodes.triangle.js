@@ -16,7 +16,7 @@
    */
   sigma.webgl.nodes.triangle = {
     POINTS: 3,
-    ATTRIBUTES: 8,
+    ATTRIBUTES: 7,
     addNode: function(node, data, i, prefix, settings) {
       var color = sigma.utils.floatColor(
         node.color || settings('defaultNodeColor')
@@ -29,7 +29,7 @@
       data[i++] = node[prefix + 'size'];
       data[i++] = color;
       data[i++] = alpha;
-      data[i++] = 0;
+      //data[i++] = 0;
       data[i++] = Math.PI / 6;
       data[i++] = rotate;
 
@@ -38,7 +38,7 @@
       data[i++] = node[prefix + 'size'];
       data[i++] = color;
       data[i++] = alpha;
-      data[i++] = 1;
+      //data[i++] = 1;
       data[i++] = 5 * Math.PI / 6;
       data[i++] = rotate;
 
@@ -47,7 +47,7 @@
       data[i++] = node[prefix + 'size'];
       data[i++] = color;
       data[i++] = alpha;
-      data[i++] = 2;
+      //data[i++] = 2;
       data[i++] = 3 * Math.PI / 2;
       data[i++] = rotate;
     },
@@ -63,8 +63,8 @@
             gl.getAttribLocation(program, 'a_color'),
           alphaLocation =
             gl.getAttribLocation(program, 'a_alpha'),
-          indexLocation =
-            gl.getAttribLocation(program, 'a_indexasdf'),
+          // indexLocation =
+          //   gl.getAttribLocation(program, 'a_indexasdf'),
           angleLocation =
             gl.getAttribLocation(program, 'a_angle'),
           rotateLocation =
@@ -95,7 +95,7 @@
       gl.enableVertexAttribArray(sizeLocation);
       gl.enableVertexAttribArray(colorLocation);
       gl.enableVertexAttribArray(alphaLocation);
-      gl.enableVertexAttribArray(indexLocation);
+      //gl.enableVertexAttribArray(indexLocation);
       gl.enableVertexAttribArray(angleLocation);
       gl.enableVertexAttribArray(rotateLocation);
 
@@ -131,8 +131,16 @@
         this.ATTRIBUTES * Float32Array.BYTES_PER_ELEMENT,
         16
       );
+      // gl.vertexAttribPointer(
+      //   indexLocation,
+      //   1,
+      //   gl.FLOAT,
+      //   false,
+      //   this.ATTRIBUTES * Float32Array.BYTES_PER_ELEMENT,
+      //   20
+      // );
       gl.vertexAttribPointer(
-        indexLocation,
+        angleLocation,
         1,
         gl.FLOAT,
         false,
@@ -140,20 +148,12 @@
         20
       );
       gl.vertexAttribPointer(
-        angleLocation,
-        1,
-        gl.FLOAT,
-        false,
-        this.ATTRIBUTES * Float32Array.BYTES_PER_ELEMENT,
-        24
-      );
-      gl.vertexAttribPointer(
         rotateLocation,
         1,
         gl.FLOAT,
         false,
         this.ATTRIBUTES * Float32Array.BYTES_PER_ELEMENT,
-        28
+        24
       );
 
       gl.drawArrays(
@@ -174,7 +174,7 @@
           'attribute float a_size;',
           'attribute float a_color;',
           'attribute float a_alpha;',
-          'attribute float a_indexasdf;',
+          //'attribute float a_indexasdf;',
           'attribute float a_angle;',
           'attribute float a_rotate;',
 
@@ -233,7 +233,7 @@
           'varying vec2 center;',
           'varying float radius;',
 
-          'varying vec3 vBC;', // barycentric coordinates
+          //'varying vec3 vBC;', // barycentric coordinates
 
           'void main(void) {',
             'vec4 color0 = vec4(0.5, 0.0, 0.0, 1.0);',
