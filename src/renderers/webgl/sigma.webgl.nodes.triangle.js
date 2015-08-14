@@ -29,7 +29,7 @@
       data[i++] = node[prefix + 'size'];
       data[i++] = color;
       data[i++] = alpha;
-      data[i++] = alpha;
+      data[i++] = 0;
       data[i++] = Math.PI / 6;
       data[i++] = rotate;
 
@@ -38,7 +38,7 @@
       data[i++] = node[prefix + 'size'];
       data[i++] = color;
       data[i++] = alpha;
-      data[i++] = alpha;
+      data[i++] = 1;
       data[i++] = 5 * Math.PI / 6;
       data[i++] = rotate;
 
@@ -47,7 +47,7 @@
       data[i++] = node[prefix + 'size'];
       data[i++] = color;
       data[i++] = alpha;
-      data[i++] = alpha;
+      data[i++] = 2;
       data[i++] = 3 * Math.PI / 2;
       data[i++] = rotate;
     },
@@ -217,9 +217,9 @@
 	    'color.a = a_nodeind + a_alpha;',
             //'color.a = a_alpha;',
 
-	    //'vBC.x = a_indexasdf == 0;',
-	    //'vBC.y = a_indexasdf == 1;',
-	    //'vBC.z = a_indexasdf == 2;',
+	    'vBC.x = (a_nodeind == 0.0);',
+	    'vBC.y = (a_nodeind == 1.0);',
+	    'vBC.z = (a_nodeind == 2.0);',
           '}'
         ].join('\n'),
         gl.VERTEX_SHADER
@@ -240,16 +240,16 @@
             'vec4 color0 = vec4(0.5, 0.0, 0.0, 1.0);',
 
             'vec2 m = gl_FragCoord.xy - center;',
-            //'if(any(lessThan(vBC, vec3(0.1)))) {',
-	    //'gl_FragColor = color0;',
-	    //'}',
-            //'else{',
-	    //'gl_FragColor = color;',
-	    //'}',
+            'if(any(lessThan(vBC, vec3(0.1)))) {',
+	    'gl_FragColor = color0;',
+	    '}',
+            'else{',
+	    'gl_FragColor = color;',
+	    '}',
             // //'float diff = radius - sqrt(m.x * m.x + m.y * m.y);',
 
             // //'if (diff > 0.0)',
-              'gl_FragColor = color;',
+            // 'gl_FragColor = color;',
             // //'else',
             // //  'gl_FragColor = color0;',
           '}'
