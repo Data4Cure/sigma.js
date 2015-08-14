@@ -29,7 +29,7 @@
       data[i++] = node[prefix + 'size'];
       data[i++] = color;
       data[i++] = alpha;
-      data[i++] = 0;
+      data[i++] = alpha;
       data[i++] = Math.PI / 6;
       data[i++] = rotate;
 
@@ -38,7 +38,7 @@
       data[i++] = node[prefix + 'size'];
       data[i++] = color;
       data[i++] = alpha;
-      data[i++] = 1;
+      data[i++] = alpha;
       data[i++] = 5 * Math.PI / 6;
       data[i++] = rotate;
 
@@ -47,7 +47,7 @@
       data[i++] = node[prefix + 'size'];
       data[i++] = color;
       data[i++] = alpha;
-      data[i++] = 2;
+      data[i++] = alpha;
       data[i++] = 3 * Math.PI / 2;
       data[i++] = rotate;
     },
@@ -187,7 +187,7 @@
           'varying vec2 center;',
           'varying float radius;',
 
-          //'varying vec3 vBC;', // barycentric coordinates
+          'varying vec3 vBC;', // barycentric coordinates
 
           'void main() {',
             // Multiply the point size twice:
@@ -214,6 +214,7 @@
             'color.g = mod(c, 256.0); c = floor(c / 256.0);',
             'color.r = mod(c, 256.0); c = floor(c / 256.0); color /= 255.0;',
             //'color.a = 1.0;',
+	    'color.a = a_nodeind;',
             'color.a = a_alpha;',
 
 	    //'vBC.x = a_indexasdf == 0;',
@@ -233,7 +234,7 @@
           'varying vec2 center;',
           'varying float radius;',
 
-          //'varying vec3 vBC;', // barycentric coordinates
+          'varying vec3 vBC;', // barycentric coordinates
 
           'void main(void) {',
             'vec4 color0 = vec4(0.5, 0.0, 0.0, 1.0);',
