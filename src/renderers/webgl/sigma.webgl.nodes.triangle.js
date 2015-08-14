@@ -187,7 +187,7 @@
           'varying vec2 center;',
           'varying float radius;',
 
-          'varying vec3 vBC;', // barycentric coordinates
+          //'varying vec3 vBC;', // barycentric coordinates
 
           'void main() {',
             // Multiply the point size twice:
