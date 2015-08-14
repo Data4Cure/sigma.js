@@ -215,10 +215,8 @@
             'color.r = mod(c, 256.0); c = floor(c / 256.0); color /= 255.0;',
             //'color.a = 1.0;',
             'color.a = a_alpha;',
-
-	    'vBC.x = a_nodeind;',
-	    'vBC.y = a_nodeind;',
-	    'vBC.z = a_nodeind;',
+	    'vBC = sign(a_nodeind - vec3(0.0, 1.0, 2.0));',
+	    'vBC = vec3(1.0, 1.0, 1.0) - vBC * vBC;',
           '}'
         ].join('\n'),
         gl.VERTEX_SHADER
