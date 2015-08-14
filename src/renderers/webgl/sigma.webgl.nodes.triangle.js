@@ -214,12 +214,11 @@
             'color.g = mod(c, 256.0); c = floor(c / 256.0);',
             'color.r = mod(c, 256.0); c = floor(c / 256.0); color /= 255.0;',
             //'color.a = 1.0;',
-	    'color.a = a_nodeind + a_alpha;',
-            //'color.a = a_alpha;',
+            'color.a = a_alpha;',
 
-	    'vBC.x = (a_nodeind == 0.0);',
-	    'vBC.y = (a_nodeind == 1.0);',
-	    'vBC.z = (a_nodeind == 2.0);',
+	    'vBC.x = a_nodeind;',
+	    'vBC.y = a_nodeind;',
+	    'vBC.z = a_nodeind;',
           '}'
         ].join('\n'),
         gl.VERTEX_SHADER
