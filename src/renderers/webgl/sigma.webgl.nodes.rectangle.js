@@ -16,12 +16,15 @@
    */
   sigma.webgl.nodes.rectangle = {
     POINTS: 6,
-    ATTRIBUTES: 7,
+    ATTRIBUTES: 9,
     addNode: function(node, data, i, prefix, settings) {
       var color = sigma.utils.floatColor(
         node.color || settings('defaultNodeColor')
       );
       var alpha = sigma.utils.alpha(node.color || settings('defaultNodeColor'))
+      var border_color = sigma.utils.floatColor(
+        node.border_color || node.color || settings('defaultNodeColor')
+      );
       var angle = node.angle // argument (on the complex plane) for the first rectangle vertex
       var rotate = node.rotate || 0
 
@@ -30,6 +33,8 @@
       data[i++] = node[prefix + 'size'];
       data[i++] = color;
       data[i++] = alpha;
+      data[i++] = border_color;
+      data[i++] = 0;
       data[i++] = angle;
       data[i++] = rotate
 
@@ -38,6 +43,8 @@
       data[i++] = node[prefix + 'size'];
       data[i++] = color;
       data[i++] = alpha;
+      data[i++] = border_color;
+      data[i++] = 1;
       data[i++] = Math.PI - angle
       data[i++] = rotate
 
@@ -46,6 +53,8 @@
       data[i++] = node[prefix + 'size'];
       data[i++] = color;
       data[i++] = alpha;
+      data[i++] = border_color;
+      data[i++] = 2;
       data[i++] = Math.PI + angle;
       data[i++] = rotate
 
@@ -54,6 +63,8 @@
       data[i++] = node[prefix + 'size'];
       data[i++] = color;
       data[i++] = alpha;
+      data[i++] = border_color;
+      data[i++] = 0;
       data[i++] = Math.PI + angle;
       data[i++] = rotate
 
@@ -62,6 +73,8 @@
       data[i++] = node[prefix + 'size'];
       data[i++] = color;
       data[i++] = alpha;
+      data[i++] = border_color;
+      data[i++] = 1;
       data[i++] = -angle;
       data[i++] = rotate
 
@@ -70,6 +83,8 @@
       data[i++] = node[prefix + 'size'];
       data[i++] = color;
       data[i++] = alpha;
+      data[i++] = border_color;
+      data[i++] = 2;
       data[i++] = angle;
       data[i++] = rotate
 
@@ -86,6 +101,10 @@
             gl.getAttribLocation(program, 'a_color'),
           alphaLocation =
             gl.getAttribLocation(program, 'a_alpha'),
+          borderColorLocation =
+            gl.getAttribLocation(program, 'a_border_color'),
+          nodeindLocation =
+            gl.getAttribLocation(program, 'a_nodeind'),
           angleLocation =
             gl.getAttribLocation(program, 'a_angle'),
           rotateLocation =
@@ -116,6 +135,8 @@
       gl.enableVertexAttribArray(sizeLocation);
       gl.enableVertexAttribArray(colorLocation);
       gl.enableVertexAttribArray(alphaLocation);
+      gl.enableVertexAttribArray(borderColorLocation);
+      gl.enableVertexAttribArray(nodeindLocation);
       gl.enableVertexAttribArray(angleLocation);
       gl.enableVertexAttribArray(rotateLocation);
 
@@ -152,7 +173,7 @@
         16
       );
       gl.vertexAttribPointer(
-        angleLocation,
+        borderColorLocation,
         1,
         gl.FLOAT,
         false,
@@ -160,12 +181,28 @@
         20
       );
       gl.vertexAttribPointer(
-        rotateLocation,
+        nodeindLocation,
         1,
         gl.FLOAT,
         false,
         this.ATTRIBUTES * Float32Array.BYTES_PER_ELEMENT,
         24
+      );
+      gl.vertexAttribPointer(
+        angleLocation,
+        1,
+        gl.FLOAT,
+        false,
+        this.ATTRIBUTES * Float32Array.BYTES_PER_ELEMENT,
+        28
+      );
+      gl.vertexAttribPointer(
+        rotateLocation,
+        1,
+        gl.FLOAT,
+        false,
+        this.ATTRIBUTES * Float32Array.BYTES_PER_ELEMENT,
+        32
       );
 
       gl.drawArrays(
@@ -186,6 +223,7 @@
           'attribute float a_size;',
           'attribute float a_color;',
           'attribute float a_alpha;',
+          'attribute float a_border_color;',
           'attribute float a_angle;',
           'attribute float a_rotate;',
 
@@ -195,8 +233,11 @@
           'uniform mat3 u_matrix;',
 
           'varying vec4 color;',
+          'varying vec4 border_color;',
           'varying vec2 center;',
           'varying float radius;',
+
+          'varying vec3 vBC;', // barycentric coordinates
 
           'void main() {',
             // Multiply the point size twice:
@@ -224,6 +265,13 @@
             'color.r = mod(c, 256.0); c = floor(c / 256.0); color /= 255.0;',
             //'color.a = 1.0;',
             'color.a = a_alpha;',
+            'c = a_border_color;',
+            'border_color.b = mod(c, 256.0); c = floor(c / 256.0);',
+            'border_color.g = mod(c, 256.0); c = floor(c / 256.0);',
+            'border_color.r = mod(c, 256.0); c = floor(c / 256.0); border_color /= 255.0;',
+	    'border_color.a = a_alpha;',
+	    'vBC = sign(a_nodeind - vec3(0.0, 1.0, 2.0));',
+	    'vBC = vec3(1.0, 1.0, 1.0) - vBC * vBC;', // vBC is either (1,0,0) or (0,1,0) or (0,0,1)
           '}'
         ].join('\n'),
         gl.VERTEX_SHADER
@@ -235,8 +283,11 @@
           'precision mediump float;',
 
           'varying vec4 color;',
+          'varying vec4 border_color;',
           'varying vec2 center;',
           'varying float radius;',
+
+          'varying vec3 vBC;', // barycentric coordinates
 
           'void main(void) {',
             'vec4 color0 = vec4(0.0, 0.0, 0.0, 0.0);',
@@ -244,10 +295,17 @@
             'vec2 m = gl_FragCoord.xy - center;',
             //'float diff = radius - sqrt(m.x * m.x + m.y * m.y);',
 
-            //'if (diff > 0.0)',
-              'gl_FragColor = color;',
-            //'else',
-            //  'gl_FragColor = color0;',
+            'if(any(lessThan(vBC, vec3(0.2)))) {',
+	    'gl_FragColor = border_color;',
+	    '}',
+            'else{',
+	    'gl_FragColor = color;',
+	    '}',
+
+            // //'if (diff > 0.0)',
+            //  'gl_FragColor = color;',
+            // //'else',
+            // //  'gl_FragColor = color0;',
           '}'
         ].join('\n'),
         gl.FRAGMENT_SHADER

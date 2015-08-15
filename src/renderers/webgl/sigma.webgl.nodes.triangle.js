@@ -24,7 +24,6 @@
       var alpha = sigma.utils.alpha(node.color || settings('defaultNodeColor'))
       var border_color = sigma.utils.floatColor(
         node.border_color || node.color || settings('defaultNodeColor')
-
       );
       var rotate = node.rotate || 0
 
