@@ -297,7 +297,7 @@
             //'vec2 m = gl_FragCoord.xy - center;',
             //'float diff = radius - sqrt(m.x * m.x + m.y * m.y);',
 
-            'if(any(lessThan(vBC, vec3(0.2, 0.0, 0.2)))) {',
+            'if(any(lessThan(vBC, vec3(0.1, 0.0, 0.1)))) {',
 	    'gl_FragColor = border_color;',
 	    '}',
             'else{',
