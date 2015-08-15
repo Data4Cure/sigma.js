@@ -273,6 +273,7 @@
 	    'border_color.a = a_alpha;',
 	    'vBC = sign(a_nodeind - vec3(0.0, 1.0, 2.0));',
 	    'vBC = vec3(1.0, 1.0, 1.0) - vBC * vBC;', // vBC is either (1,0,0) or (0,1,0) or (0,0,1)
+	    'vBC = vBC / vec3(cos(a_angle), 1.0, sin(a_angle));', // so that border thickness is the same around the rectangle
           '}'
         ].join('\n'),
         gl.VERTEX_SHADER
@@ -288,7 +289,7 @@
           'varying vec2 center;',
           'varying float radius;',
 
-          'varying vec3 vBC;', // barycentric coordinates
+          'varying vec3 vBC;', // scaled barycentric coordinates
 
           'void main(void) {',
             'vec4 color0 = vec4(0.0, 0.0, 0.0, 0.0);',
@@ -296,7 +297,7 @@
             'vec2 m = gl_FragCoord.xy - center;',
             //'float diff = radius - sqrt(m.x * m.x + m.y * m.y);',
 
-            'if(any(lessThan(vBC, vec3(0.2)))) {',
+            'if(any(lessThan(vBC, vec3(0.2, 0.0, 0.2)))) {',
 	    'gl_FragColor = border_color;',
 	    '}',
             'else{',
