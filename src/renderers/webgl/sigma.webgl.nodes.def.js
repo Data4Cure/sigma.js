@@ -228,7 +228,7 @@
 
             // Here is how we draw a disc instead of a square:
             'if (diff > 0.0) {',
-	    'if(diff < 0.2 * radius) {',
+	    'if(diff < 0.4 * radius) {',
               'gl_FragColor = border_color;',
 	    '}',
 	    'else {',
