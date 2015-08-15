@@ -16,18 +16,23 @@
    */
   sigma.webgl.nodes.def = {
     POINTS: 3,
-    ATTRIBUTES: 6,
+    ATTRIBUTES: 7,
     addNode: function(node, data, i, prefix, settings) {
       var color = sigma.utils.floatColor(
         node.color || settings('defaultNodeColor')
       );
       var alpha = sigma.utils.alpha(node.color || settings('defaultNodeColor'))
+      var border_color = sigma.utils.floatColor(
+        node.border_color || node.color || settings('defaultNodeColor')
+
+      );
 
       data[i++] = node[prefix + 'x'];
       data[i++] = node[prefix + 'y'];
       data[i++] = node[prefix + 'size'];
       data[i++] = color;
       data[i++] = alpha;
+      data[i++] = border_color;
       data[i++] = 0;
 
       data[i++] = node[prefix + 'x'];
@@ -35,6 +40,7 @@
       data[i++] = node[prefix + 'size'];
       data[i++] = color;
       data[i++] = alpha;
+      data[i++] = border_color;
       data[i++] = 2 * Math.PI / 3;
 
       data[i++] = node[prefix + 'x'];
@@ -42,6 +48,7 @@
       data[i++] = node[prefix + 'size'];
       data[i++] = color;
       data[i++] = alpha;
+      data[i++] = border_color;
       data[i++] = 4 * Math.PI / 3;
     },
     render: function(gl, program, data, params) {
@@ -56,6 +63,8 @@
             gl.getAttribLocation(program, 'a_color'),
           alphaLocation =
             gl.getAttribLocation(program, 'a_alpha'),
+          borderColorLocation =
+            gl.getAttribLocation(program, 'a_border_color'),
           angleLocation =
             gl.getAttribLocation(program, 'a_angle'),
           resolutionLocation =
@@ -83,6 +92,7 @@
       gl.enableVertexAttribArray(sizeLocation);
       gl.enableVertexAttribArray(colorLocation);
       gl.enableVertexAttribArray(alphaLocation);
+      gl.enableVertexAttribArray(borderColorLocation);
       gl.enableVertexAttribArray(angleLocation);
 
       gl.vertexAttribPointer(
@@ -118,12 +128,20 @@
         16
       );
       gl.vertexAttribPointer(
-        angleLocation,
+        borderColorLocation,
         1,
         gl.FLOAT,
         false,
         this.ATTRIBUTES * Float32Array.BYTES_PER_ELEMENT,
         20
+      );
+      gl.vertexAttribPointer(
+        angleLocation,
+        1,
+        gl.FLOAT,
+        false,
+        this.ATTRIBUTES * Float32Array.BYTES_PER_ELEMENT,
+        24
       );
 
       gl.drawArrays(
@@ -144,6 +162,7 @@
           'attribute float a_size;',
           'attribute float a_color;',
           'attribute float a_alpha;',
+          'attribute float a_border_color;',
           'attribute float a_angle;',
 
           'uniform vec2 u_resolution;',
@@ -152,6 +171,7 @@
           'uniform mat3 u_matrix;',
 
           'varying vec4 color;',
+          'varying vec4 border_color;',
           'varying vec2 center;',
           'varying float radius;',
 
@@ -180,6 +200,11 @@
             'color.r = mod(c, 256.0); c = floor(c / 256.0); color /= 255.0;',
             //'color.a = 1.0;',
             'color.a = a_alpha;',
+            'c = a_border_color;',
+            'border_color.b = mod(c, 256.0); c = floor(c / 256.0);',
+            'border_color.g = mod(c, 256.0); c = floor(c / 256.0);',
+            'border_color.r = mod(c, 256.0); c = floor(c / 256.0); border_color /= 255.0;',
+	    'border_color.a = a_alpha;',
           '}'
         ].join('\n'),
         gl.VERTEX_SHADER
@@ -191,6 +216,7 @@
           'precision mediump float;',
 
           'varying vec4 color;',
+          'varying vec4 border_color;',
           'varying vec2 center;',
           'varying float radius;',
 
@@ -201,8 +227,14 @@
             'float diff = radius - sqrt(m.x * m.x + m.y * m.y);',
 
             // Here is how we draw a disc instead of a square:
-            'if (diff > 0.0)',
+            'if (diff > 0.0) {',
+	    'if(diff < 0.2 * radius) {',
+              'gl_FragColor = border_color;',
+	    '}',
+	    'else {',
               'gl_FragColor = color;',
+	    '}',
+	    '}',
             'else',
               'gl_FragColor = color0;',
           '}'
