@@ -188,7 +188,7 @@
       vertexShader = sigma.utils.loadShader(
         gl,
         [
-	  '#define M_PI 3.1415926535897932384626433832795',
+	  //'#define M_PI 3.1415926535897932384626433832795',
           'attribute vec2 a_position;',
           'attribute float a_size;',
           'attribute float a_color;',
@@ -223,7 +223,7 @@
             'position = position +',
               //'2.0 * radius * vec2(cos(a_angle), sin(a_angle));',
               //'radius * vec2(cos(a_angle-radians(a_rotate)), sin(a_angle-radians(a_rotate)));',
-	      'radius * vec2(cos((2.0/3.0) * PI * a_nodeind + PI / 6.0 - radians(a_rotate)), sin((2.0/3.0) * PI * a_nodeind + PI / 6.0 - radians(a_rotate)));',
+	      'radius * vec2(cos((2.0/3.0) * 3.1415926535897932384626433832795 * a_nodeind + PI / 6.0 - radians(a_rotate)), sin((2.0/3.0) * 3.1415926535897932384626433832795 * a_nodeind + PI / 6.0 - radians(a_rotate)));',
             'position = (position / u_resolution * 2.0 - 1.0) * vec2(1, -1);',
 
             'radius = radius * u_scale;',
