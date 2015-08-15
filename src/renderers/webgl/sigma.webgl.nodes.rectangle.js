@@ -224,6 +224,7 @@
           'attribute float a_color;',
           'attribute float a_alpha;',
           'attribute float a_border_color;',
+          'attribute float a_nodeind;',
           'attribute float a_angle;',
           'attribute float a_rotate;',
 
