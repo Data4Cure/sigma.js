@@ -273,7 +273,7 @@
 	    'border_color.a = a_alpha;',
 	    'vBC = sign(a_nodeind - vec3(0.0, 1.0, 2.0));',
 	    'vBC = vec3(1.0, 1.0, 1.0) - vBC * vBC;', // vBC is either (1,0,0) or (0,1,0) or (0,0,1)
-	    //'vBC = vBC * vec3(cos(a_angle), 1.0, sin(a_angle));', // so that border thickness is the same around the rectangle
+	    'vBC = vBC * vec3(cos(a_angle), 1.0, sin(a_angle));', // so that border thickness is the same around the rectangle
           '}'
         ].join('\n'),
         gl.VERTEX_SHADER
