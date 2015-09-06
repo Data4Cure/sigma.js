@@ -891,6 +891,9 @@
               NodeMatrix[np(n, 'y')] + NodeMatrix[np(n, 'dy')] *
               (nodespeed / W.settings.slowDown);
           }
+	    else {
+		console.log("zafiksowany!", n)
+	    }
         }
       }
       else {
