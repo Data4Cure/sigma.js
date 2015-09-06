@@ -147,7 +147,10 @@
       this.nodesByteArray[j + 6] = 1 + this.graph.degree(nodes[i].id);
       this.nodesByteArray[j + 7] = 1;
       this.nodesByteArray[j + 8] = nodes[i].size;
-      this.nodesByteArray[j + 9] = nodes[i].fixed ? 1: 0;
+      this.nodesByteArray[j + 9] = nodes[i].fixed ? 1 : 0;
+	if(nodes[i].fixed) {
+	    console.log('found fixed!', nodes[i], this.nodesByteArray[j + 9], nodes[i].fixed ? 1 : 0)
+	}
       j += this.ppn;
     }
 
