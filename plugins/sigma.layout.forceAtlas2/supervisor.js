@@ -151,6 +151,9 @@
 	if(nodes[i].fixed) {
 	    console.log('found fixed!', nodes[i], this.nodesByteArray[j + 9], nodes[i].fixed ? 1 : 0)
 	}
+	else {
+	    console.log('found not fixed!', nodes[i], this.nodesByteArray[j + 9], nodes[i].fixed ? 1 : 0)
+	}
       j += this.ppn;
     }
 
