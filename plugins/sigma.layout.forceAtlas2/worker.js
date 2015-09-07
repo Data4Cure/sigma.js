@@ -884,12 +884,22 @@
               0.1 * Math.log(1 + traction) / (1 + Math.sqrt(swinging));
 
             // Updating node's positon
-            NodeMatrix[np(n, 'x')] =
+            // NodeMatrix[np(n, 'x')] =
+            //   NodeMatrix[np(n, 'x')] + NodeMatrix[np(n, 'dx')] *
+            //   (nodespeed / W.settings.slowDown);
+            // NodeMatrix[np(n, 'y')] =
+            //   NodeMatrix[np(n, 'y')] + NodeMatrix[np(n, 'dy')] *
+            //   (nodespeed / W.settings.slowDown);
+            var new_x =
               NodeMatrix[np(n, 'x')] + NodeMatrix[np(n, 'dx')] *
               (nodespeed / W.settings.slowDown);
-            NodeMatrix[np(n, 'y')] =
+            var new_y =
               NodeMatrix[np(n, 'y')] + NodeMatrix[np(n, 'dy')] *
               (nodespeed / W.settings.slowDown);
+	    if(!W.settings.constrain || new_x*new_x + new_y*new_y < W.settings.constrain.r*W.settings.constrain.r) {
+		NodeMatrix[np(n, 'x')] = new_x
+		NodeMatrix[np(n, 'y')] = new_y
+	    }
           }
         }
       }
@@ -926,12 +936,22 @@
               ));
 
             // Updating node's positon
-            NodeMatrix[np(n, 'x')] =
+            // NodeMatrix[np(n, 'x')] =
+            //   NodeMatrix[np(n, 'x')] + NodeMatrix[np(n, 'dx')] *
+            //   (nodespeed / W.settings.slowDown);
+            // NodeMatrix[np(n, 'y')] =
+            //   NodeMatrix[np(n, 'y')] + NodeMatrix[np(n, 'dy')] *
+            //   (nodespeed / W.settings.slowDown);
+            var new_x =
               NodeMatrix[np(n, 'x')] + NodeMatrix[np(n, 'dx')] *
               (nodespeed / W.settings.slowDown);
-            NodeMatrix[np(n, 'y')] =
+            var new_y =
               NodeMatrix[np(n, 'y')] + NodeMatrix[np(n, 'dy')] *
               (nodespeed / W.settings.slowDown);
+	    if(!W.settings.constrain || new_x*new_x + new_y*new_y < W.settings.constrain.r*W.settings.constrain.r) {
+		NodeMatrix[np(n, 'x')] = new_x
+		NodeMatrix[np(n, 'y')] = new_y
+	    }
           }
         }
       }
