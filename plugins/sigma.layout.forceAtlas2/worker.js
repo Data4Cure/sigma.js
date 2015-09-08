@@ -1009,14 +1009,17 @@
     var listener = function(e) {
       switch (e.data.action) {
         case 'start':
+	  console.log('worker got start message')
           init(
             new Float32Array(e.data.nodes),
             new Float32Array(e.data.edges),
             e.data.config
           );
+	  console.log('worker init finished')
 
           // First iteration(s)
           run(W.settings.startingIterations);
+	  console.log('worker run finished')
           break;
 
         case 'loop':
