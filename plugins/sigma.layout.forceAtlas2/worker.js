@@ -982,9 +982,11 @@
         e.data = {
           nodes: NodeMatrix.buffer
         };
+	  console.log('worker requestAnimationFrame')
         requestAnimationFrame(function() {
           document.dispatchEvent(e);
         });
+	  console.log('worker after requestAnimationFrame')
       };
     }
     else {
@@ -1000,9 +1002,13 @@
 
     // Algorithm run
     function run(n) {
-      for (var i = 0; i < n; i++)
+      for (var i = 0; i < n; i++) {
         pass();
+	console.log('worker pass finished', i)
+      }
+      console.log('sending new coords')
       sendNewCoords();
+      console.log('new coords sent')
     }
 
     // On supervisor message
