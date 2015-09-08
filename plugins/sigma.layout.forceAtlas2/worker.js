@@ -982,21 +982,21 @@
         e.data = {
           nodes: NodeMatrix.buffer
         };
-	  console.log('worker requestAnimationFrame')
         requestAnimationFrame(function() {
           document.dispatchEvent(e);
         });
-	  console.log('worker after requestAnimationFrame')
       };
     }
     else {
 
       // From a WebWorker
       sendNewCoords = function() {
+	  console.log('worker posting new coords')
         self.postMessage(
           {nodes: NodeMatrix.buffer},
           [NodeMatrix.buffer]
         );
+	  console.log('worker after posting new coords')
       };
     }
 
