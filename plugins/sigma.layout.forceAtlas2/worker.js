@@ -213,6 +213,7 @@
 
       // 1) Initializing layout data
       //-----------------------------
+	console.log('worker 1) Initializing layout data')
 
       // Resetting positions & computing max values
       for (n = 0; n < W.nodesLength; n += W.ppn) {
@@ -235,6 +236,7 @@
 
       // 1.bis) Barnes-Hut computation
       //------------------------------
+	console.log('worker 1.bis) Barnes-Hut computation')
 
       if (W.settings.barnesHutOptimize) {
 
@@ -495,6 +497,7 @@
       // 2) Repulsion
       //--------------
       // NOTES: adjustSize = antiCollision & scalingRatio = coefficient
+	console.log('worker 2) Repulsion')
 
       if (W.settings.barnesHutOptimize) {
         coefficient = W.settings.scalingRatio;
@@ -691,6 +694,7 @@
 
       // 3) Gravity
       //------------
+	console.log('worker 3) Gravity')
       g = W.settings.gravity / W.settings.scalingRatio;
       coefficient = W.settings.scalingRatio;
       for (n = 0; n < W.nodesLength; n += W.ppn) {
@@ -725,6 +729,7 @@
 
       // 4) Attraction
       //---------------
+	console.log('worker 4) Attraction')
       coefficient = 1 *
         (W.settings.outboundAttractionDistribution ?
           outboundAttCompensation :
@@ -850,6 +855,7 @@
 
       // 5) Apply Forces
       //-----------------
+	console.log('worker 5) Apply Forces')
       var force,
           swinging,
           traction,
