@@ -212,7 +212,6 @@
 
       // 1) Initializing layout data
       //-----------------------------
-	console.log('worker 1) Initializing layout data')
 
       // Resetting positions & computing max values
       for (n = 0; n < W.nodesLength; n += W.ppn) {
@@ -235,7 +234,6 @@
 
       // 1.bis) Barnes-Hut computation
       //------------------------------
-	console.log('worker 1.bis) Barnes-Hut computation')
 
       if (W.settings.barnesHutOptimize) {
 
@@ -268,7 +266,6 @@
         RegionMatrix[rp(0, 'massCenterX')] = 0;
         RegionMatrix[rp(0, 'massCenterY')] = 0;
 
-	console.log('worker 1.bis) Barnes-Hut computation; starting to add nodes')
         // Add each node in the tree
         l = 1;
         for (n = 0; n < W.nodesLength; n += W.ppn) {
@@ -489,7 +486,6 @@
               }
             }
           }
-	    console.log('worker 1.bis) Barnes-Hut computation; processed node', n)
         }
       }
 
@@ -497,7 +493,6 @@
       // 2) Repulsion
       //--------------
       // NOTES: adjustSizes = antiCollision & scalingRatio = coefficient
-	console.log('worker 2) Repulsion')
 
       if (W.settings.barnesHutOptimize) {
         coefficient = W.settings.scalingRatio;
@@ -694,7 +689,6 @@
 
       // 3) Gravity
       //------------
-	console.log('worker 3) Gravity')
       g = W.settings.gravity / W.settings.scalingRatio;
       coefficient = W.settings.scalingRatio;
       for (n = 0; n < W.nodesLength; n += W.ppn) {
@@ -729,7 +723,6 @@
 
       // 4) Attraction
       //---------------
-	console.log('worker 4) Attraction')
       coefficient = 1 *
         (W.settings.outboundAttractionDistribution ?
           outboundAttCompensation :
@@ -850,7 +843,6 @@
 
       // 5) Apply Forces
       //-----------------
-	console.log('worker 5) Apply Forces')
       var force,
           swinging,
           traction,
@@ -1003,12 +995,10 @@
 
       // From a WebWorker
       sendNewCoords = function() {
-	  console.log('worker posting new coords')
         self.postMessage(
           {nodes: NodeMatrix.buffer},
           [NodeMatrix.buffer]
         );
-	  console.log('worker after posting new coords')
       };
     }
 
@@ -1016,28 +1006,22 @@
     function run(n) {
       for (var i = 0; i < n; i++) {
         pass();
-	console.log('worker pass finished', i)
       }
-      console.log('sending new coords')
       sendNewCoords();
-      console.log('new coords sent')
     }
 
     // On supervisor message
     var listener = function(e) {
       switch (e.data.action) {
         case 'start':
-	  console.log('worker got start message')
           init(
             new Float32Array(e.data.nodes),
             new Float32Array(e.data.edges),
             e.data.config
           );
-	  console.log('worker init finished')
 
           // First iteration(s)
           run(W.settings.startingIterations);
-	  console.log('worker run finished')
           break;
 
         case 'loop':
