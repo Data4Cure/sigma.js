@@ -268,6 +268,7 @@
         RegionMatrix[rp(0, 'massCenterX')] = 0;
         RegionMatrix[rp(0, 'massCenterY')] = 0;
 
+	console.log('worker 1.bis) Barnes-Hut computation; starting to add nodes')
         // Add each node in the tree
         l = 1;
         for (n = 0; n < W.nodesLength; n += W.ppn) {
@@ -488,6 +489,7 @@
               }
             }
           }
+	    console.log('worker 1.bis) Barnes-Hut computation; processed node', n)
         }
       }
 
