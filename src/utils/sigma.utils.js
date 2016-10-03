@@ -181,6 +181,16 @@
       return 1.0;
   };
 
+  sigma.utils.alpha = function(val) {
+      if (val.match(/^ *rgba *\(/)) {
+	  val = val.match(
+		  /^ *rgba *\( *([0-9]*) *, *([0-9]*) *, *([0-9]*) *, *(.*)\) *$/
+	  );
+	  return +val[4];
+      };
+      return 1.0;
+  };
+
     /**
    * Perform a zoom into a camera, with or without animation, to the
    * coordinates indicated using a specified ratio.
