@@ -45,9 +45,14 @@
       circle.setAttributeNS(null, 'r', node[prefix + 'size']);
 
       // Updating only if not freestyle
-      if (!settings('freeStyle'))
+      if (!settings('freeStyle')) {
         circle.setAttributeNS(
           null, 'fill', node.color || settings('defaultNodeColor'));
+        circle.setAttributeNS(
+          null, 'stroke', node.border_color || node.color || settings('defaultNodeColor'));
+        circle.setAttributeNS(
+          null, 'stroke-width', node[prefix + 'size'] * 0.2);
+      }
 
       // Showing
       circle.style.display = '';

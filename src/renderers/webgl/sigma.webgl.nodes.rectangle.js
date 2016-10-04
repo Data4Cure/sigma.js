@@ -25,8 +25,8 @@
       var border_color = sigma.utils.floatColor(
         node.border_color || node.color || settings('defaultNodeColor')
       );
-      var angle = node.angle // argument (on the complex plane) for the first rectangle vertex
-      var rotate = node.rotate || 0
+      var angle = node.angle; // argument (on the complex plane) for the first rectangle vertex
+      var rotate = node.rotate || 0;
 
       data[i++] = node[prefix + 'x'];
       data[i++] = node[prefix + 'y'];
