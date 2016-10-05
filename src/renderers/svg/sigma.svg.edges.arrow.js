@@ -15,11 +15,11 @@
      * @param  {object}                   edge       The edge object.
      * @param  {object}                   source     The source node object.
      * @param  {object}                   target     The target node object.
+     * @param  {configurable}             settings   The settings function.
      * @param  {object}                   markers    The markers object.
      * @param  {object}                   defs       The svg defs element.
-     * @param  {configurable}             settings   The settings function.
      */
-    create: function(edge, source, target, markers, defs, settings) {
+    create: function(edge, source, target, settings, markers, defs) {
       var color = edge.color,
           prefix = settings('prefix') || '',
           edgeColor = settings('edgeColor'),
@@ -79,7 +79,7 @@
      * @param  {object}                   markers    The markers object.
      * @param  {configurable}             settings   The settings function.
      */
-    update: function(edge, line, source, target, markers, settings) {
+    update: function(edge, line, source, target, settings, markers) {
       var prefix = settings('prefix') || '',
         size = edge[prefix + 'size'] || 1,
         tSize = target[prefix + 'size'],
