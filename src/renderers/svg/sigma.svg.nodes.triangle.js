@@ -41,9 +41,12 @@
       var y = node[prefix + 'y'];
       var size = node[prefix + 'size'];
       var points = [
-          (x + r * Math.cos(2 / 3 * Math.PI)) + ',' + (y + r * Math.sin(2 / 3 * Math.PI)),
-          (x + r * Math.cos(4 / 3 * Math.PI)) + ',' + (y + r * Math.sin(4 / 3 * Math.PI)),
-          (x + r * Math.cos(6 / 3 * Math.PI)) + ',' + (y + r * Math.sin(6 / 3 * Math.PI)),
+        (x + size * Math.cos(2 / 3 * Math.PI)) + ',' +
+          (y + size * Math.sin(2 / 3 * Math.PI)),
+        (x + size * Math.cos(4 / 3 * Math.PI)) + ',' +
+          (y + size * Math.sin(4 / 3 * Math.PI)),
+        (x + size * Math.cos(6 / 3 * Math.PI)) + ',' +
+          (y + size * Math.sin(6 / 3 * Math.PI))
       ].join(' ');
       var rotate = node.rotate || 0;
 
