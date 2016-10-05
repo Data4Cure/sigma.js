@@ -23,6 +23,11 @@
       circle.setAttributeNS(null, 'class', settings('classPrefix') + '-node');
       circle.setAttributeNS(
         null, 'fill', node.color || settings('defaultNodeColor'));
+      circle.setAttributeNS(
+        null, 'stroke',
+        node.border_color || node.color || settings('defaultNodeColor'));
+      circle.setAttributeNS(
+        null, 'stroke-width', node[prefix + 'size'] * 0.2);
 
       // Returning the DOM Element
       return circle;
@@ -49,7 +54,8 @@
         circle.setAttributeNS(
           null, 'fill', node.color || settings('defaultNodeColor'));
         circle.setAttributeNS(
-          null, 'stroke', node.border_color || node.color || settings('defaultNodeColor'));
+          null, 'stroke',
+          node.border_color || node.color || settings('defaultNodeColor'));
         circle.setAttributeNS(
           null, 'stroke-width', node[prefix + 'size'] * 0.2);
       }
