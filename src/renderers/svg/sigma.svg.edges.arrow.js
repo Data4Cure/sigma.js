@@ -7,7 +7,7 @@
    * This edge renderer will display edges as arrows going from the source node
    * to the target node. Arrow heads are represented as svg markers.
    */
-  sigma.svg.edges.def = {
+  sigma.svg.edges.arrow = {
 
     /**
      * SVG Element creation.
