@@ -4,9 +4,9 @@
   sigma.utils.pkg('sigma.svg.nodes');
 
   /**
-   * The default node renderer. It renders the node as a simple disc.
+   * The triangle node renderer.
    */
-  sigma.svg.nodes.def = {
+  sigma.svg.nodes.triangle = {
 
     /**
      * SVG Element creation.
