@@ -67,7 +67,7 @@
       line.setAttributeNS(null, 'data-edge-id', edge.id);
       line.setAttributeNS(null, 'class', settings('classPrefix') + '-edge');
       line.setAttributeNS(null, 'stroke', color);
-      line.setAttributeNS(null, 'marker-end', 'url(#' + marker_id')');
+      line.setAttributeNS(null, 'marker-end', 'url(#' + marker_id + ')');
 
       return line;
     },
