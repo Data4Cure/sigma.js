@@ -264,6 +264,7 @@
           this.domElements.edges[a[i].id],
           source,
           target,
+          this.domElements.markers,
           embedSettings
         );
        }
