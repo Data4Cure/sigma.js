@@ -39,8 +39,8 @@
       var prefix = settings('prefix') || '';
       var angle = node.angle;
       var rotate = node.rotate || 0;
-      var width = node[prefix + 'size'] * Math.cos(node.angle);
-      var height = node[prefix + 'size'] * Math.sin(node.angle);
+      var width = 2 * node[prefix + 'size'] * Math.cos(node.angle);
+      var height = 2 * node[prefix + 'size'] * Math.sin(node.angle);
 
       // Applying changes
       // TODO: optimize - check if necessary
