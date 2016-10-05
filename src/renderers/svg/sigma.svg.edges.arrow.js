@@ -15,7 +15,7 @@
      * @param  {object}                   edge       The edge object.
      * @param  {object}                   source     The source node object.
      * @param  {object}                   target     The target node object.
-     * @param  {object}                   markers    The svg markers object.
+     * @param  {object}                   markers    The markers object.
      * @param  {object}                   defs       The svg defs element.
      * @param  {configurable}             settings   The settings function.
      */
@@ -24,8 +24,7 @@
           prefix = settings('prefix') || '',
           edgeColor = settings('edgeColor'),
           defaultNodeColor = settings('defaultNodeColor'),
-          defaultEdgeColor = settings('defaultEdgeColor'),
-          marker_id;
+          defaultEdgeColor = settings('defaultEdgeColor');
 
       if (!color)
         switch (edgeColor) {
@@ -45,7 +44,7 @@
       // Also different markers are needed for different colors.
       if (!(edge.id in markers.byEdge)) {
         var marker = document.createElementNS(settings('xmlns'), 'marker');
-        marker.setAttributeNS(null, 'id', marker_id);
+        marker.setAttributeNS(null, 'id', 'arrow-' + markers.length);
         marker.setAttributeNS(null, 'orient', 'auto');
         var path = document.createElementNS(settings('xmlns'), 'path');
         path.setAttributeNS(null, 'fill', color);
@@ -77,7 +76,7 @@
      * @param  {DOMElement}               line       The line DOM Element.
      * @param  {object}                   source     The source node object.
      * @param  {object}                   target     The target node object.
-     * @param  {object}                   markers    The svg markers object.
+     * @param  {object}                   markers    The markers object.
      * @param  {configurable}             settings   The settings function.
      */
     update: function(edge, line, source, target, markers, settings) {
