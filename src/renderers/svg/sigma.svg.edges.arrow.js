@@ -43,16 +43,18 @@
       // Each edge has its own marker (for arrow head),
       // because marker size depends on edge size (thickness).
       // Also different markers are needed for different colors.
-      marker_id = 'arrow-' + edge.id;
-
-      if (!markers[marker_id]) {
+      if (!(edge.id in markers.byEdge)) {
         var marker = document.createElementNS(settings('xmlns'), 'marker');
         marker.setAttributeNS(null, 'id', marker_id);
         marker.setAttributeNS(null, 'orient', 'auto');
         var path = document.createElementNS(settings('xmlns'), 'path');
         path.setAttributeNS(null, 'fill', color);
         marker.appendChild(path);
-        markers[marker_id] = marker;
+        markers.byEdge[edge.id] = {
+          id: 'arrow-' + markers.length,
+          element: marker
+        };
+        markers.length += 1;
         defs.appendChild(marker);
       }
 
@@ -62,7 +64,8 @@
       line.setAttributeNS(null, 'data-edge-id', edge.id);
       line.setAttributeNS(null, 'class', settings('classPrefix') + '-edge');
       line.setAttributeNS(null, 'stroke', color);
-      line.setAttributeNS(null, 'marker-end', 'url(#' + marker_id + ')');
+      line.setAttributeNS(null, 'marker-end',
+                          'url(#' + markers.byEdge[edge.id].id + ')');
 
       return line;
     },
@@ -90,7 +93,7 @@
         aX = sX + (tX - sX) * (d - aSize - tSize) / d,
         aY = sY + (tY - sY) * (d - aSize - tSize) / d,
         markerHeight = 1.2 * aSize, // to mimick sigma.canvas.edges.arrow.js
-        marker = markers['arrow-' + edge.id],
+        marker = markers.byEdge[edge.id].element,
         path = marker.firstElementChild,
         path_d = 'M0,0 L0,' + markerHeight +
                  ' L' + aSize + ',' + (markerHeight / 2) + ' z';

@@ -38,6 +38,11 @@
     // Initialize main attributes:
     this.graph = graph;
     this.camera = camera;
+    this.markers = {
+      // mapping from edge ids to { id: <marker_id>, element: <marker_element> }
+      byEdge: {},
+      length: 0
+    };
     this.domElements = {
       graph: null,
       groups: {},
@@ -45,8 +50,7 @@
       edges: {},
       labels: {},
       hovers: {},
-      defs: null,
-      markers: {}
+      defs: null
     };
     this.measurementCanvas = null;
     this.options = options;
@@ -243,7 +247,7 @@
             a[i],
             source,
             target,
-            this.domElements.markers,
+            this.markers,
             this.domElements.defs,
             embedSettings
           );
@@ -264,7 +268,7 @@
           this.domElements.edges[a[i].id],
           source,
           target,
-          this.domElements.markers,
+          this.markers,
           embedSettings
         );
        }
