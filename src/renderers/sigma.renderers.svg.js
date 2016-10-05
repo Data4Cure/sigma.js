@@ -44,7 +44,9 @@
       nodes: {},
       edges: {},
       labels: {},
-      hovers: {}
+      hovers: {},
+      defs: null,
+      markers: {}
     };
     this.measurementCanvas = null;
     this.options = options;
@@ -241,6 +243,8 @@
             a[i],
             source,
             target,
+            this.domElements.markers,
+            this.domElements.defs,
             embedSettings
           );
 
@@ -298,6 +302,10 @@
 
     // Appending elements
     this.domElements.graph = this.container.appendChild(dom);
+
+    // Appending defs section, e.g. for arrow heads
+    var defs = document.createElementNS(this.settings('xmlns'), 'defs')
+    this.domElements.defs = this.domElements.graph.appendChild(defs)
 
     // Creating groups
     var groups = ['edges', 'nodes', 'labels', 'hovers'];
