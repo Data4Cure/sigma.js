@@ -247,9 +247,9 @@
             a[i],
             source,
             target,
+            embedSettings,
             this.markers,
-            this.domElements.defs,
-            embedSettings
+            this.domElements.defs
           );
 
           this.domElements.edges[a[i].id] = e;
@@ -268,8 +268,8 @@
           this.domElements.edges[a[i].id],
           source,
           target,
-          this.markers,
-          embedSettings
+          embedSettings,
+          this.markers
         );
        }
 
