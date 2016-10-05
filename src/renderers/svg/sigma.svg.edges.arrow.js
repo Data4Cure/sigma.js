@@ -94,19 +94,22 @@
         markerHeight = 1.2 * aSize, // to mimick sigma.canvas.edges.arrow.js
         marker = markers.byEdge[edge.id].element,
         path = marker.firstElementChild,
-        path_d = 'M0,0 L0,' + markerHeight +
-                 ' L' + aSize + ',' + (markerHeight / 2) + ' z';
+        path_d = 'M0,0 L0,' + (markerHeight / size) +
+          ' L' + (aSize / size) + ',' + (markerHeight / 2 / size) + ' z';
 
-      line.setAttributeNS(null, 'stroke-width', size || 1);
+      line.setAttributeNS(null, 'stroke-width', size);
       line.setAttributeNS(null, 'x1', sX);
       line.setAttributeNS(null, 'y1', sY);
       line.setAttributeNS(null, 'x2', aX);
       line.setAttributeNS(null, 'y2', aY);
 
-      marker.setAttributeNS(null, 'markerWidth', aSize);
-      marker.setAttributeNS(null, 'markerHeight', markerHeight);
+      // Need to devide length by size, because stroke-width (=size)
+      // is the unit for the marker.
+      marker.setAttributeNS(null, 'markerWidth', aSize / size);
+      marker.setAttributeNS(null, 'markerHeight', markerHeight / size);
       marker.setAttributeNS(null, 'refX', '0');
-      marker.setAttributeNS(null, 'refY', markerHeight / 2);
+      marker.setAttributeNS(null, 'refY', markerHeight / 2 / size);
+
       path.setAttributeNS(null, 'd', path_d);
 
       // Showing
