@@ -27,7 +27,7 @@
         null, 'stroke',
         node.border_color || node.color || settings('defaultNodeColor'));
       circle.setAttributeNS(
-        null, 'stroke-width', node[prefix + 'size'] * 0.2);
+        null, 'stroke-width', node[prefix + 'size'] * 0.4);
 
       // Returning the DOM Element
       return circle;
@@ -57,7 +57,7 @@
           null, 'stroke',
           node.border_color || node.color || settings('defaultNodeColor'));
         circle.setAttributeNS(
-          null, 'stroke-width', node[prefix + 'size'] * 0.2);
+          null, 'stroke-width', node[prefix + 'size'] * 0.4);
       }
 
       // Showing
