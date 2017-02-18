@@ -213,6 +213,7 @@
       fragmentShader = sigma.utils.loadShader(
         gl,
         [
+	  '#define BORDER_THICKNESS 0.1',
           'precision mediump float;',
 
           'varying vec4 color;',
@@ -228,7 +229,7 @@
 
             // Here is how we draw a disc instead of a square:
             'if (diff > 0.0) {',
-	    'if(diff < 0.4 * radius) {',
+	    'if(diff < 2 * BORDER_THICKNESS * radius) {',
               'gl_FragColor = border_color;',
 	    '}',
 	    'else {',
