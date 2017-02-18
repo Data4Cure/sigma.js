@@ -3,6 +3,7 @@
 
   sigma.utils.pkg('sigma.svg.nodes');
 
+  var border_thickness = 0.1
   /**
    * The default node renderer. It renders the node as a simple disc.
    */
@@ -27,7 +28,7 @@
         null, 'stroke',
         node.border_color || node.color || settings('defaultNodeColor'));
       circle.setAttributeNS(
-        null, 'stroke-width', node[prefix + 'size'] * 0.4);
+        null, 'stroke-width', node[prefix + 'size'] * 2 * border_thickness);
 
       // Returning the DOM Element
       return circle;
@@ -57,7 +58,7 @@
           null, 'stroke',
           node.border_color || node.color || settings('defaultNodeColor'));
         circle.setAttributeNS(
-          null, 'stroke-width', node[prefix + 'size'] * 0.4);
+          null, 'stroke-width', node[prefix + 'size'] * border_thickness * 2);
       }
 
       // Showing

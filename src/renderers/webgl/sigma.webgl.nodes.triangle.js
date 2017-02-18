@@ -251,6 +251,7 @@
       fragmentShader = sigma.utils.loadShader(
         gl,
         [
+	  '#define BORDER_THICKNESS 0.1',
           'precision mediump float;',
 
           'varying vec4 color;',
@@ -262,7 +263,7 @@
 
           'void main(void) {',
             //'vec2 m = gl_FragCoord.xy - center;',
-            'if(any(lessThan(vBC, vec3(0.2)))) {',
+            'if(any(lessThan(vBC, vec3(BORDER_THICKNESS)))) {',
 	    'gl_FragColor = border_color;',
 	    '}',
             'else{',

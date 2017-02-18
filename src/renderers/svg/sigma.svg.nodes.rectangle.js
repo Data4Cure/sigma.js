@@ -3,6 +3,7 @@
 
   sigma.utils.pkg('sigma.svg.nodes');
 
+  var border_thickness = 0.1
   /**
    * The default node renderer. It renders the node as a simple disc.
    */
@@ -61,7 +62,7 @@
         rect.setAttributeNS(
           null, 'stroke', node.border_color || node.color || settings('defaultNodeColor'));
         rect.setAttributeNS(
-          null, 'stroke-width', node[prefix + 'size'] * 0.2);
+          null, 'stroke-width', node[prefix + 'size'] * border_thickness);
       }
 
       // Showing
