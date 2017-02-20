@@ -33,7 +33,10 @@
         rotate = (target.rotate || 0) * Math.PI / 180 // in radians
         arg = Math.atan2(y2 - y1, x2 - x1) // in [-pi, pi]
         // angle <= pi / 2
-        beta = Math.abs(arg + rotate) % (2 * Math.PI)
+        beta = (arg + rotate) % (2 * Math.PI)
+        if (beta < 0) {
+          beta += 2 * Math.PI
+        }
         if (beta < target.angle ||
             beta > 2 * Math.PI - target.angle ||
             (beta > Math.PI - target.angle &&
@@ -57,7 +60,10 @@
       else if (target.type === 'triangle') {
         rotate = (target.rotate || 0) * Math.PI / 180 // in radians
         arg = Math.atan2(y2 - y1, x2 - x1) // in [-pi, pi]
-        beta = Math.abs(arg + rotate) % (2 * Math.PI)
+        beta = (arg + rotate) % (2 * Math.PI)
+        if (beta < 0) {
+          beta += 2 * Math.PI
+        }
         if (beta < Math.PI / 2 && beta > Math.PI * 11 / 6) {
             targetSize *= Math.abs(
                 Math.cos(Math.PI / 3) /
