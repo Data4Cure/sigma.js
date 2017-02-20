@@ -64,7 +64,7 @@
                     Math.cos(beta - Math.PI / 6)
             )
         }
-        if (beta > Math.PI / 2 && beta < Math.PI * 7 / 6) {
+        else if (beta > Math.PI / 2 && beta < Math.PI * 7 / 6) {
             targetSize *= Math.abs(
                 Math.cos(Math.PI / 3) /
                     Math.cos(beta - Math.PI * 5 / 6)
