@@ -24,6 +24,28 @@
           targetSize = target[prefix + 'size'],
           color = edge.color;
 
+        if (target.type === 'rectangle') {
+          var rotate = (target.rotate | 0) * Math.PI / 180 // in radians
+          var arg = Math.atan2(y2 - y1, x2 - x1) // in [-pi, pi]
+          // angle <= pi / 2
+          var beta = Math.abs(arg - rotate) % (2 * Math.PI)
+            if (beta < target.angle ||
+               beta > 2 * Math.PI - target.angle ||
+                (beta > Math.PI - target.angle &&
+                 beta < Math.PI + target.angle)) {
+                // beta <= angle
+                targetSize *= Math.cos(target.angle) /
+                    Math.cos(arg - rotate)
+                // May fail if beta (and thus also angle) is close to PI/2
+          }
+            else {
+                // angle <= beta
+                targetSize *= Math.sing(target.angle) /
+                    Math.sin(arg - rotate)
+                // May fail if beta (and thus also angle) is close to 0
+          }
+      }
+
       if (!color)
         switch (settings('edgeColor')) {
           case 'source':
