@@ -42,12 +42,12 @@
       var y = node[prefix + 'y'];
       var size = node[prefix + 'size'];
       var points = [
-        (x + size * Math.cos(2 / 3 * Math.PI)) + ',' +
-          (y + size * Math.sin(2 / 3 * Math.PI)),
-        (x + size * Math.cos(4 / 3 * Math.PI)) + ',' +
-          (y + size * Math.sin(4 / 3 * Math.PI)),
-        (x + size * Math.cos(6 / 3 * Math.PI)) + ',' +
-          (y + size * Math.sin(6 / 3 * Math.PI))
+        (x + size * Math.cos(3 / 6 * Math.PI)) + ',' +
+          (y + size * Math.sin(3 / 6 * Math.PI)),
+        (x + size * Math.cos(7 / 6 * Math.PI)) + ',' +
+          (y + size * Math.sin(7 / 6 * Math.PI)),
+        (x + size * Math.cos(11 / 6 * Math.PI)) + ',' +
+          (y + size * Math.sin(11 / 6 * Math.PI))
       ].join(' ');
       var rotate = node.rotate || 0;
 
