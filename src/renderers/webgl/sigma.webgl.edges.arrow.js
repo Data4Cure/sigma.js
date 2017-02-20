@@ -193,10 +193,6 @@
             gl.getUniformLocation(program, 'u_matrixHalfPi'),
           matrixHalfPiMinusLocation =
             gl.getUniformLocation(program, 'u_matrixHalfPiMinus'),
-          matrixThirdPiLocation =
-            gl.getUniformLocation(program, 'u_matrixThirdPi'),
-          matrixThirdPiMinusLocation =
-            gl.getUniformLocation(program, 'u_matrixThirdPiMinus'),
           ratioLocation =
             gl.getUniformLocation(program, 'u_ratio'),
           nodeRatioLocation =
@@ -232,16 +228,6 @@
         matrixHalfPiMinusLocation,
         false,
         sigma.utils.matrices.rotation(-Math.PI / 2, true)
-      );
-      gl.uniformMatrix2fv(
-        matrixThirdPiLocation,
-        false,
-        sigma.utils.matrices.rotation(Math.PI / 3, true)
-      );
-      gl.uniformMatrix2fv(
-        matrixThirdPiMinusLocation,
-        false,
-        sigma.utils.matrices.rotation(-Math.PI / 3, true)
       );
 
       gl.enableVertexAttribArray(positionLocation1);
@@ -360,8 +346,6 @@
           'uniform mat3 u_matrix;',
           'uniform mat2 u_matrixHalfPi;',
           'uniform mat2 u_matrixHalfPiMinus;',
-          'uniform mat2 u_matrixThirdPi;',
-          'uniform mat2 u_matrixThirdPiMinus;',
 
           'varying vec4 color;',
 
@@ -374,9 +358,9 @@
                 'a_minus * u_matrixHalfPiMinus +',
                 '(1.0 - a_minus) * u_matrixHalfPi',
               ') + a_head * (',
-                'a_headPosition * u_matrixThirdPiMinus * DIV_2_SQRT_3 +',
-                '(a_headPosition * a_headPosition - 1.0) * mat2(-1.0)',
-              ');',
+                'a_headPosition * u_matrixHalfPiMinus * DIV_2_SQRT_3 +',
+                '(a_headPosition * a_headPosition - 1.0) * mat2(1.0)',
+              ') * mat2(-1.0);',
 
             'pos = a_pos1 + (',
               // Deal with body:
