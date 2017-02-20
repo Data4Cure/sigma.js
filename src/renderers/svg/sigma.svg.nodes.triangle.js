@@ -56,7 +56,7 @@
       polygon.setAttributeNS(null, 'points', points);
       polygon.setAttributeNS(null,
                              'transform',
-                             'rotate(' + rotate + ' ' +
+                             'rotate(' + (-rotate) + ' ' +
                              x + ' ' +
                              y + ')');
 

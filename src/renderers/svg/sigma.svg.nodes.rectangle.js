@@ -51,7 +51,7 @@
       rect.setAttributeNS(null, 'height', height);
       rect.setAttributeNS(null,
                           'transform',
-                          'rotate(' + rotate + ' ' +
+                          'rotate(' + (-rotate) + ' ' +
                           node[prefix + 'x'] + ' ' +
                           node[prefix + 'y'] + ')');
 
