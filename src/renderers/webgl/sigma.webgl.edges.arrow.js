@@ -189,10 +189,14 @@
             gl.getUniformLocation(program, 'u_resolution'),
           matrixLocation =
             gl.getUniformLocation(program, 'u_matrix'),
-          matrixSixthPiLocation =
-            gl.getUniformLocation(program, 'u_matrixSixthPi'),
-          matrixSixthPiMinusLocation =
-            gl.getUniformLocation(program, 'u_matrixSixthPiMinus'),
+          matrixHalfPiLocation =
+            gl.getUniformLocation(program, 'u_matrixHalfPi'),
+          matrixHalfPiMinusLocation =
+            gl.getUniformLocation(program, 'u_matrixHalfPiMinus'),
+          matrixThirdPiLocation =
+            gl.getUniformLocation(program, 'u_matrixThirdPi'),
+          matrixThirdPiMinusLocation =
+            gl.getUniformLocation(program, 'u_matrixThirdPiMinus'),
           ratioLocation =
             gl.getUniformLocation(program, 'u_ratio'),
           nodeRatioLocation =
@@ -220,14 +224,24 @@
       gl.uniform1f(scaleLocation, params.scalingRatio);
       gl.uniformMatrix3fv(matrixLocation, false, params.matrix);
       gl.uniformMatrix2fv(
-        matrixSixthPiLocation,
+        matrixHalfPiLocation,
         false,
-        sigma.utils.matrices.rotation(Math.PI / 6, true)
+        sigma.utils.matrices.rotation(Math.PI / 2, true)
       );
       gl.uniformMatrix2fv(
-        matrixSixthPiMinusLocation,
+        matrixHalfPiMinusLocation,
         false,
-        sigma.utils.matrices.rotation(-Math.PI / 6, true)
+        sigma.utils.matrices.rotation(-Math.PI / 2, true)
+      );
+      gl.uniformMatrix2fv(
+        matrixThirdPiLocation,
+        false,
+        sigma.utils.matrices.rotation(Math.PI / 3, true)
+      );
+      gl.uniformMatrix2fv(
+        matrixThirdPiMinusLocation,
+        false,
+        sigma.utils.matrices.rotation(-Math.PI / 3, true)
       );
 
       gl.enableVertexAttribArray(positionLocation1);
@@ -344,8 +358,10 @@
           'uniform float u_arrowHead;',
           'uniform float u_scale;',
           'uniform mat3 u_matrix;',
-          'uniform mat2 u_matrixSixthPi;',
-          'uniform mat2 u_matrixSixthPiMinus;',
+          'uniform mat2 u_matrixHalfPi;',
+          'uniform mat2 u_matrixHalfPiMinus;',
+          'uniform mat2 u_matrixThirdPi;',
+          'uniform mat2 u_matrixThirdPiMinus;',
 
           'varying vec4 color;',
 
@@ -355,10 +371,10 @@
 
             'mat2 matrix = (1.0 - a_head) *',
               '(',
-                'a_minus * u_matrixSixthPiMinus +',
-                '(1.0 - a_minus) * u_matrixSixthPi',
+                'a_minus * u_matrixHalfPiMinus +',
+                '(1.0 - a_minus) * u_matrixHalfPi',
               ') + a_head * (',
-                'a_headPosition * u_matrixSixthPiMinus * DIV_2_SQRT_3 +',
+                'a_headPosition * u_matrixThirdPiMinus * DIV_2_SQRT_3 +',
                 '(a_headPosition * a_headPosition - 1.0) * mat2(-1.0)',
               ');',
 
