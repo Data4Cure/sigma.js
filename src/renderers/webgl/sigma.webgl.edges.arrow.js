@@ -25,10 +25,10 @@
           color = edge.color;
 
         if (target.type === 'rectangle') {
-          var rotate = (target.rotate | 0) * Math.PI / 180 // in radians
+          var rotate = (target.rotate || 0) * Math.PI / 180 // in radians
           var arg = Math.atan2(y2 - y1, x2 - x1) // in [-pi, pi]
           // angle <= pi / 2
-          var beta = Math.abs(arg - rotate) % (2 * Math.PI)
+          var beta = Math.abs(arg + rotate) % (2 * Math.PI)
             if (beta < target.angle ||
                beta > 2 * Math.PI - target.angle ||
                 (beta > Math.PI - target.angle &&
@@ -36,7 +36,7 @@
                 // beta <= angle
                 targetSize *= Math.abs(
                     Math.cos(target.angle) /
-                        Math.cos(arg - rotate)
+                        Math.cos(arg + rotate)
                 )
                 // May fail if beta (and thus also angle) is close to PI/2
           }
@@ -44,7 +44,7 @@
                 // angle <= beta
                 targetSize *= Math.abs(
                     Math.sin(target.angle) /
-                        Math.sin(arg - rotate)
+                        Math.sin(arg + rotate)
                 )
                 // May fail if beta (and thus also angle) is close to 0
           }
