@@ -34,14 +34,18 @@
                 (beta > Math.PI - target.angle &&
                  beta < Math.PI + target.angle)) {
                 // beta <= angle
-                targetSize *= Math.cos(target.angle) /
-                    Math.cos(arg - rotate)
+                targetSize *= Math.abs(
+                    Math.cos(target.angle) /
+                        Math.cos(arg - rotate)
+                )
                 // May fail if beta (and thus also angle) is close to PI/2
           }
             else {
                 // angle <= beta
-                targetSize *= Math.sing(target.angle) /
-                    Math.sin(arg - rotate)
+                targetSize *= Math.abs(
+                    Math.sin(target.angle) /
+                        Math.sin(arg - rotate)
+                )
                 // May fail if beta (and thus also angle) is close to 0
           }
       }
