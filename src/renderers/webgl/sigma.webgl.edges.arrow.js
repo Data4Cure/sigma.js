@@ -189,10 +189,10 @@
             gl.getUniformLocation(program, 'u_resolution'),
           matrixLocation =
             gl.getUniformLocation(program, 'u_matrix'),
-          matrixHalfPiLocation =
-            gl.getUniformLocation(program, 'u_matrixHalfPi'),
-          matrixHalfPiMinusLocation =
-            gl.getUniformLocation(program, 'u_matrixHalfPiMinus'),
+          matrixSixthPiLocation =
+            gl.getUniformLocation(program, 'u_matrixSixthPi'),
+          matrixSixthPiMinusLocation =
+            gl.getUniformLocation(program, 'u_matrixSixthPiMinus'),
           ratioLocation =
             gl.getUniformLocation(program, 'u_ratio'),
           nodeRatioLocation =
@@ -220,14 +220,14 @@
       gl.uniform1f(scaleLocation, params.scalingRatio);
       gl.uniformMatrix3fv(matrixLocation, false, params.matrix);
       gl.uniformMatrix2fv(
-        matrixHalfPiLocation,
+        matrixSixthPiLocation,
         false,
-        sigma.utils.matrices.rotation(Math.PI / 2, true)
+        sigma.utils.matrices.rotation(Math.PI / 6, true)
       );
       gl.uniformMatrix2fv(
-        matrixHalfPiMinusLocation,
+        matrixSixthPiMinusLocation,
         false,
-        sigma.utils.matrices.rotation(-Math.PI / 2, true)
+        sigma.utils.matrices.rotation(-Math.PI / 6, true)
       );
 
       gl.enableVertexAttribArray(positionLocation1);
@@ -326,6 +326,7 @@
       vertexShader = sigma.utils.loadShader(
         gl,
         [
+          '#define DIV_2_SQRT_3 1.1547005383792517', // 2 / sqrt(3)
           'attribute vec2 a_pos1;',
           'attribute vec2 a_pos2;',
           'attribute float a_thickness;',
@@ -343,8 +344,8 @@
           'uniform float u_arrowHead;',
           'uniform float u_scale;',
           'uniform mat3 u_matrix;',
-          'uniform mat2 u_matrixHalfPi;',
-          'uniform mat2 u_matrixHalfPiMinus;',
+          'uniform mat2 u_matrixSixthPi;',
+          'uniform mat2 u_matrixSixthPiMinus;',
 
           'varying vec4 color;',
 
@@ -354,11 +355,11 @@
 
             'mat2 matrix = (1.0 - a_head) *',
               '(',
-                'a_minus * u_matrixHalfPiMinus +',
-                '(1.0 - a_minus) * u_matrixHalfPi',
+                'a_minus * u_matrixSixthPiMinus +',
+                '(1.0 - a_minus) * u_matrixSixthPi',
               ') + a_head * (',
-                'a_headPosition * u_matrixHalfPiMinus * 0.6 +',
-                '(a_headPosition * a_headPosition - 1.0) * mat2(1.0)',
+                'a_headPosition * u_matrixSixthPiMinus * DIV_2_SQRT_3 +',
+                '(a_headPosition * a_headPosition - 1.0) * mat2(-1.0)',
               ');',
 
             'pos = a_pos1 + (',
