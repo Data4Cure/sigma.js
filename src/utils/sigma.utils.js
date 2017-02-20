@@ -1039,4 +1039,69 @@
       a20 * b02 + a21 * b12 + a22 * b22
     ];
   };
+
+  sigma.utils.shapeSizeAdjustment = function(target, dx, dy) {
+    /* size adjustments for various shapes so that
+       arrows touch the target. */
+    var rotate,
+        arg,
+        beta,
+        adjustment = 1;
+    if (target.type === 'rectangle') {
+      rotate = (target.rotate || 0) * Math.PI / 180 // in radians
+      arg = Math.atan2(dy, dx) // in [-pi, pi]
+      // angle <= pi / 2
+      beta = (arg + rotate) % (2 * Math.PI)
+      if (beta < 0) {
+        beta += 2 * Math.PI
+      }
+      if (beta < target.angle ||
+          beta > 2 * Math.PI - target.angle ||
+          (beta > Math.PI - target.angle &&
+           beta < Math.PI + target.angle)) {
+          // beta <= angle
+        adjustment = Math.abs(
+            Math.cos(target.angle) /
+                Math.cos(beta)
+        )
+        // May fail if beta (and thus also angle) is close to PI/2
+      }
+      else {
+        // angle <= beta
+        adjustment = Math.abs(
+            Math.sin(target.angle) /
+                Math.sin(beta)
+        )
+        // May fail if beta (and thus also angle) is close to 0
+      }
+    }
+    else if (target.type === 'triangle') {
+      rotate = (target.rotate || 0) * Math.PI / 180 // in radians
+      arg = Math.atan2(dy, dx) // in [-pi, pi]
+      beta = (arg + rotate) % (2 * Math.PI)
+      if (beta < 0) {
+        beta += 2 * Math.PI
+      }
+      if (beta < Math.PI / 2 || beta > Math.PI * 11 / 6) {
+        adjustment = Math.abs(
+            Math.cos(Math.PI / 3) /
+                Math.cos(beta - Math.PI / 6)
+        )
+      }
+      else if (beta >= Math.PI / 2 && beta < Math.PI * 7 / 6) {
+        adjustment = Math.abs(
+            Math.cos(Math.PI / 3) /
+                Math.cos(beta - Math.PI * 5 / 6)
+        )
+      }
+      else {
+        adjustment = Math.abs(
+          Math.cos(Math.PI / 3) /
+                Math.cos(beta - Math.PI * 3 / 2)
+        )
+      }
+    }
+    return adjustment;
+  };
+
 }).call(this);

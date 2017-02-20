@@ -88,8 +88,11 @@
         tX = target[prefix + 'x'],
         tY = target[prefix + 'y'],
         aSize = Math.max(size * 2.5, settings('minArrowSize')),
-        d = Math.sqrt(Math.pow(tX - sX, 2) + Math.pow(tY - sY, 2)),
-        aX = sX + (tX - sX) * (d - aSize - tSize) / d,
+        d = Math.sqrt(Math.pow(tX - sX, 2) + Math.pow(tY - sY, 2));
+
+      tSize *= sigma.utils.shapeSizeAdjustment(target, tX - sX, tY - sY);
+
+      var aX = sX + (tX - sX) * (d - aSize - tSize) / d,
         aY = sY + (tY - sY) * (d - aSize - tSize) / d,
         markerHeight = 1.2 * aSize, // to mimick sigma.canvas.edges.arrow.js
         marker = markers.byEdge[edge.id].element,
