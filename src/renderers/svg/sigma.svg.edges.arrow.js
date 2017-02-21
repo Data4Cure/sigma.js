@@ -118,12 +118,13 @@
       var aX = sX + (tX - sX) * (d - aSize - tSize) / d,
         aY = sY + (tY - sY) * (d - aSize - tSize) / d,
         markerHeight = 1.2 * aSize, // to mimick sigma.canvas.edges.arrow.js
+        marker_height_coef = marker_height_coef_by_head_type[edge.head_type] ||
+          marker_height_coef_by_head_type.arrow,
         marker = markers.byEdge[edge.id].element,
         path = marker.firstElementChild,
         path_d = (path_d_by_head_type[edge.head_type] ||
-                  path_d_by_head_type.arrow)(markerHeight, aSize, size),
-        marker_height_coef = marker_height_coef_by_head_type[edge.head_type] ||
-          1;
+                  path_d_by_head_type.arrow)(marker_height_coef * markerHeight,
+                                             aSize, size);
 
       line.setAttributeNS(null, 'stroke-width', size);
       line.setAttributeNS(null, 'x1', sX);
@@ -139,7 +140,8 @@
       marker.setAttributeNS(null, 'markerHeight',
                             marker_height_coef * markerHeight / size);
       marker.setAttributeNS(null, 'refX', '0');
-      marker.setAttributeNS(null, 'refY', markerHeight / 2 / size);
+      marker.setAttributeNS(null, 'refY',
+                            marker_height_coef * markerHeight / 2 / size);
 
       path.setAttributeNS(null, 'd', path_d);
 
