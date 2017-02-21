@@ -8,8 +8,8 @@
           ' L' + (aSize / size) + ',' + (markerHeight / 2 / size) + ' z';
   };
   var inhibitory_path_d = function(markerHeight, aSize, size) {
-      return 'M0,0 L0,' + (markerHeight / size) +
-          ' L' + (aSize / size / 2) + ',' + (markerHeight / size) +
+      return 'M0,0 L0,' + (1.5 * markerHeight / size) +
+          ' L' + (aSize / size / 2) + ',' + (1.5 * markerHeight / size) +
           ' L' + (aSize / size / 2) + ',' + 0 + ' z';
   };
   var path_d_by_head_type = {
