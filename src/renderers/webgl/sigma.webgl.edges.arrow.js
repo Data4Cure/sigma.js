@@ -1,6 +1,12 @@
 ;(function() {
   'use strict';
 
+  var head_types = {
+      undefined: 0,
+      arrow: 0,
+      inhibitory: 1,
+  }
+
   sigma.utils.pkg('sigma.webgl.edges');
 
   /**
@@ -22,6 +28,7 @@
           x2 = target[prefix + 'x'],
           y2 = target[prefix + 'y'],
           targetSize = target[prefix + 'size'],
+          headType = head_types[target[prefix + 'head_type']] || 0,
           color = edge.color;
 
       targetSize *= sigma.utils.shapeSizeAdjustment(target, x2 - x1, y2 - y1);
@@ -55,6 +62,7 @@
       data[i++] = 0.0;
       data[i++] = color;
       data[i++] = alpha;
+      data[i++] = headType;
 
       data[i++] = x2;
       data[i++] = y2;
@@ -68,6 +76,7 @@
       data[i++] = 0.0;
       data[i++] = color;
       data[i++] = alpha;
+      data[i++] = headType;
 
       data[i++] = x2;
       data[i++] = y2;
@@ -81,6 +90,7 @@
       data[i++] = 0.0;
       data[i++] = color;
       data[i++] = alpha;
+      data[i++] = headType;
 
       data[i++] = x2;
       data[i++] = y2;
@@ -94,6 +104,7 @@
       data[i++] = 0.0;
       data[i++] = color;
       data[i++] = alpha;
+      data[i++] = headType;
 
       data[i++] = x1;
       data[i++] = y1;
@@ -107,6 +118,7 @@
       data[i++] = 0.0;
       data[i++] = color;
       data[i++] = alpha;
+      data[i++] = headType;
 
       data[i++] = x1;
       data[i++] = y1;
@@ -120,6 +132,7 @@
       data[i++] = 0.0;
       data[i++] = color;
       data[i++] = alpha;
+      data[i++] = headType;
 
       // Arrow head:
       data[i++] = x2;
@@ -134,6 +147,7 @@
       data[i++] = -1.0;
       data[i++] = color;
       data[i++] = alpha;
+      data[i++] = headType;
 
       data[i++] = x2;
       data[i++] = y2;
@@ -147,6 +161,7 @@
       data[i++] = 0.0;
       data[i++] = color;
       data[i++] = alpha;
+      data[i++] = headType;
 
       data[i++] = x2;
       data[i++] = y2;
@@ -160,6 +175,7 @@
       data[i++] = 1.0;
       data[i++] = color;
       data[i++] = alpha;
+      data[i++] = headType;
     },
     render: function(gl, program, data, params) {
       var buffer;
@@ -185,6 +201,8 @@
             gl.getAttribLocation(program, 'a_color'),
           alphaLocation =
             gl.getAttribLocation(program, 'a_alpha'),
+          headTypeLocation =
+            gl.getAttribLocation(program, 'a_headType'),
           resolutionLocation =
             gl.getUniformLocation(program, 'u_resolution'),
           matrixLocation =
@@ -240,6 +258,7 @@
       gl.enableVertexAttribArray(headPositionLocation);
       gl.enableVertexAttribArray(colorLocation);
       gl.enableVertexAttribArray(alphaLocation);
+      gl.enableVertexAttribArray(headTypeLocation);
 
       gl.vertexAttribPointer(positionLocation1,
         2,
@@ -311,6 +330,13 @@
         this.ATTRIBUTES * Float32Array.BYTES_PER_ELEMENT,
         44
       );
+      gl.vertexAttribPointer(headTypeLocation,
+        1,
+        gl.FLOAT,
+        false,
+        this.ATTRIBUTES * Float32Array.BYTES_PER_ELEMENT,
+        48
+      );
 
       gl.drawArrays(
         gl.TRIANGLES,
@@ -336,6 +362,7 @@
           'attribute float a_headPosition;',
           'attribute float a_color;',
           'attribute float a_alpha;',
+          'attribute float a_headType;',
 
           'uniform vec2 u_resolution;',
           'uniform float u_ratio;',
@@ -349,6 +376,7 @@
           'varying vec4 color;',
           'varying vec3 vBC;', // barycentric coordinates
           'varying float head;',
+          'varying float headType;',
 
 
           'void main() {',
@@ -395,6 +423,7 @@
             'vBC = vec3(1.0, 1.0, 1.0) - vBC * vBC;',
             // vBC is either (1,0,0) or (0,1,0) or (0,0,1)
             'head = a_head;',
+            'headType = a_headType;',
           '}'
         ].join('\n'),
         gl.VERTEX_SHADER
@@ -408,11 +437,13 @@
           'varying vec4 color;',
           'varying vec3 vBC;', // barycentric coordinates
           'varying float head;',
+          'varying float headType;',
 
-            'void main(void) {',
-              'vec4 color0 = vec4(0.0, 0.0, 0.0, 0.0);',
-              'if(1.0 == 1.0) {',
-                'if(all(lessThan(vBC, vec3(1.0, 0.25, 1.0)))) {',
+          'void main(void) {',
+            'vec4 color0 = vec4(0.0, 0.0, 0.0, 0.0);',
+            'if(head == 1.0) {',
+              'if(headType == 1.0) {',
+                'if(abs(vBC[0]-vBC[2]) < 0.75 && all(lessThan(vBC, vec3(1.0, 0.25, 1.0)))) {',
                   'gl_FragColor = color;',
                 '}',
                 'else {',
@@ -420,19 +451,18 @@
                 '}',
               '}',
               'else {',
-                'if(head == 1.0) {',
-                  'if(all(greaterThan(vBC, vec3(0.25, 0.0, 0.25)))) {',
-                    'gl_FragColor = color;',
-                  '}',
-                  'else {',
-                    'gl_FragColor = color0;',
-                  '}',
+                'if(all(greaterThan(vBC, vec3(0.25, 0.0, 0.25)))) {',
+                  'gl_FragColor = color;',
                 '}',
                 'else {',
-                  'gl_FragColor = color;',
+                  'gl_FragColor = color0;',
                 '}',
               '}',
             '}',
+            'else {',
+              'gl_FragColor = color;',
+            '}',
+          '}',
         ].join('\n'),
         gl.FRAGMENT_SHADER
       );
