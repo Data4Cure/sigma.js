@@ -28,8 +28,8 @@
           x2 = target[prefix + 'x'],
           y2 = target[prefix + 'y'],
           targetSize = target[prefix + 'size'],
-          headType = head_types[target.head_type] || 0,
-          headSize = target.head_size || 1,
+          headType = head_types[edge.head_type] || 0,
+          headSize = edge.head_size || 1,
           color = edge.color;
 
       targetSize *= sigma.utils.shapeSizeAdjustment(target, x2 - x1, y2 - y1);
