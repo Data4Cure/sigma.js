@@ -326,7 +326,6 @@
       vertexShader = sigma.utils.loadShader(
         gl,
         [
-          '#define DIV_2_SQRT_3 1.1547005383792517', // 2 / sqrt(3)
           'attribute vec2 a_pos1;',
           'attribute vec2 a_pos2;',
           'attribute float a_thickness;',
@@ -348,6 +347,9 @@
           'uniform mat2 u_matrixHalfPiMinus;',
 
           'varying vec4 color;',
+          'varying vec3 vBC;', // barycentric coordinates
+          'varying float head;',
+
 
           'void main() {',
             // Find the good point:
@@ -358,9 +360,9 @@
                 'a_minus * u_matrixHalfPiMinus +',
                 '(1.0 - a_minus) * u_matrixHalfPi',
               ') + a_head * (',
-                'a_headPosition * u_matrixHalfPiMinus * DIV_2_SQRT_3 +',
-                '(a_headPosition * a_headPosition - 1.0) * mat2(1.0)',
-              ') * mat2(-1.0);',
+                'a_headPosition * u_matrixHalfPiMinus * 0.6 * 2.0 +', // * 2.0 to make the arrow twice as big (and use fragment shader to define shape)
+                '(a_headPosition * a_headPosition - 1.0) * mat2(2.0)', // mat2(2.0) instead of mat2(1.0) to make the arrow twice as big (and use fragment shader to define shape)
+              ');',
 
             'pos = a_pos1 + (',
               // Deal with body:
@@ -389,6 +391,10 @@
             'color.r = mod(c, 256.0); c = floor(c / 256.0); color /= 255.0;',
             //'color.a = 1.0;',
             'color.a = a_alpha;',
+            'vBC = sign(a_headPosition - vec3(-1.0, 0.0, 1.0));',
+            'vBC = a_headPositionvec3(1.0, 1.0, 1.0) - vBC * vBC;',
+            // vBC is either (1,0,0) or (0,1,0) or (0,0,1)
+            'head = a_head;',
           '}'
         ].join('\n'),
         gl.VERTEX_SHADER
@@ -400,10 +406,23 @@
           'precision mediump float;',
 
           'varying vec4 color;',
+          'varying vec3 vBC;', // barycentric coordinates
+          'varying float head;',
 
-          'void main(void) {',
-            'gl_FragColor = color;',
-          '}'
+            'void main(void) {',
+              'vec4 color0 = vec4(0.0, 0.0, 0.0, 0.0);',
+              'if(head == 1.0) {',
+                'if(all(greaterThan(vBC, vec3(0.5, 0.0, 0.5)))) {',
+                  'gl_FragColor = color;',
+                '}',
+                'else {',
+                  'gl_FragColor = color0;',
+                '}',
+              '}',
+              'else {',
+                'gl_FragColor = color;',
+              '}',
+            '}'
         ].join('\n'),
         gl.FRAGMENT_SHADER
       );
