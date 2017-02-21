@@ -392,7 +392,7 @@
             //'color.a = 1.0;',
             'color.a = a_alpha;',
             'vBC = sign(a_headPosition - vec3(-1.0, 0.0, 1.0));',
-            'vBC = a_headPositionvec3(1.0, 1.0, 1.0) - vBC * vBC;',
+            'vBC = vec3(1.0, 1.0, 1.0) - vBC * vBC;',
             // vBC is either (1,0,0) or (0,1,0) or (0,0,1)
             'head = a_head;',
           '}'
