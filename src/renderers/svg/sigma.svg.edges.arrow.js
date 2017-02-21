@@ -87,10 +87,13 @@
         sY = source[prefix + 'y'],
         tX = target[prefix + 'x'],
         tY = target[prefix + 'y'],
+        headSize = edge.head_size || 1,
         aSize = Math.max(size * 2.5, settings('minArrowSize')),
         d = Math.sqrt(Math.pow(tX - sX, 2) + Math.pow(tY - sY, 2));
 
       tSize *= sigma.utils.shapeSizeAdjustment(target, tX - sX, tY - sY);
+
+      aSize *= headSize;
 
       var aX = sX + (tX - sX) * (d - aSize - tSize) / d,
         aY = sY + (tY - sY) * (d - aSize - tSize) / d,
