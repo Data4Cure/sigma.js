@@ -20,7 +20,7 @@
    */
   sigma.webgl.edges.arrow = {
     POINTS: 9,
-    ATTRIBUTES: 12,
+    ATTRIBUTES: 13,
     addEdge: function(edge, source, target, data, i, prefix, settings) {
       var w = (edge[prefix + 'size'] || 1) / 2,
           x1 = source[prefix + 'x'],
