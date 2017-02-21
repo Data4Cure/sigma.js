@@ -20,7 +20,7 @@
    */
   sigma.webgl.edges.arrow = {
     POINTS: 9,
-    ATTRIBUTES: 13,
+    ATTRIBUTES: 14,
     addEdge: function(edge, source, target, data, i, prefix, settings) {
       var w = (edge[prefix + 'size'] || 1) / 2,
           x1 = source[prefix + 'x'],
@@ -64,6 +64,7 @@
       data[i++] = color;
       data[i++] = alpha;
       data[i++] = headType;
+      data[i++] = headSize;
 
       data[i++] = x2;
       data[i++] = y2;
@@ -78,6 +79,7 @@
       data[i++] = color;
       data[i++] = alpha;
       data[i++] = headType;
+      data[i++] = headSize;
 
       data[i++] = x2;
       data[i++] = y2;
@@ -92,6 +94,7 @@
       data[i++] = color;
       data[i++] = alpha;
       data[i++] = headType;
+      data[i++] = headSize;
 
       data[i++] = x2;
       data[i++] = y2;
@@ -106,6 +109,7 @@
       data[i++] = color;
       data[i++] = alpha;
       data[i++] = headType;
+      data[i++] = headSize;
 
       data[i++] = x1;
       data[i++] = y1;
@@ -120,6 +124,7 @@
       data[i++] = color;
       data[i++] = alpha;
       data[i++] = headType;
+      data[i++] = headSize;
 
       data[i++] = x1;
       data[i++] = y1;
@@ -134,6 +139,7 @@
       data[i++] = color;
       data[i++] = alpha;
       data[i++] = headType;
+      data[i++] = headSize;
 
       // Arrow head:
       data[i++] = x2;
@@ -149,6 +155,7 @@
       data[i++] = color;
       data[i++] = alpha;
       data[i++] = headType;
+      data[i++] = headSize;
 
       data[i++] = x2;
       data[i++] = y2;
@@ -163,6 +170,7 @@
       data[i++] = color;
       data[i++] = alpha;
       data[i++] = headType;
+      data[i++] = headSize;
 
       data[i++] = x2;
       data[i++] = y2;
@@ -177,6 +185,7 @@
       data[i++] = color;
       data[i++] = alpha;
       data[i++] = headType;
+      data[i++] = headSize;
     },
     render: function(gl, program, data, params) {
       var buffer;
@@ -204,6 +213,8 @@
             gl.getAttribLocation(program, 'a_alpha'),
           headTypeLocation =
             gl.getAttribLocation(program, 'a_headType'),
+          headSizeLocation =
+            gl.getAttribLocation(program, 'a_headSize'),
           resolutionLocation =
             gl.getUniformLocation(program, 'u_resolution'),
           matrixLocation =
@@ -235,7 +246,7 @@
         Math.pow(params.ratio, params.settings('nodesPowRatio')) /
         params.ratio
       );
-      gl.uniform1f(arrowHeadLocation, 5.0 * headSize);
+      gl.uniform1f(arrowHeadLocation, 5.0);
       gl.uniform1f(scaleLocation, params.scalingRatio);
       gl.uniformMatrix3fv(matrixLocation, false, params.matrix);
       gl.uniformMatrix2fv(
@@ -260,6 +271,7 @@
       gl.enableVertexAttribArray(colorLocation);
       gl.enableVertexAttribArray(alphaLocation);
       gl.enableVertexAttribArray(headTypeLocation);
+      gl.enableVertexAttribArray(headSizeLocation);
 
       gl.vertexAttribPointer(positionLocation1,
         2,
@@ -338,6 +350,13 @@
         this.ATTRIBUTES * Float32Array.BYTES_PER_ELEMENT,
         48
       );
+      gl.vertexAttribPointer(headSizeLocation,
+        1,
+        gl.FLOAT,
+        false,
+        this.ATTRIBUTES * Float32Array.BYTES_PER_ELEMENT,
+        52
+      );
 
       gl.drawArrays(
         gl.TRIANGLES,
@@ -364,6 +383,7 @@
           'attribute float a_color;',
           'attribute float a_alpha;',
           'attribute float a_headType;',
+          'attribute float a_headSize;',
 
           'uniform vec2 u_resolution;',
           'uniform float u_ratio;',
@@ -397,11 +417,11 @@
               // Deal with body:
               '(1.0 - a_head) * a_thickness * u_ratio * matrix * pos +',
               // Deal with head:
-              'a_head * u_arrowHead * a_thickness * u_ratio * matrix * pos +',
+              'a_head * u_arrowHead * a_headSize * a_thickness * u_ratio * matrix * pos +',
               // Deal with delay:
               'a_delay * pos * (',
                 'a_tSize / u_nodeRatio +',
-                'u_arrowHead * a_thickness * u_ratio',
+                'u_arrowHead * a_headSize * a_thickness * u_ratio',
               ')',
             ');',
 
