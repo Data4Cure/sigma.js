@@ -411,8 +411,8 @@
 
             'void main(void) {',
               'vec4 color0 = vec4(0.0, 0.0, 0.0, 0.0);',
-              'if(head == 1.0) {',
-                'if(all(greaterThan(vBC, vec3(0.5, 0.0, 0.5)))) {',
+              'if(1.0 == 1.0) {',
+                'if(all(lessThan(vBC, vec3(1.0, 0.25, 1.0)))) {',
                   'gl_FragColor = color;',
                 '}',
                 'else {',
@@ -420,9 +420,19 @@
                 '}',
               '}',
               'else {',
-                'gl_FragColor = color;',
+                'if(head == 1.0) {',
+                  'if(all(greaterThan(vBC, vec3(0.25, 0.0, 0.25)))) {',
+                    'gl_FragColor = color;',
+                  '}',
+                  'else {',
+                    'gl_FragColor = color0;',
+                  '}',
+                '}',
+                'else {',
+                  'gl_FragColor = color;',
+                '}',
               '}',
-            '}'
+            '}',
         ].join('\n'),
         gl.FRAGMENT_SHADER
       );
