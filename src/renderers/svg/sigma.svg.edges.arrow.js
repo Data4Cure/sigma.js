@@ -3,6 +3,21 @@
 
   sigma.utils.pkg('sigma.svg.edges');
 
+  var arrow_path_d = function(markerHeight, aSize, size) {
+      return 'M0,0 L0,' + (markerHeight / size) +
+          ' L' + (aSize / size) + ',' + (markerHeight / 2 / size) + ' z';
+  };
+  var inhibitory_path_d = function(markerHeight, aSize, size) {
+      return 'M0,0 L0,' + (markerHeight / size) +
+          ' L' + (aSize / size / 2) + ',' + (markerHeight / size) +
+          ' L' + (aSize / size / 2) + ',' + 0 + ' z';
+  };
+  var path_d_by_head_type = {
+      undefined: arrow_path_d,
+      arrow: arrow_path_d,
+      inhibitory: inhibitory_path_d,
+  }
+
   /**
    * This edge renderer will display edges as arrows going from the source node
    * to the target node. Arrow heads are represented as svg markers.
@@ -100,8 +115,8 @@
         markerHeight = 1.2 * aSize, // to mimick sigma.canvas.edges.arrow.js
         marker = markers.byEdge[edge.id].element,
         path = marker.firstElementChild,
-        path_d = 'M0,0 L0,' + (markerHeight / size) +
-          ' L' + (aSize / size) + ',' + (markerHeight / 2 / size) + ' z';
+        path_d = (path_d_by_head_type[edge.head_type] ||
+                  path_d_by_head_type.arrow)(markerHeight, aSize, size);
 
       line.setAttributeNS(null, 'stroke-width', size);
       line.setAttributeNS(null, 'x1', sX);
