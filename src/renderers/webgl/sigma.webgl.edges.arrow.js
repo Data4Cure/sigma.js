@@ -28,7 +28,8 @@
           x2 = target[prefix + 'x'],
           y2 = target[prefix + 'y'],
           targetSize = target[prefix + 'size'],
-          headType = head_types[target[prefix + 'head_type']] || 0,
+          headType = head_types[target.head_type] || 0,
+          headSize = target.head_size || 1,
           color = edge.color;
 
       targetSize *= sigma.utils.shapeSizeAdjustment(target, x2 - x1, y2 - y1);
@@ -234,7 +235,7 @@
         Math.pow(params.ratio, params.settings('nodesPowRatio')) /
         params.ratio
       );
-      gl.uniform1f(arrowHeadLocation, 5.0);
+      gl.uniform1f(arrowHeadLocation, 5.0 * headSize);
       gl.uniform1f(scaleLocation, params.scalingRatio);
       gl.uniformMatrix3fv(matrixLocation, false, params.matrix);
       gl.uniformMatrix2fv(
