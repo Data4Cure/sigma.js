@@ -8,14 +8,19 @@
           ' L' + (aSize / size) + ',' + (markerHeight / 2 / size) + ' z';
   };
   var inhibitory_path_d = function(markerHeight, aSize, size) {
-      return 'M0,0 L0,' + (1.5 * markerHeight / size) +
-          ' L' + (aSize / size / 2) + ',' + (1.5 * markerHeight / size) +
+      return 'M0,0 L0,' + (markerHeight / size) +
+          ' L' + (aSize / size / 2) + ',' + (markerHeight / size) +
           ' L' + (aSize / size / 2) + ',' + 0 + ' z';
   };
   var path_d_by_head_type = {
       undefined: arrow_path_d,
       arrow: arrow_path_d,
       inhibitory: inhibitory_path_d,
+  }
+  var marker_height_coef_by_head_type = {
+      undefined: 1,
+      arrow: 1,
+      inhibitory: 1.5,
   }
 
   /**
@@ -116,7 +121,9 @@
         marker = markers.byEdge[edge.id].element,
         path = marker.firstElementChild,
         path_d = (path_d_by_head_type[edge.head_type] ||
-                  path_d_by_head_type.arrow)(markerHeight, aSize, size);
+                  path_d_by_head_type.arrow)(markerHeight, aSize, size),
+        marker_height_coef = marker_height_coef_by_head_type[edge.head_type] ||
+          1;
 
       line.setAttributeNS(null, 'stroke-width', size);
       line.setAttributeNS(null, 'x1', sX);
@@ -124,10 +131,13 @@
       line.setAttributeNS(null, 'x2', aX);
       line.setAttributeNS(null, 'y2', aY);
 
+
+
       // Need to devide length by size, because stroke-width (=size)
       // is the unit for the marker.
       marker.setAttributeNS(null, 'markerWidth', aSize / size);
-      marker.setAttributeNS(null, 'markerHeight', markerHeight / size);
+      marker.setAttributeNS(null, 'markerHeight',
+                            marker_height_coef * markerHeight / size);
       marker.setAttributeNS(null, 'refX', '0');
       marker.setAttributeNS(null, 'refY', markerHeight / 2 / size);
 
