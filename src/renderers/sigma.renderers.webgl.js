@@ -424,6 +424,9 @@
       nodesGl.blendFunc(nodesGl.SRC_ALPHA, nodesGl.ONE_MINUS_SRC_ALPHA);
       nodesGl.enable(nodesGl.BLEND);
 
+      nodesGl.depthFunc(nodesGl.LEQUAL);
+      nodesGl.enable(nodesGl.DEPTH_TEST);
+
       for (k in this.nodeFloatArrays) {
         renderer = sigma.webgl.nodes[k];
 
