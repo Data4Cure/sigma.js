@@ -131,6 +131,7 @@
   sigma.renderers.webgl.prototype.process = function() {
     var a,
         i,
+        j,
         l,
         k,
         type,
