@@ -94,7 +94,6 @@
       gl.enableVertexAttribArray(alphaLocation);
       gl.enableVertexAttribArray(borderColorLocation);
       gl.enableVertexAttribArray(angleLocation);
-      gl.enableVertexAttribArray(zCoordLocation);
 
       gl.vertexAttribPointer(
         positionLocation,
@@ -143,14 +142,6 @@
         false,
         this.ATTRIBUTES * Float32Array.BYTES_PER_ELEMENT,
         24
-      );
-      gl.vertexAttribPointer(
-        zCoordLocation,
-        1,
-        gl.FLOAT,
-        false,
-        this.ATTRIBUTES * Float32Array.BYTES_PER_ELEMENT,
-        28
       );
 
       gl.drawArrays(
