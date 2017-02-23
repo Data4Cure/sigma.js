@@ -424,9 +424,6 @@
       nodesGl.blendFunc(nodesGl.SRC_ALPHA, nodesGl.ONE_MINUS_SRC_ALPHA);
       nodesGl.enable(nodesGl.BLEND);
 
-      nodesGl.depthFunc(nodesGl.LEQUAL);
-      nodesGl.enable(nodesGl.DEPTH_TEST);
-
       for (k in this.nodeFloatArrays) {
         renderer = sigma.webgl.nodes[k];
 
@@ -606,10 +603,8 @@
    */
   sigma.renderers.webgl.prototype.clear = function() {
     this.contexts.labels.clearRect(0, 0, this.width, this.height);
-    this.contexts.nodes.clear(this.contexts.nodes.COLOR_BUFFER_BIT |
-                              this.contexts.nodes.DEPTH_BUFFER_BIT);
-    this.contexts.edges.clear(this.contexts.edges.COLOR_BUFFER_BIT |
-                              this.contexts.edges.DEPTH_BUFFER_BIT);
+    this.contexts.nodes.clear(this.contexts.nodes.COLOR_BUFFER_BIT);
+    this.contexts.edges.clear(this.contexts.edges.COLOR_BUFFER_BIT);
 
     return this;
   };

@@ -16,7 +16,7 @@
    */
   sigma.webgl.nodes.def = {
     POINTS: 3,
-    ATTRIBUTES: 8,
+    ATTRIBUTES: 7,
     addNode: function(node, data, i, prefix, settings) {
       var color = sigma.utils.floatColor(
         node.color || settings('defaultNodeColor')
@@ -26,7 +26,6 @@
         node.border_color || node.color || settings('defaultNodeColor')
 
       );
-      var z_coord = node.z || 0;
 
       data[i++] = node[prefix + 'x'];
       data[i++] = node[prefix + 'y'];
@@ -35,7 +34,6 @@
       data[i++] = alpha;
       data[i++] = border_color;
       data[i++] = 0;
-      data[i++] = z_coord;
 
       data[i++] = node[prefix + 'x'];
       data[i++] = node[prefix + 'y'];
@@ -44,7 +42,6 @@
       data[i++] = alpha;
       data[i++] = border_color;
       data[i++] = 2 * Math.PI / 3;
-      data[i++] = z_coord;
 
       data[i++] = node[prefix + 'x'];
       data[i++] = node[prefix + 'y'];
@@ -53,7 +50,6 @@
       data[i++] = alpha;
       data[i++] = border_color;
       data[i++] = 4 * Math.PI / 3;
-      data[i++] = z_coord;
     },
     render: function(gl, program, data, params) {
       var buffer;
@@ -71,8 +67,6 @@
             gl.getAttribLocation(program, 'a_border_color'),
           angleLocation =
             gl.getAttribLocation(program, 'a_angle'),
-          zCoordLocation =
-            gl.getAttribLocation(program, 'a_z_coord'),
           resolutionLocation =
             gl.getUniformLocation(program, 'u_resolution'),
           matrixLocation =
@@ -179,7 +173,6 @@
           'attribute float a_alpha;',
           'attribute float a_border_color;',
           'attribute float a_angle;',
-          'attribute float a_z_coord;',
 
           'uniform vec2 u_resolution;',
           'uniform float u_ratio;',
@@ -207,7 +200,7 @@
 
             'radius = radius * u_scale;',
 
-            'gl_Position = vec4(position, a_z_coord, 1);',
+            'gl_Position = vec4(position, 0, 1);',
 
             // Extract the color:
             'float c = a_color;',
