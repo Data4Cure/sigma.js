@@ -167,10 +167,10 @@
         var z1 = n1.z || 0,
             z2 = n2.z || 0;
         if (z1 < z2) {
-            return -1
+            return 1 // Nodes need to be rendered in decreasing z order.
         }
         else if (z1 > z2) {
-            return 1
+            return -1
         }
         else {
             var t1 = n1.type || 'def',
