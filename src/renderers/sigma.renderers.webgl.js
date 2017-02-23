@@ -64,8 +64,8 @@
     Object.defineProperty(this, 'edgePrograms', {
       value: {}
     });
-    Object.defineProperty(this, 'nodeFloatArrays', {
-      value: {}
+    Object.defineProperty(this, 'nodeLayers', {
+      value: []
     });
     Object.defineProperty(this, 'edgeFloatArrays', {
       value: {}
@@ -141,8 +141,7 @@
         defaultNodeType = this.settings(options, 'defaultNodeType');
 
     // Empty float arrays:
-    for (k in this.nodeFloatArrays)
-      delete this.nodeFloatArrays[k];
+    this.nodeLayers.length = 0
 
     for (k in this.edgeFloatArrays)
       delete this.edgeFloatArrays[k];
@@ -163,16 +162,45 @@
       this.edgeFloatArrays[k].edges.push(a[i]);
     }
 
-    for (a = graph.nodes(), i = 0, l = a.length; i < l; i++) {
+    var nodeCompareZType = function(n1, n2) {
+        var z1 = n1.z || 0,
+            z2 = n2.z || 0;
+        if (z1 < z2) {
+            return -1
+        }
+        else if (z1 > z2) {
+            return 1
+        }
+        else {
+            var t1 = n1.type || 'def',
+                t2 = n2.type || 'def';
+            if (t1 < t2) {
+                return -1;
+            }
+            else if (t1 > t2) {
+                return 1
+            }
+            else {
+                return 0;
+            }
+        }
+    };
+
+    for (a = graph.nodes().sort(nodeCompareZType), i = 0, l = a.length;
+         i < l; i++) {
+      if (i === 0 || (a[i - 1].z || 0) !== (a[i].z || 0)) {
+        this.nodeLayers.push({})
+      }
+      var nodeFloatArrays = this.nodeLayers[this.nodeLayers.length - 1]
       type = a[i].type || defaultNodeType;
       k = (type && sigma.webgl.nodes[type]) ? type : 'def';
 
-      if (!this.nodeFloatArrays[k])
-        this.nodeFloatArrays[k] = {
+      if (!nodeFloatArrays[k])
+        nodeFloatArrays[k] = {
           nodes: []
         };
 
-      this.nodeFloatArrays[k].nodes.push(a[i]);
+      nodeFloatArrays[k].nodes.push(a[i]);
     }
 
     // Push edges:
@@ -211,32 +239,35 @@
     }
 
     // Push nodes:
-    for (k in this.nodeFloatArrays) {
-      renderer = sigma.webgl.nodes[k];
-      a = this.nodeFloatArrays[k].nodes;
+    for (j in this.nodeLayers) {
+      var nodeFloatArrays = this.nodeLayers[j];
+      for (k in nodeFloatArrays) {
+        renderer = sigma.webgl.nodes[k];
+        a = nodeFloatArrays[k].nodes;
 
-      // Creating the necessary arrays
-      this.nodeFloatArrays[k].array = new Float32Array(
-        a.length * renderer.POINTS * renderer.ATTRIBUTES
-      );
+        // Creating the necessary arrays
+        nodeFloatArrays[k].array = new Float32Array(
+          a.length * renderer.POINTS * renderer.ATTRIBUTES
+        );
 
-      for (i = 0, l = a.length; i < l; i++) {
-        if (!this.nodeFloatArrays[k].array)
-          this.nodeFloatArrays[k].array = new Float32Array(
-            a.length * renderer.POINTS * renderer.ATTRIBUTES
-          );
+        for (i = 0, l = a.length; i < l; i++) {
+          if (!nodeFloatArrays[k].array)
+            nodeFloatArrays[k].array = new Float32Array(
+              a.length * renderer.POINTS * renderer.ATTRIBUTES
+            );
 
-        // Just check that the edge and both its extremities are visible:
-        if (
-          !a[i].hidden
-        )
-          renderer.addNode(
-            a[i],
-            this.nodeFloatArrays[k].array,
-            i * renderer.POINTS * renderer.ATTRIBUTES,
-            options.prefix,
-            this.settings
-          );
+          // Just check that the edge and both its extremities are visible:
+          if (
+            !a[i].hidden
+          )
+            renderer.addNode(
+              a[i],
+              nodeFloatArrays[k].array,
+              i * renderer.POINTS * renderer.ATTRIBUTES,
+              options.prefix,
+              this.settings
+            );
+        }
       }
     }
 
@@ -424,29 +455,32 @@
       nodesGl.blendFunc(nodesGl.SRC_ALPHA, nodesGl.ONE_MINUS_SRC_ALPHA);
       nodesGl.enable(nodesGl.BLEND);
 
-      for (k in this.nodeFloatArrays) {
-        renderer = sigma.webgl.nodes[k];
+      for (j in this.nodeLayers) {
+        var nodeFloatArrays = this.nodeLayers[j];
+        for (k in nodeFloatArrays) {
+          renderer = sigma.webgl.nodes[k];
 
-        // Check program:
-        if (!this.nodePrograms[k])
-          this.nodePrograms[k] = renderer.initProgram(nodesGl);
+          // Check program:
+          if (!this.nodePrograms[k])
+            this.nodePrograms[k] = renderer.initProgram(nodesGl);
 
-        // Render
-        if (this.nodeFloatArrays[k]) {
-          nodesGl.useProgram(this.nodePrograms[k]);
-          renderer.render(
-            nodesGl,
-            this.nodePrograms[k],
-            this.nodeFloatArrays[k].array,
-            {
-              settings: this.settings,
-              matrix: matrix,
-              width: this.width,
-              height: this.height,
-              ratio: this.camera.ratio,
-              scalingRatio: this.settings(options, 'webglOversamplingRatio')
-            }
-          );
+          // Render
+          if (nodeFloatArrays[k]) {
+            nodesGl.useProgram(this.nodePrograms[k]);
+            renderer.render(
+              nodesGl,
+              this.nodePrograms[k],
+              nodeFloatArrays[k].array,
+              {
+                settings: this.settings,
+                matrix: matrix,
+                width: this.width,
+                height: this.height,
+                ratio: this.camera.ratio,
+                scalingRatio: this.settings(options, 'webglOversamplingRatio')
+              }
+            );
+          }
         }
       }
     }
