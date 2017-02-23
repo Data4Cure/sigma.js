@@ -292,6 +292,7 @@
   sigma.renderers.webgl.prototype.render = function(params) {
     var a,
         i,
+        j,
         l,
         k,
         o,
