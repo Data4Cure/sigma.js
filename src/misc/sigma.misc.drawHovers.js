@@ -22,7 +22,7 @@
 
     this.bind('overNode', function(event) {
       var node = event.data.node;
-      if (!node.hidden) {
+      if (!node.hidden && !no.no_hover) {
         hoveredNodes[node.id] = node;
         draw();
       }
