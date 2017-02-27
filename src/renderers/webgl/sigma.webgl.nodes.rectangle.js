@@ -25,6 +25,9 @@
       var border_color = sigma.utils.floatColor(
         node.border_color || node.color || settings('defaultNodeColor')
       );
+      var border_alpha = sigma.utils.alpha(
+        node.border_color || node.color || settings('defaultNodeColor')
+      );
       var angle = node.angle; // argument (on the complex plane) for the first rectangle vertex
       var rotate = node.rotate || 0;
 
@@ -34,6 +37,7 @@
       data[i++] = color;
       data[i++] = alpha;
       data[i++] = border_color;
+      data[i++] = border_alpha;
       data[i++] = 0;
       data[i++] = angle;
       data[i++] = rotate
@@ -44,6 +48,7 @@
       data[i++] = color;
       data[i++] = alpha;
       data[i++] = border_color;
+      data[i++] = border_alpha;
       data[i++] = 1;
       data[i++] = Math.PI - angle
       data[i++] = rotate
@@ -54,6 +59,7 @@
       data[i++] = color;
       data[i++] = alpha;
       data[i++] = border_color;
+      data[i++] = border_alpha;
       data[i++] = 2;
       data[i++] = Math.PI + angle;
       data[i++] = rotate
@@ -64,6 +70,7 @@
       data[i++] = color;
       data[i++] = alpha;
       data[i++] = border_color;
+      data[i++] = border_alpha;
       data[i++] = 0;
       data[i++] = Math.PI + angle;
       data[i++] = rotate
@@ -74,6 +81,7 @@
       data[i++] = color;
       data[i++] = alpha;
       data[i++] = border_color;
+      data[i++] = border_alpha;
       data[i++] = 1;
       data[i++] = -angle;
       data[i++] = rotate
@@ -84,6 +92,7 @@
       data[i++] = color;
       data[i++] = alpha;
       data[i++] = border_color;
+      data[i++] = border_alpha;
       data[i++] = 2;
       data[i++] = angle;
       data[i++] = rotate
@@ -103,6 +112,8 @@
             gl.getAttribLocation(program, 'a_alpha'),
           borderColorLocation =
             gl.getAttribLocation(program, 'a_border_color'),
+          borderAlphaLocation =
+            gl.getAttribLocation(program, 'a_border_alpha'),
           nodeindLocation =
             gl.getAttribLocation(program, 'a_nodeind'),
           angleLocation =
@@ -136,6 +147,7 @@
       gl.enableVertexAttribArray(colorLocation);
       gl.enableVertexAttribArray(alphaLocation);
       gl.enableVertexAttribArray(borderColorLocation);
+      gl.enableVertexAttribArray(borderAlphaLocation);
       gl.enableVertexAttribArray(nodeindLocation);
       gl.enableVertexAttribArray(angleLocation);
       gl.enableVertexAttribArray(rotateLocation);
@@ -181,7 +193,7 @@
         20
       );
       gl.vertexAttribPointer(
-        nodeindLocation,
+        borderAlphaLocation,
         1,
         gl.FLOAT,
         false,
@@ -189,7 +201,7 @@
         24
       );
       gl.vertexAttribPointer(
-        angleLocation,
+        nodeindLocation,
         1,
         gl.FLOAT,
         false,
@@ -197,12 +209,20 @@
         28
       );
       gl.vertexAttribPointer(
-        rotateLocation,
+        angleLocation,
         1,
         gl.FLOAT,
         false,
         this.ATTRIBUTES * Float32Array.BYTES_PER_ELEMENT,
         32
+      );
+      gl.vertexAttribPointer(
+        rotateLocation,
+        1,
+        gl.FLOAT,
+        false,
+        this.ATTRIBUTES * Float32Array.BYTES_PER_ELEMENT,
+        36
       );
 
       gl.drawArrays(
@@ -224,6 +244,7 @@
           'attribute float a_color;',
           'attribute float a_alpha;',
           'attribute float a_border_color;',
+          'attribute float a_border_alpha;',
           'attribute float a_nodeind;',
           'attribute float a_angle;',
           'attribute float a_rotate;',
@@ -269,11 +290,12 @@
             'c = a_border_color;',
             'border_color.b = mod(c, 256.0); c = floor(c / 256.0);',
             'border_color.g = mod(c, 256.0); c = floor(c / 256.0);',
-            'border_color.r = mod(c, 256.0); c = floor(c / 256.0); border_color /= 255.0;',
-	    'border_color.a = a_alpha;',
-	    'vBC = sign(a_nodeind - vec3(0.0, 1.0, 2.0));',
-	    'vBC = vec3(1.0, 1.0, 1.0) - vBC * vBC;', // vBC is either (1,0,0) or (0,1,0) or (0,0,1)
-	    //'vBC = vBC * vec3(cos(a_angle), 1.0, sin(a_angle));', // so that border thickness is the same around the rectangle
+            'border_color.r = mod(c, 256.0); c = floor(c / 256.0);',
+            'border_color /= 255.0;',
+            'border_color.a = a_border_alpha;',
+            'vBC = sign(a_nodeind - vec3(0.0, 1.0, 2.0));',
+            'vBC = vec3(1.0, 1.0, 1.0) - vBC * vBC;', // vBC is either (1,0,0) or (0,1,0) or (0,0,1)
+            //'vBC = vBC * vec3(cos(a_angle), 1.0, sin(a_angle));', // so that border thickness is the same around the rectangle
           '}'
         ].join('\n'),
         gl.VERTEX_SHADER
