@@ -16,13 +16,16 @@
    */
   sigma.webgl.nodes.triangle = {
     POINTS: 3,
-    ATTRIBUTES: 8,
+    ATTRIBUTES: 9,
     addNode: function(node, data, i, prefix, settings) {
       var color = sigma.utils.floatColor(
         node.color || settings('defaultNodeColor')
       );
       var alpha = sigma.utils.alpha(node.color || settings('defaultNodeColor'))
       var border_color = sigma.utils.floatColor(
+        node.border_color || node.color || settings('defaultNodeColor')
+      );
+      var border_alpha = sigma.utils.alpha(
         node.border_color || node.color || settings('defaultNodeColor')
       );
       var rotate = node.rotate || 0
@@ -33,6 +36,7 @@
       data[i++] = color;
       data[i++] = alpha;
       data[i++] = border_color;
+      data[i++] = border_alpha;
       data[i++] = 0;
       //data[i++] = Math.PI / 6;
       data[i++] = rotate;
@@ -43,6 +47,7 @@
       data[i++] = color;
       data[i++] = alpha;
       data[i++] = border_color;
+      data[i++] = border_alpha;
       data[i++] = 1;
       //data[i++] = 5 * Math.PI / 6;
       data[i++] = rotate;
@@ -53,6 +58,7 @@
       data[i++] = color;
       data[i++] = alpha;
       data[i++] = border_color;
+      data[i++] = border_alpha;
       data[i++] = 2;
       //data[i++] = 3 * Math.PI / 2;
       data[i++] = rotate;
@@ -71,6 +77,8 @@
             gl.getAttribLocation(program, 'a_alpha'),
           borderColorLocation =
             gl.getAttribLocation(program, 'a_border_color'),
+          borderAlphaLocation =
+            gl.getAttribLocation(program, 'a_border_alpha'),
           nodeindLocation =
             gl.getAttribLocation(program, 'a_nodeind'),
           // angleLocation =
@@ -104,6 +112,7 @@
       gl.enableVertexAttribArray(colorLocation);
       gl.enableVertexAttribArray(alphaLocation);
       gl.enableVertexAttribArray(borderColorLocation);
+      gl.enableVertexAttribArray(borderAlphaLocation);
       gl.enableVertexAttribArray(nodeindLocation);
       //gl.enableVertexAttribArray(angleLocation);
       gl.enableVertexAttribArray(rotateLocation);
@@ -149,12 +158,20 @@
         20
       );
       gl.vertexAttribPointer(
-        nodeindLocation,
+        borderAlphaLocation,
         1,
         gl.FLOAT,
         false,
         this.ATTRIBUTES * Float32Array.BYTES_PER_ELEMENT,
         24
+      );
+      gl.vertexAttribPointer(
+        nodeindLocation,
+        1,
+        gl.FLOAT,
+        false,
+        this.ATTRIBUTES * Float32Array.BYTES_PER_ELEMENT,
+        28
       );
       // gl.vertexAttribPointer(
       //   angleLocation,
@@ -170,7 +187,7 @@
         gl.FLOAT,
         false,
         this.ATTRIBUTES * Float32Array.BYTES_PER_ELEMENT,
-        28
+        32
       );
 
       gl.drawArrays(
@@ -187,12 +204,13 @@
       vertexShader = sigma.utils.loadShader(
         gl,
         [
-	  '#define M_PI 3.1415926535897932384626433832795',
+          '#define M_PI 3.1415926535897932384626433832795',
           'attribute vec2 a_position;',
           'attribute float a_size;',
           'attribute float a_color;',
           'attribute float a_alpha;',
           'attribute float a_border_color;',
+          'attribute float a_border_alpha;',
           'attribute float a_nodeind;',
           //'attribute float a_angle;',
           'attribute float a_rotate;',
@@ -239,10 +257,12 @@
             'c = a_border_color;',
             'border_color.b = mod(c, 256.0); c = floor(c / 256.0);',
             'border_color.g = mod(c, 256.0); c = floor(c / 256.0);',
-            'border_color.r = mod(c, 256.0); c = floor(c / 256.0); border_color /= 255.0;',
-	    'border_color.a = a_alpha;',
-	    'vBC = sign(a_nodeind - vec3(0.0, 1.0, 2.0));',
-	    'vBC = vec3(1.0, 1.0, 1.0) - vBC * vBC;', // vBC is either (1,0,0) or (0,1,0) or (0,0,1)
+            'border_color.r = mod(c, 256.0); c = floor(c / 256.0);',
+            'border_color /= 255.0;',
+            'border_color.a = a_border_alpha;',
+            'vBC = sign(a_nodeind - vec3(0.0, 1.0, 2.0));',
+            'vBC = vec3(1.0, 1.0, 1.0) - vBC * vBC;',
+            // vBC is either (1,0,0) or (0,1,0) or (0,0,1)
           '}'
         ].join('\n'),
         gl.VERTEX_SHADER
@@ -251,7 +271,7 @@
       fragmentShader = sigma.utils.loadShader(
         gl,
         [
-	  '#define BORDER_THICKNESS 0.1',
+          '#define BORDER_THICKNESS 0.1',
           'precision mediump float;',
 
           'varying vec4 color;',
