@@ -240,8 +240,16 @@
           var aux = {
             x: n.x * cos + n.y * sin,
             y: n.y * cos - n.x * sin,
-            renX: n[_prefix + 'x'],
-            renY: n[_prefix + 'y'],
+            renX: (renderer instanceof sigma.renderers.webgl) ?
+                  n[renderer.options.prefix + 'x'] / _camera.ratio +
+                  _camera.getMatrix()[6] +
+                  _renderer.width / 2 :
+                  n[_prefix + 'x'], // BK bugfix
+            renY: (renderer instanceof sigma.renderers.webgl) ?
+                  n[renderer.options.prefix + 'y'] / _camera.ratio +
+                  _camera.getMatrix()[7] +
+                  _renderer.height / 2 :
+                  n[_prefix + 'y'], // BK bugfix
           };
           ref.push(aux);
         }
