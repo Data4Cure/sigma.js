@@ -283,6 +283,17 @@
       if (this.camera.isAnimated || this.camera.isMoving)
         drawEdges = false;
 
+    // BK: Apply the camera's view to all nodes
+    // and edges so that edge mouse events can work:
+    this.camera.applyView(
+      undefined,
+      undefined,
+      {
+        width: this.width,
+        height: this.height
+      }
+    );
+
     // Clear canvases:
     this.clear();
 
@@ -456,17 +467,20 @@
         this.camera.getRectangle(this.width, this.height)
       );
 
-      // Apply camera view to these nodes:
-      this.camera.applyView(
-        undefined,
-        undefined,
-        {
-          nodes: a,
-          edges: [],
-          width: this.width,
-          height: this.height
-        }
-      );
+      // BK: the following fragment is no longer necessary
+      // because we have already called applyView for all
+      // nodes and edges so that edge mouse events work.
+      // // Apply camera view to these nodes:
+      // this.camera.applyView(
+      //   undefined,
+      //   undefined,
+      //   {
+      //     nodes: a,
+      //     edges: [],
+      //     width: this.width,
+      //     height: this.height
+      //   }
+      // );
 
       o = function(key) {
         return self.settings({
