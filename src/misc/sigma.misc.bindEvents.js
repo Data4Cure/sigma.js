@@ -94,13 +94,13 @@
       var isCanvas = (
         sigma.renderers.canvas && self instanceof sigma.renderers.canvas);
 
-      if (!isCanvas) {
-        // A quick hardcoded rule to prevent people from using this feature
-        // with the WebGL renderer (which is not good enough at the moment):
-        throw new Error(
-          'The edge events feature is not compatible with the WebGL renderer'
-        );
-      }
+      // if (!isCanvas) {
+      //   // A quick hardcoded rule to prevent people from using this feature
+      //   // with the WebGL renderer (which is not good enough at the moment):
+      //   throw new Error(
+      //     'The edge events feature is not compatible with the WebGL renderer'
+      //   );
+      // }
 
       if (e) {
         mX = 'x' in e.data ? e.data.x : mX;
