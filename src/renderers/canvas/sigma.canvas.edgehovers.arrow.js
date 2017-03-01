@@ -68,20 +68,21 @@
     context.stroke();
 
     context.fillStyle = color;
+    context.beginPath();
     if (headType === 'arrow') {
-      context.beginPath();
       context.moveTo(aX + vX, aY + vY);
       context.lineTo(aX + vY * 0.6, aY - vX * 0.6);
       context.lineTo(aX - vY * 0.6, aY + vX * 0.6);
       context.lineTo(aX + vX, aY + vY);
-      context.closePath();
     }
     else {
-      context.rect(aX + vY * 0.6,
-                   aY - vX * 0.6,
-                   vX * 1.2,
-                   vY * 1.2)
-    }
+      context.moveTo(aX + vY * 0.6, aY - vX * 0.6);
+      context.lineTo(aX - vY * 0.6, aY + vX * 0.6);
+      context.lineTo(aX - vY * 0.6 + vX, aY + vX * 0.6 + vY);
+      context.lineTo(aX + vY * 0.6 + vX, aY - vX * 0.6 + vY);
+      context.lineTo(aX + vY * 0.6, aY - vX * 0.6);
+   }
+    context.closePath();
     context.fill();
   };
 })();
