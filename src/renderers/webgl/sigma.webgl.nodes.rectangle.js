@@ -324,7 +324,7 @@
             //'float diff = radius - sqrt(m.x * m.x + m.y * m.y);',
 
             'if(any(lessThan(vBC, vec3(sin(angle)*BORDER_THICKNESS, 0.0, cos(angle)*BORDER_THICKNESS))) ||',
-            '   any(greaterThan(vBC, vec3(sin(angle)*(1.0-BORDER_THICKNESS), 1.0, cos(angle)*(1.0-BORDER_THICKNESS))))) {',
+            '   any(greaterThan(vBC, vec3(1.0-sin(angle)*BORDER_THICKNESS, 1.0, 1.0-cos(angle)*BORDER_THICKNESS)))) {',
 	    'gl_FragColor = border_color;',
 	    '}',
             'else{',
