@@ -295,7 +295,7 @@
             'border_color.a = a_border_alpha;',
             'vBC = sign(a_nodeind - vec3(0.0, 1.0, 2.0));',
             'vBC = vec3(1.0, 1.0, 1.0) - vBC * vBC;', // vBC is either (1,0,0) or (0,1,0) or (0,0,1)
-            //'vBC = vBC * vec3(cos(a_angle), 1.0, sin(a_angle));', // so that border thickness is the same around the rectangle
+            'vBC /= vec3(abs(sin(a_angle)), 1.0, abs(cos(a_angle)));', // so that border thickness is the same around the rectangle
           '}'
         ].join('\n'),
         gl.VERTEX_SHADER
@@ -320,7 +320,7 @@
             //'vec2 m = gl_FragCoord.xy - center;',
             //'float diff = radius - sqrt(m.x * m.x + m.y * m.y);',
 
-            'if(any(lessThan(vBC, vec3(BORDER_THICKNESS, 0.0, BORDER_THICKNESS)))) {',
+            'if(any(lessThan(vBC, vec3(BORDER_THICKNESS, 0.0, BORDER_THICKNESS))) || any(greaterThan(vBC, vec3(1.0-BORDER_THICKNESS, 1.0, 1.0-BORDER_THICKNESS)))) {',
 	    'gl_FragColor = border_color;',
 	    '}',
             'else{',
