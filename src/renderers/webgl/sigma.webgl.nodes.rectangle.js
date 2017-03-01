@@ -297,7 +297,7 @@
             'border_color.a = a_border_alpha;',
             'vBC = sign(a_nodeind - vec3(0.0, 1.0, 2.0));',
             'vBC = vec3(1.0, 1.0, 1.0) - vBC * vBC;', // vBC is either (1,0,0) or (0,1,0) or (0,0,1)
-            'angle = min(abs(a_angle), abs(PI-a_angle), abs(PI+a_angle));',
+            'angle = min(min(abs(a_angle), abs(PI-a_angle)), abs(PI+a_angle));',
           '}'
         ].join('\n'),
         gl.VERTEX_SHADER
