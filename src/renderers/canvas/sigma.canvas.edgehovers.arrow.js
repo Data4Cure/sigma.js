@@ -26,6 +26,8 @@
         tX = target[prefix + 'x'],
         tY = target[prefix + 'y'];
 
+    tSize *= sigma.utils.shapeSizeAdjustment(target, tX - sX, tY - sY);
+
     size = (edge.hover) ?
       settings('edgeHoverSizeRatio') * size : size;
     var aSize = size * 2.5,
