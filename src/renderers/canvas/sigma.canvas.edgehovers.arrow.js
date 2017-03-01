@@ -21,6 +21,7 @@
         defaultEdgeColor = settings('defaultEdgeColor'),
         size = edge[prefix + 'size'] || 1,
         tSize = target[prefix + 'size'],
+        headType = edge.head_type || 'arrow',
         sX = source[prefix + 'x'],
         sY = source[prefix + 'y'],
         tX = target[prefix + 'x'],
@@ -67,12 +68,20 @@
     context.stroke();
 
     context.fillStyle = color;
-    context.beginPath();
-    context.moveTo(aX + vX, aY + vY);
-    context.lineTo(aX + vY * 0.6, aY - vX * 0.6);
-    context.lineTo(aX - vY * 0.6, aY + vX * 0.6);
-    context.lineTo(aX + vX, aY + vY);
-    context.closePath();
+    if (headType === 'arrow') {
+      context.beginPath();
+      context.moveTo(aX + vX, aY + vY);
+      context.lineTo(aX + vY * 0.6, aY - vX * 0.6);
+      context.lineTo(aX - vY * 0.6, aY + vX * 0.6);
+      context.lineTo(aX + vX, aY + vY);
+      context.closePath();
+    }
+    else {
+      context.rect(aX + vY * 0.6,
+                   aY - vX * 0.6,
+                   vX * 1.2,
+                   vY * 1.2)
+    }
     context.fill();
   };
 })();
