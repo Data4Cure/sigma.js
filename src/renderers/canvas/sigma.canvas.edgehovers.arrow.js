@@ -75,12 +75,12 @@
       context.lineTo(aX - vY * 0.6, aY + vX * 0.6);
       context.lineTo(aX + vX, aY + vY);
     }
-    else {
-      context.moveTo(aX + vY * 0.6, aY - vX * 0.6);
-      context.lineTo(aX - vY * 0.6, aY + vX * 0.6);
-      context.lineTo(aX - vY * 0.6 + vX, aY + vX * 0.6 + vY);
-      context.lineTo(aX + vY * 0.6 + vX, aY - vX * 0.6 + vY);
-      context.lineTo(aX + vY * 0.6, aY - vX * 0.6);
+    else { // headType === 'inhibitory'
+      context.moveTo(aX + vY * 0.8, aY - vX * 0.8);
+      context.lineTo(aX - vY * 0.8, aY + vX * 0.8);
+      context.lineTo(aX - vY * 0.8 + vX * 0.5, aY + vX * 0.8 + vY * 0.5);
+      context.lineTo(aX + vY * 0.8 + vX * 0.5, aY - vX * 0.8 + vY * 0.5);
+      context.lineTo(aX + vY * 0.8, aY - vX * 0.8);
    }
     context.closePath();
     context.fill();
