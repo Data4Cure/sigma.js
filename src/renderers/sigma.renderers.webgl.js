@@ -372,6 +372,7 @@
                   count: end - start,
                   indicesData: indices,
                   edgesUsed: edgesUsed,
+                  graph: graph,
                 }
               );
             }
@@ -450,6 +451,7 @@
                 scalingRatio: this.settings(options, 'webglOversamplingRatio'),
                 indicesData: this.edgeIndicesArrays[k],
                 edgesUsed: edgesUsed,
+                graph: graph,
               }
             );
           }
