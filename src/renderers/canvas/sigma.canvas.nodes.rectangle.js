@@ -13,7 +13,7 @@
   sigma.canvas.nodes.def = function(node, context, settings) {
       var prefix = settings('prefix') || '',
           angle = node.angle,
-          size = node[oprefix + 'size'],
+          size = node[prefix + 'size'],
           rotate_radians = (node.rotate || 0) * Math.PI / 180,
           x = node[prefix + 'x'],
           y = node[prefix + 'y'],
