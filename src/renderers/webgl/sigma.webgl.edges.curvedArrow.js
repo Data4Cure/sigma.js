@@ -51,7 +51,8 @@
     addEdge: function(edge, source, target, data, i, prefix, settings) {
     },
     render: function(gl, program, data, params) {
-      var k;
+      var prefix = params.options.prefix,
+          k;
       for (k = 0; k < params.edgesUsed.length; ++k) {
         var edge = params.edgesUsed[k],
             source = params.graph.nodes(edge.source),
