@@ -72,7 +72,7 @@
           src,
           tgt;
 
-      for (j in segments) {
+      for (j = 0; j < segments.length; ++j) {
         src = {};
         tgt = {};
         src[prefix + 'x'] = segments[j][0].x;
