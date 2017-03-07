@@ -33,14 +33,6 @@
     context.lineTo(x + dx2, y + dy2);
     context.lineTo(x + dx3, y + dy3);
     context.lineTo(x + dx0, y + dy0);
-
-    context.arc(
-        node[prefix + 'size'],
-      0,
-      Math.PI * 2,
-      true
-    );
-
     context.closePath();
     context.fill();
   };
