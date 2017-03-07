@@ -11,20 +11,20 @@
    * @param  {configurable}             settings The settings function.
    */
   sigma.canvas.nodes.def = function(node, context, settings) {
-      var prefix = settings('prefix') || '',
-          angle = node.angle,
-          size = node[prefix + 'size'],
-          rotate_radians = (node.rotate || 0) * Math.PI / 180,
-          x = node[prefix + 'x'],
-          y = node[prefix + 'y'],
-          dx0 = size * Math.cos(angle - rotate_radians),
-          dy0 = size * Math.sin(angle - rotate_radians),
-          dx1 = size * Math.cos(Math.PI - angle - rotate_radians),
-          dy1 = size * Math.sin(Math.PI - angle - rotate_radians),
-          dx2 = size * Math.cos(Math.PI + angle - rotate_radians),
-          dy2 = size * Math.sin(Math.PI + angle - rotate_radians),
-          dx3 = size * Math.cos(- angle - rotate_radians),
-          dy3 = size * Math.sin(- angle - rotate_radians);
+    var prefix = settings('prefix') || '',
+        angle = node.angle,
+        size = node[prefix + 'size'],
+        rotate_radians = (node.rotate || 0) * Math.PI / 180,
+        x = node[prefix + 'x'],
+        y = node[prefix + 'y'],
+        dx0 = size * Math.cos(angle - rotate_radians),
+        dy0 = size * Math.sin(angle - rotate_radians),
+        dx1 = size * Math.cos(Math.PI - angle - rotate_radians),
+        dy1 = size * Math.sin(Math.PI - angle - rotate_radians),
+        dx2 = size * Math.cos(Math.PI + angle - rotate_radians),
+        dy2 = size * Math.sin(Math.PI + angle - rotate_radians),
+        dx3 = size * Math.cos(- angle - rotate_radians),
+        dy3 = size * Math.sin(- angle - rotate_radians);
 
     context.fillStyle = node.color || settings('defaultNodeColor');
     context.beginPath();
