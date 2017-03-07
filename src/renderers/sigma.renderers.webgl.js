@@ -339,17 +339,18 @@
             // everything has to go to render and we need a list of edges
             // (edgesUsed) in render.
             var edges = this.edgeFloatArrays[k].edges,
-                edgesUsed = [];
+                edgesUsed = [],
+                j;
 
-            for (i = 0, l = edges.length; i < l; i++) {
+            for (j = 0, l = edges.length; j < l; j++) {
 
               // Just check that the edge and both its extremities are visible:
               if (
-                !edges[i].hidden &&
-                  !graph.nodes(edges[i].source).hidden &&
-                  !graph.nodes(edges[i].target).hidden
+                !edges[j].hidden &&
+                  !graph.nodes(edges[j].source).hidden &&
+                  !graph.nodes(edges[j].target).hidden
               )
-                edgesUsed.push(edges[i]);
+                edgesUsed.push(edges[j]);
             }
 
             if (start < end) {
@@ -423,17 +424,18 @@
           // everything has to go to render and we need a list of edges
           // (edgesUsed) in render.
           var edges = this.edgeFloatArrays[k].edges,
-              edgesUsed = [];
+              edgesUsed = [],
+              j;
 
-          for (i = 0, l = edges.length; i < l; i++) {
+          for (j = 0, l = edges.length; j < l; j++) {
 
             // Just check that the edge and both its extremities are visible:
             if (
-              !edges[i].hidden &&
-                !graph.nodes(edges[i].source).hidden &&
-                !graph.nodes(edges[i].target).hidden
+              !edges[j].hidden &&
+                !graph.nodes(edges[j].source).hidden &&
+                !graph.nodes(edges[j].target).hidden
             )
-              edgesUsed.push(edges[i]);
+              edgesUsed.push(edges[j]);
           }
 
           // Render
