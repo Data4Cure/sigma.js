@@ -52,8 +52,10 @@
     },
     render: function(gl, program, data, params) {
       var prefix = params.options.prefix,
-          k;
-      for (k = 0; k < params.edgesUsed.length; ++k) {
+          start = params.start || 0,
+          count = params.count || (data.length / this.ATTRIBUTES),
+          i;
+      for (i = start; i < start + count; ++i) {
         var edge = params.edgesUsed[k],
             source = params.graph.nodes(edge.source),
             target = params.graph.nodes(edge.target),
@@ -103,7 +105,8 @@
                                           (i * this.POINTS +
                                            j * sigma.webgl.edges.def.POINTS) *
                                           this.ATTRIBUTES,
-                                          prefix, settings);
+                                          prefix,
+                                          params.settings);
         }
       }
       sigma.webgl.edges.arrow.render(gl, program, data, params);
