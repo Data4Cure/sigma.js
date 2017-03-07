@@ -417,6 +417,7 @@
                   indicesData: indices,
                   edgesUsed: edgesUsed,
                   graph: graph,
+                  options: options,
                 }
               );
             }
@@ -496,6 +497,7 @@
                 indicesData: this.edgeIndicesArrays[k],
                 edgesUsed: edgesUsed,
                 graph: graph,
+                options: options,
               }
             );
           }
