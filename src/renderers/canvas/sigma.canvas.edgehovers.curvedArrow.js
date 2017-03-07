@@ -33,6 +33,8 @@
         vX,
         vY;
 
+    tSize *= sigma.utils.shapeSizeAdjustment(target, tX - sX, tY - sY);
+
     cp = (source.id === target.id) ?
       sigma.utils.getSelfLoopControlPoints(sX, sY, tSize) :
       sigma.utils.getQuadraticControlPoint(sX, sY, tX, tY);
