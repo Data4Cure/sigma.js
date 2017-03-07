@@ -378,6 +378,24 @@
             if (!this.edgePrograms[a[i]])
               this.edgePrograms[a[i]] = renderer.initProgram(edgesGl);
 
+            // BK: to computer curvedArrow geometry camera ration is needed
+            // and therefore no computations can be done in addEdges and
+            // everything has to go to render and we need a list of edges
+            // (edgesUsed) in render.
+            var edges = this.edgeFloatArrays[k].edges,
+                edgesUsed = [];
+
+            for (i = 0, l = edges.length; i < l; i++) {
+
+              // Just check that the edge and both its extremities are visible:
+              if (
+                !edges[i].hidden &&
+                  !graph.nodes(edges[i].source).hidden &&
+                  !graph.nodes(edges[i].target).hidden
+              )
+                edgesUsed.push(edges[i]);
+            }
+
             if (start < end) {
               edgesGl.useProgram(this.edgePrograms[a[i]]);
               renderer.render(
@@ -396,7 +414,8 @@
                   ),
                   start: start,
                   count: end - start,
-                  indicesData: indices
+                  indicesData: indices,
+                  edgesUsed: edgesUsed,
                 }
               );
             }
@@ -441,6 +460,24 @@
           if (!this.edgePrograms[k])
             this.edgePrograms[k] = renderer.initProgram(edgesGl);
 
+          // BK: to computer curvedArrow geometry camera ration is needed
+          // and therefore no computations can be done in addEdges and
+          // everything has to go to render and we need a list of edges
+          // (edgesUsed) in render.
+          var edges = this.edgeFloatArrays[k].edges,
+              edgesUsed = [];
+
+          for (i = 0, l = edges.length; i < l; i++) {
+
+            // Just check that the edge and both its extremities are visible:
+            if (
+              !edges[i].hidden &&
+                !graph.nodes(edges[i].source).hidden &&
+                !graph.nodes(edges[i].target).hidden
+            )
+              edgesUsed.push(edges[i]);
+          }
+
           // Render
           if (this.edgeFloatArrays[k]) {
             edgesGl.useProgram(this.edgePrograms[k]);
@@ -455,7 +492,8 @@
                 height: this.height,
                 ratio: this.camera.ratio,
                 scalingRatio: this.settings(options, 'webglOversamplingRatio'),
-                indicesData: this.edgeIndicesArrays[k]
+                indicesData: this.edgeIndicesArrays[k],
+                edgesUsed: edgesUsed,
               }
             );
           }
