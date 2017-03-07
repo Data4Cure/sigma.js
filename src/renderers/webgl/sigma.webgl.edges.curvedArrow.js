@@ -56,14 +56,14 @@
           count = params.count || (data.length / this.ATTRIBUTES),
           i;
       for (i = start; i < start + count; ++i) {
-        var edge = params.edgesUsed[i],
-            source = params.graph.nodes(edge.source),
-            target = params.graph.nodes(edge.target),
-            x1 = source[prefix + 'x'],
-            y1 = source[prefix + 'y'],
-            x2 = target[prefix + 'x'],
-            y2 = target[prefix + 'y'],
-            cp = {};
+          var edge = params.edgesUsed[i];
+          var source = params.graph.nodes(edge.source),
+              target = params.graph.nodes(edge.target),
+              x1 = source[prefix + 'x'],
+              y1 = source[prefix + 'y'],
+              x2 = target[prefix + 'x'],
+              y2 = target[prefix + 'y'],
+              cp = {};
 
         if (edge.control_point) {
           cp = edge.control_point
