@@ -55,7 +55,7 @@
           start = params.start || 0,
           count = params.count || (data.length / this.ATTRIBUTES),
           i;
-      for (i = start; i < start + count; ++i) {
+      for (i = start; i < start + count / SEGMENTS / this.ATTRIBUTES; ++i) {
           var edge = params.edgesUsed[i];
           var source = params.graph.nodes(edge.source),
               target = params.graph.nodes(edge.target),
