@@ -29,7 +29,7 @@
           y2 = target[prefix + 'y'],
           targetSize = target[prefix + 'size'],
           headType = head_types[edge.head_type] || 0,
-          headSize = edge.head_size || 1,
+          headSize = edge.head_size === undefined ? 1 : edge.head_size,
           color = edge.color;
 
       targetSize *= sigma.utils.shapeSizeAdjustment(target, x2 - x1, y2 - y1);
