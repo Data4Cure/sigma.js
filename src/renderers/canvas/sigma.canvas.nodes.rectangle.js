@@ -10,7 +10,7 @@
    * @param  {CanvasRenderingContext2D} context  The canvas context.
    * @param  {configurable}             settings The settings function.
    */
-  sigma.canvas.nodes.def = function(node, context, settings) {
+  sigma.canvas.nodes.rectangle = function(node, context, settings) {
     var prefix = settings('prefix') || '',
         angle = node.angle,
         size = node[prefix + 'size'],
