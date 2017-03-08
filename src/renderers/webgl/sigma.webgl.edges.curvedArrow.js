@@ -25,11 +25,14 @@
     }
     else {
       getPoint = function(t) {
+          // cp 2 goes first because otherwise
+          // arrow direction doesn't match with
+          // the hovered arrow direction
         return sigma.utils.getPointOnBezierCurve(t,
                                                  x1, y1,
                                                  x2, y2,
-                                                 cp.x1, cp.y1,
-                                                 cp.x2, cp.y2);
+                                                 cp.x2, cp.y2,
+                                                 cp.x1, cp.y1);
       };
     }
     for (i = 1; i < SEGMENTS; ++i) {
@@ -64,18 +67,19 @@
             x2 = target[prefix + 'x'],
             y2 = target[prefix + 'y'],
             size = edge[prefix + 'size'] || 1,
-            aSize,
+            //aSize,
+            sSize = source[prefix + 'size'],
             tSize = target[prefix + 'size'],
             d,
             aX,
             aY,
             cp = {};
 
-        tSize *= Math.pow(params.ratio, params.settings('nodesPowRatio')),
-        tSize *= sigma.utils.shapeSizeAdjustment(target, x2 - x1, y2 - y1);
+        sSize *= Math.pow(params.ratio, params.settings('nodesPowRatio'));
+        tSize *= Math.pow(params.ratio, params.settings('nodesPowRatio'));
 
-        aSize /= Math.pow(params.ratio, params.settings('edgesPowRatio')),
-        aSize = Math.max(size * 2.5, params.settings('minArrowSize'));
+        //size /= Math.pow(params.ratio, params.settings('edgesPowRatio')),
+        //aSize = Math.max(size * 2.5, params.settings('minArrowSize'));
 
         if (edge.control_point) {
           cp = edge.control_point
@@ -83,20 +87,30 @@
         else {
           cp = (source.id === target.id) ?
             sigma.utils.getSelfLoopControlPoints(x1, y1,
-                                                 source[prefix + 'size']) :
+                                                 sSize) :
             sigma.utils.getQuadraticControlPoint(x1, y1,
                                                  x2, y2);
         }
 
         if (source.id === target.id) {
           d = Math.sqrt(Math.pow(x2 - cp.x1, 2) + Math.pow(y2 - cp.y1, 2));
-          aX = cp.x1 + (x2 - cp.x1) * (d - aSize - tSize) / d;
-          aY = cp.y1 + (y2 - cp.y1) * (d - aSize - tSize) / d;
+          tSize *= sigma.utils.shapeSizeAdjustment(target,
+                                                   x2 - cp.x1,
+                                                   y2 - cp.y1);
+          //aX = cp.x1 + (x2 - cp.x1) * (d - aSize - tSize) / d;
+          //aY = cp.y1 + (y2 - cp.y1) * (d - aSize - tSize) / d;
+          aX = cp.x1 + (x2 - cp.x1) * (d - tSize) / d;
+          aY = cp.y1 + (y2 - cp.y1) * (d - tSize) / d;
         }
         else {
           d = Math.sqrt(Math.pow(x2 - cp.x, 2) + Math.pow(y2 - cp.y, 2));
-          aX = cp.x + (x2 - cp.x) * (d - aSize - tSize) / d;
-          aY = cp.y + (y2 - cp.y) * (d - aSize - tSize) / d;
+          tSize *= sigma.utils.shapeSizeAdjustment(target,
+                                                   x2 - cp.x,
+                                                   y2 - cp.y);
+          //aX = cp.x + (x2 - cp.x) * (d - aSize - tSize) / d;
+          //aY = cp.y + (y2 - cp.y) * (d - aSize - tSize) / d;
+          aX = cp.x + (x2 - cp.x) * (d - tSize) / d;
+          aY = cp.y + (y2 - cp.y) * (d - tSize) / d;
         }
 
         var segments = divide(x1, y1, aX, aY, cp),
