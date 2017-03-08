@@ -41,7 +41,7 @@
       d = Math.sqrt(Math.pow(tX - cp.x1, 2) + Math.pow(tY - cp.y1, 2));
       aSize = size * 2.5;
       tSize *= sigma.utils.shapeSizeAdjustment(target,
-                                               yX - cp.x1,
+                                               tX - cp.x1,
                                                tY - cp.y1);
       aX = cp.x1 + (tX - cp.x1) * (d - aSize - tSize) / d;
       aY = cp.y1 + (tY - cp.y1) * (d - aSize - tSize) / d;
