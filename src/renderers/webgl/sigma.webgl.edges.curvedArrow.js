@@ -56,14 +56,26 @@
           count = params.count || (data.length / this.ATTRIBUTES),
           i;
       for (i = start; i < start + count / SEGMENTS / this.ATTRIBUTES; ++i) {
-          var edge = params.edgesUsed[i];
-          var source = params.graph.nodes(edge.source),
-              target = params.graph.nodes(edge.target),
-              x1 = source[prefix + 'x'],
-              y1 = source[prefix + 'y'],
-              x2 = target[prefix + 'x'],
-              y2 = target[prefix + 'y'],
-              cp = {};
+        var edge = params.edgesUsed[i];
+        var source = params.graph.nodes(edge.source),
+            target = params.graph.nodes(edge.target),
+            x1 = source[prefix + 'x'],
+            y1 = source[prefix + 'y'],
+            x2 = target[prefix + 'x'],
+            y2 = target[prefix + 'y'],
+            size = edge[prefix + 'size'] || 1,
+            aSize,
+            tSize = target[prefix + 'size'],
+            d,
+            aX,
+            aY,
+            cp = {};
+
+        tSize *= Math.pow(params.ratio, params.settings('nodesPowRatio')),
+        tSize *= sigma.utils.shapeSizeAdjustment(target, x2 - x1, y2 - y1);
+
+        aSize /= Math.pow(params.ratio, params.settings('edgesPowRatio')),
+        aSize = Math.max(size * 2.5, params.settings('minArrowSize'));
 
         if (edge.control_point) {
           cp = edge.control_point
@@ -76,30 +88,49 @@
                                                  x2, y2);
         }
 
-        var segments = divide(x1, y1, x2, y2, cp),
+        if (source.id === target.id) {
+          d = Math.sqrt(Math.pow(x2 - cp.x1, 2) + Math.pow(y2 - cp.y1, 2));
+          aX = cp.x1 + (x2 - cp.x1) * (d - aSize - tSize) / d;
+          aY = cp.y1 + (y2 - cp.y1) * (d - aSize - tSize) / d;
+        }
+        else {
+          d = Math.sqrt(Math.pow(x2 - cp.x, 2) + Math.pow(y2 - cp.y, 2));
+          aX = cp.x + (x2 - cp.x) * (d - aSize - tSize) / d;
+          aY = cp.y + (y2 - cp.y) * (d - aSize - tSize) / d;
+        }
+
+        var segments = divide(x1, y1, aX, aY, cp),
             j,
+            edg,
             src,
             tgt;
 
         for (j = 0; j < segments.length; ++j) {
+          edg = {
+            color: edge.color,
+            head_type: edge.head_type,
+          };
           src = {};
           tgt = {};
+          edg[prefix + 'size'] = edge.size;
           src[prefix + 'x'] = segments[j][0].x;
           src[prefix + 'y'] = segments[j][0].y;
           tgt[prefix + 'x'] = segments[j][1].x;
           tgt[prefix + 'y'] = segments[j][1].y;
+          tgt[prefix + 'size'] = 0;
           if (j === segments.length - 1) {
-            tgt[prefix + 'size'] = target[prefix + 'size'];
-            // following attributes needed for shapeSizeAdjustment
-            tgt.type = target.type
-            tgt.rotate = target.rotate
-            tgt.angle = target.angle
+            //tgt[prefix + 'size'] = 0; //target[prefix + 'size'];
+            // // following attributes needed for shapeSizeAdjustment
+            // tgt.type = target.type
+            // tgt.rotate = target.rotate
+            // tgt.angle = target.angle
+            edg.head_size = edge.head_size;
           }
           else {
-            tgt[prefix + 'size'] = 0;
-            tgt.head_size = 0;
+            //tgt[prefix + 'size'] = 0;
+            edg.head_size = 0;
           }
-          sigma.webgl.edges.arrow.addEdge(edge,
+          sigma.webgl.edges.arrow.addEdge(edg,
                                           src, tgt,
                                           data,
                                           (i * this.POINTS +
