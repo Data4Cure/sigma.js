@@ -28,8 +28,8 @@
         tY = target[prefix + 'y'];
 
     cp = (source.id === target.id) ?
-      sigma.utils.getSelfLoopControlPoints(sX, sY, sSize) :
-      sigma.utils.getQuadraticControlPoint(sX, sY, tX, tY);
+      sigma.utils.getSelfLoopControlPoints(sX, sY, sSize, edge) :
+      sigma.utils.getQuadraticControlPoint(sX, sY, tX, tY, edge);
 
     if (!color)
       switch (edgeColor) {

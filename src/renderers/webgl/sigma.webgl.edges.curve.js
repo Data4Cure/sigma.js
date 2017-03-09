@@ -62,9 +62,11 @@
       else {
         cp = (source.id === target.id) ?
           sigma.utils.getSelfLoopControlPoints(x1, y1,
-                                               source[prefix + 'size']) :
+                                               source[prefix + 'size'],
+                                               edge) :
           sigma.utils.getQuadraticControlPoint(x1, y1,
-                                               x2, y2);
+                                               x2, y2,
+                                               edge);
       }
 
       var segments = divide(x1, y1, x2, y2, cp),
