@@ -130,12 +130,13 @@
      * Transforms a graph self loop into an axis-aligned square.
      *
      * @param  {object} n A graph node with a point (x, y) and a size.
+     * @param  {object} n A graph edge with control_point attribute. Optional.
      * @return {object}   A square: two points (x1, y1), (x2, y2) and height.
      */
-    selfLoopToSquare: function(n) {
+     selfLoopToSquare: function(n, edge) {
       // Fitting to the curve is too costly, we compute a larger bounding box
       // using the control points:
-      var cp = sigma.utils.getSelfLoopControlPoints(n.x, n.y, n.size);
+      var cp = sigma.utils.getSelfLoopControlPoints(n.x, n.y, n.size, edge);
 
       // Bounding box of the point and the two control points:
       var minX = Math.min(n.x, cp.x1, cp.x2),
@@ -717,11 +718,11 @@
           };
           _quadInsert(
             edges[i],
-            _geom.selfLoopToSquare(n),
+            _geom.selfLoopToSquare(n, edges[i]),
             this._tree);
         }
         else {
-          cp = sigma.utils.getQuadraticControlPoint(e.x1, e.y1, e.x2, e.y2);
+          cp = sigma.utils.getQuadraticControlPoint(e.x1, e.y1, e.x2, e.y2, edges[i]);
           _quadInsert(
             edges[i],
             _geom.quadraticCurveToSquare(e, cp),

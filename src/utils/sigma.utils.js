@@ -254,9 +254,23 @@
    * @param  {number} y1  The Y coordinate of the start point.
    * @param  {number} x2  The X coordinate of the end point.
    * @param  {number} y2  The Y coordinate of the end point.
+   * @param  {object} edge The edge object that contains an attribute
+   *                       control_points with attributes x, y that
+   *                       express the position in the coordinate system
+   *                       centered at (x1, y1) with base [(x2-x1, y2-y1),
+   *                       (y2-y1, -(x2-x1))]. E.g. the sigma.js default
+   *                       is expressed in this system as (0.5, 0.25).
+   *                       Optional.
    * @return {x,y}        The control point coordinates.
    */
-  sigma.utils.getQuadraticControlPoint = function(x1, y1, x2, y2) {
+  sigma.utils.getQuadraticControlPoint = function(x1, y1, x2, y2, edge) {
+    if (edge !== undefined && edge.control_point !== undefined) {
+      var cp = edge.control_point;
+      return {
+        x: (x2 - x1) * cp.x + (y2 - y1) * cp.y + x1,
+        y: (y2 - y1) * cp.x - (x2 - x1) * cp.y + y1,
+      }
+    }
     return {
       x: (x1 + x2) / 2 + (y2 - y1) / 4,
       y: (y1 + y2) / 2 + (x1 - x2) / 4
@@ -324,9 +338,25 @@
    * @param  {number} x    The X coordinate of the node.
    * @param  {number} y    The Y coordinate of the node.
    * @param  {number} size The node size.
+   * @param  {object} edge The edge object that contains an attribute
+   *                       control_points with attributes x1, y1 and
+   *                       x2, y2 that express the position in the
+   *                       coordinate system centered at (x, y) with
+   *                       base [(size, 0), (0, size)]. E.g. the sigma.js
+   *                       default is expressed in this system as
+   *                       [(-7, 0), (0, 7)]. Optional.
    * @return {x1,y1,x2,y2} The coordinates of the two control points.
    */
-  sigma.utils.getSelfLoopControlPoints = function(x , y, size) {
+  sigma.utils.getSelfLoopControlPoints = function(x , y, size, edge) {
+    if (edge !== undefined && edge.control_point !== undefined) {
+      var cp = edge.control_point;
+      return {
+        x1: size * cp.x1 + x,
+        y1: size * cp.y1 + y,
+        x2: size * cp.x2 + x,
+        y2: size * cp.y2 + y
+      }
+    }
     return {
       x1: x - size * 7,
       y1: y,
