@@ -207,6 +207,9 @@
                                 Math.pow(target[prefix + 'y'] - cp.y1, 2));
                   aSize = s * 2.5;
                   tSize = target[prefix + 'size']
+                  tSize *= sigma.utils.shapeSizeAdjustment(target,
+                                                           target[prefix + 'x'] - cp.x1,
+                                                           target[prefix + 'y'] - cp.y1);
                   aX = cp.x1 + (target[prefix + 'x'] - cp.x1) *
                         (d - aSize - tSize) / d;
                   aY = cp.y1 + (target[prefix + 'y'] - cp.y1) *
@@ -244,6 +247,9 @@
                                 Math.pow(target[prefix + 'y'] - cp.y, 2));
                   aSize = s * 2.5;
                   tSize = target[prefix + 'size']
+                  tSize *= sigma.utils.shapeSizeAdjustment(target,
+                                                           target[prefix + 'x'] - cp.x,
+                                                           target[prefix + 'y'] - cp.y);
                   aX = cp.x + (target[prefix + 'x'] - cp.x) *
                         (d - aSize - tSize) / d;
                   aY = cp.y + (target[prefix + 'y'] - cp.y) *
