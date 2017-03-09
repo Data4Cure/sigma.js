@@ -117,6 +117,11 @@
           source,
           target,
           cp,
+          d,
+          aSize,
+          tSize,
+          aX,
+          aY,
           nodeIndex = {},
           inserted,
           selected = [],
@@ -196,14 +201,28 @@
                   source[prefix + 'y'],
                   source[prefix + 'size']
                 );
+                if (edge.type == 'curvedArrow') {
+                  d = Math.sqrt(Math.pow(target[prefix + 'x'] - cp.x1, 2) +
+                                Math.pow(target[prefix + 'y'] - cp.y1, 2));
+                  aSize = s * 2.5;
+                  tSize = target[prefix + 'size']
+                  aX = cp.x1 + (target[prefix + 'x'] - cp.x1) *
+                        (d - aSize - tSize) / d;
+                  aY = cp.y1 + (target[prefix + 'y'] - cp.y1) *
+                        (d - aSize - tSize) / d;
+                }
+                else {
+                  aX = target[prefix + 'x'];
+                  aY = target[prefix + 'y'];
+                }
                 if (
                   sigma.utils.isPointOnBezierCurve(
                   modifiedX,
                   modifiedY,
                   source[prefix + 'x'],
                   source[prefix + 'y'],
-                  target[prefix + 'x'],
-                  target[prefix + 'y'],
+                  aX,
+                  aY,
                   cp.x1,
                   cp.y1,
                   cp.x2,
@@ -219,14 +238,28 @@
                   source[prefix + 'y'],
                   target[prefix + 'x'],
                   target[prefix + 'y']);
+                if (edge.type == 'curvedArrow') {
+                  d = Math.sqrt(Math.pow(target[prefix + 'x'] - cp.x, 2) +
+                                Math.pow(target[prefix + 'y'] - cp.y, 2));
+                  aSize = s * 2.5;
+                  tSize = target[prefix + 'size']
+                  aX = cp.x + (target[prefix + 'x'] - cp.x) *
+                        (d - aSize - tSize) / d;
+                  aY = cp.y + (target[prefix + 'y'] - cp.y) *
+                        (d - aSize - tSize) / d;
+                }
+                else {
+                  aX = target[prefix + 'x'];
+                  aY = target[prefix + 'y'];
+                }
                 if (
                   sigma.utils.isPointOnQuadraticCurve(
                   modifiedX,
                   modifiedY,
                   source[prefix + 'x'],
                   source[prefix + 'y'],
-                  target[prefix + 'x'],
-                  target[prefix + 'y'],
+                  aX,
+                  aY,
                   cp.x,
                   cp.y,
                   Math.max(s, maxEpsilon)
