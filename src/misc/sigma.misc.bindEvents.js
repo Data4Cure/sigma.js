@@ -205,7 +205,7 @@
                   d = Math.sqrt(Math.pow(target[prefix + 'x'] - cp.x1, 2) +
                                 Math.pow(target[prefix + 'y'] - cp.y1, 2));
                   aSize = s * 2.5;
-                  tSize = target[prefix + 'size']
+                  tSize = target[prefix + 'size'];
                   aX = cp.x1 + (target[prefix + 'x'] - cp.x1) *
                         (d - aSize - tSize) / d;
                   aY = cp.y1 + (target[prefix + 'y'] - cp.y1) *
@@ -242,7 +242,7 @@
                   d = Math.sqrt(Math.pow(target[prefix + 'x'] - cp.x, 2) +
                                 Math.pow(target[prefix + 'y'] - cp.y, 2));
                   aSize = s * 2.5;
-                  tSize = target[prefix + 'size']
+                  tSize = target[prefix + 'size'];
                   aX = cp.x + (target[prefix + 'x'] - cp.x) *
                         (d - aSize - tSize) / d;
                   aY = cp.y + (target[prefix + 'y'] - cp.y) *
