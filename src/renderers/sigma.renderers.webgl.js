@@ -383,7 +383,7 @@
             // everything has to go to render and we need a list of edges
             // (edgesUsed) in render.
             var edges = this.edgeFloatArrays[k].edges,
-                edgesUsed = [],
+                edgesUsed = {},
                 j;
 
             for (j = 0, l = edges.length; j < l; j++) {
@@ -394,7 +394,7 @@
                   !graph.nodes(edges[j].source).hidden &&
                   !graph.nodes(edges[j].target).hidden
               )
-                edgesUsed.push(edges[j]);
+                edgesUsed[j] = edges[j];
             }
 
             if (start < end) {
@@ -468,7 +468,7 @@
           // everything has to go to render and we need a list of edges
           // (edgesUsed) in render.
           var edges = this.edgeFloatArrays[k].edges,
-              edgesUsed = [],
+              edgesUsed = {},
               j;
 
           for (j = 0, l = edges.length; j < l; j++) {
@@ -479,7 +479,7 @@
                 !graph.nodes(edges[j].source).hidden &&
                 !graph.nodes(edges[j].target).hidden
             )
-              edgesUsed.push(edges[j]);
+              edgesUsed[j] = edges[j];
           }
 
           // Render

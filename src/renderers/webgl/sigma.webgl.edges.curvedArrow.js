@@ -60,6 +60,9 @@
           i;
       for (i = start; i < start + count / SEGMENTS / this.ATTRIBUTES; ++i) {
         var edge = params.edgesUsed[i];
+        if (!edge) {
+          continue;
+        }
         var source = params.graph.nodes(edge.source),
             target = params.graph.nodes(edge.target),
             x1 = source[prefix + 'x'],
