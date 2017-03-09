@@ -206,7 +206,7 @@
                   d = Math.sqrt(Math.pow(target[prefix + 'x'] - cp.x1, 2) +
                                 Math.pow(target[prefix + 'y'] - cp.y1, 2));
                   aSize = s * 2.5;
-                  tSize = target[prefix + 'size']
+                  tSize = target[prefix + 'size'];
                   tSize *= sigma.utils.shapeSizeAdjustment(target,
                                                            target[prefix + 'x'] - cp.x1,
                                                            target[prefix + 'y'] - cp.y1);
@@ -246,7 +246,7 @@
                   d = Math.sqrt(Math.pow(target[prefix + 'x'] - cp.x, 2) +
                                 Math.pow(target[prefix + 'y'] - cp.y, 2));
                   aSize = s * 2.5;
-                  tSize = target[prefix + 'size']
+                  tSize = target[prefix + 'size'];
                   tSize *= sigma.utils.shapeSizeAdjustment(target,
                                                            target[prefix + 'x'] - cp.x,
                                                            target[prefix + 'y'] - cp.y);
