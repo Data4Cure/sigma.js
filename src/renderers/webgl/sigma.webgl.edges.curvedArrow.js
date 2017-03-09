@@ -81,16 +81,13 @@
         //size /= Math.pow(params.ratio, params.settings('edgesPowRatio')),
         //aSize = Math.max(size * 2.5, params.settings('minArrowSize'));
 
-        if (edge.control_point) {
-          cp = edge.control_point
-        }
-        else {
-          cp = (source.id === target.id) ?
-            sigma.utils.getSelfLoopControlPoints(x1, y1,
-                                                 sSize) :
-            sigma.utils.getQuadraticControlPoint(x1, y1,
-                                                 x2, y2);
-        }
+        cp = (source.id === target.id) ?
+          sigma.utils.getSelfLoopControlPoints(x1, y1,
+                                               sSize,
+                                               edge) :
+          sigma.utils.getQuadraticControlPoint(x1, y1,
+                                               x2, y2,
+                                               edge);
 
         if (source.id === target.id) {
           d = Math.sqrt(Math.pow(x2 - cp.x1, 2) + Math.pow(y2 - cp.y1, 2));
