@@ -242,7 +242,7 @@
                   source[prefix + 'y'],
                   target[prefix + 'x'],
                   target[prefix + 'y'],
-                  edge,
+                  edge
                 );
                 if (edge.type == 'curvedArrow') {
                   d = Math.sqrt(Math.pow(target[prefix + 'x'] - cp.x, 2) +
