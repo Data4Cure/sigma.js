@@ -58,7 +58,7 @@
           start = params.start || 0,
           count = params.count || (data.length / this.ATTRIBUTES),
           i;
-      for (i = start; i < start + count / SEGMENTS / this.ATTRIBUTES; ++i) {
+      for (i = start; i < start + count / this.POINTS; ++i) {
         var edge = params.edgesUsed[i];
         if (!edge) {
           continue;
