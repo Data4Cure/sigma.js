@@ -22,6 +22,7 @@
         cp = {},
         size = settings('edgeHoverSizeRatio') * (edge[prefix + 'size'] || 1),
         tSize = target[prefix + 'size'],
+        headType = edge.head_type || 'arrow',
         sX = source[prefix + 'x'],
         sY = source[prefix + 'y'],
         tX = target[prefix + 'x'],
@@ -92,10 +93,19 @@
 
     context.fillStyle = color;
     context.beginPath();
-    context.moveTo(aX + vX, aY + vY);
-    context.lineTo(aX + vY * 0.6, aY - vX * 0.6);
-    context.lineTo(aX - vY * 0.6, aY + vX * 0.6);
-    context.lineTo(aX + vX, aY + vY);
+    if (headType === 'arrow') {
+      context.moveTo(aX + vX, aY + vY);
+      context.lineTo(aX + vY * 0.6, aY - vX * 0.6);
+      context.lineTo(aX - vY * 0.6, aY + vX * 0.6);
+      context.lineTo(aX + vX, aY + vY);
+    }
+    else { // headType === 'inhibitory'
+      context.moveTo(aX + vY * 0.8, aY - vX * 0.8);
+      context.lineTo(aX - vY * 0.8, aY + vX * 0.8);
+      context.lineTo(aX - vY * 0.8 + vX * 0.5, aY + vX * 0.8 + vY * 0.5);
+      context.lineTo(aX + vY * 0.8 + vX * 0.5, aY - vX * 0.8 + vY * 0.5);
+      context.lineTo(aX + vY * 0.8, aY - vX * 0.8);
+   }
     context.closePath();
     context.fill();
   };
