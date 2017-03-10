@@ -71,22 +71,24 @@
             y2 = target[prefix + 'y'],
             size = edge[prefix + 'size'] || 1,
             //aSize,
-            sSize = source[prefix + 'size'],
+            //sSize = source[prefix + 'size'],
             tSize = target[prefix + 'size'],
             d,
             aX,
             aY,
             cp = {};
 
-        sSize *= Math.pow(params.ratio, params.settings('nodesPowRatio'));
-        tSize *= Math.pow(params.ratio, params.settings('nodesPowRatio'));
+        // webgl view matrix scale with 1/ratio and we have to take it into account here
+        //sSize *= params.ratio / Math.pow(params.ratio, params.settings('nodesPowRatio'));
+        tSize *= params.ratio / Math.pow(params.ratio, params.settings('nodesPowRatio'));
 
         //size /= Math.pow(params.ratio, params.settings('edgesPowRatio')),
         //aSize = Math.max(size * 2.5, params.settings('minArrowSize'));
 
         cp = (source.id === target.id) ?
           sigma.utils.getSelfLoopControlPoints(x1, y1,
-                                               sSize,
+                                               //sSize,
+                                               tSize,
                                                edge) :
           sigma.utils.getQuadraticControlPoint(x1, y1,
                                                x2, y2,
