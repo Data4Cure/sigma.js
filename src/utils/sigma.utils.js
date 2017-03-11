@@ -299,6 +299,13 @@
     };
   };
 
+  sigma.utils.getDerivativeOnQuadraticCurve = function(t, x1, y1, x2, y2, xi, yi) {
+    return {
+      dx: 2 * (1 - t) * (xi - x1) + 2 * t * (x2 - xi),
+      dy: 2 * (1 - t) * (yi - y1) + 2 * t * (y2 - yi),
+    };
+  };
+
   /**
     * Compute the coordinates of the point positioned
     * at length t in the cubic bezier curve.
@@ -327,6 +334,18 @@
     return {
       x: (B0_t * x1) + (B1_t * cx) + (B2_t * dx) + (B3_t * x2),
       y: (B0_t * y1) + (B1_t * cy) + (B2_t * dy) + (B3_t * y2)
+    };
+  };
+
+  sigma.utils.getDerivativeOnBezierCurve =
+    function(t, x1, y1, x2, y2, cx, cy, dx, dy) {
+    var B0_t = 3 * Math.pow(1 - t, 2),
+        B1_t = 6 * t * (1 - t),
+        B2_t = 3 * Math.pow(t, 2);
+
+    return {
+        dx: B0_t * (cx - x1) + B1_t * (dx - cx) + B2_t * (x2 - dx),
+        dy: B0_t * (cy - y1) + B1_t * (dy - cy) + B2_t * (y2 - dy),
     };
   };
 

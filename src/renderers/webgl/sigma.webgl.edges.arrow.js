@@ -20,7 +20,7 @@
    */
   sigma.webgl.edges.arrow = {
     POINTS: 9,
-    ATTRIBUTES: 14,
+    ATTRIBUTES: 15,
     addEdge: function(edge, source, target, data, i, prefix, settings) {
       var w = (edge[prefix + 'size'] || 1) / 2,
           x1 = source[prefix + 'x'],
@@ -30,6 +30,8 @@
           targetSize = target[prefix + 'size'],
           headType = head_types[edge.head_type] || 0,
           headSize = edge.head_size === undefined ? 1 : edge.head_size,
+          tanHeadAngle = edge.tan_head_angle || 0,
+          tanTailAngle = edge.tan_tail_angle || 0,
           color = edge.color;
 
       targetSize *= sigma.utils.shapeSizeAdjustment(target, x2 - x1, y2 - y1);
@@ -65,6 +67,7 @@
       data[i++] = alpha;
       data[i++] = headType;
       data[i++] = headSize;
+      data[i++] = tanHeadAngle;
 
       data[i++] = x2;
       data[i++] = y2;
@@ -80,6 +83,7 @@
       data[i++] = alpha;
       data[i++] = headType;
       data[i++] = headSize;
+      data[i++] = tanHeadAngle;
 
       data[i++] = x2;
       data[i++] = y2;
@@ -95,6 +99,7 @@
       data[i++] = alpha;
       data[i++] = headType;
       data[i++] = headSize;
+      data[i++] = tanHeadAngle;
 
       data[i++] = x2;
       data[i++] = y2;
@@ -110,6 +115,7 @@
       data[i++] = alpha;
       data[i++] = headType;
       data[i++] = headSize;
+      data[i++] = tanTailAngle;
 
       data[i++] = x1;
       data[i++] = y1;
@@ -125,6 +131,7 @@
       data[i++] = alpha;
       data[i++] = headType;
       data[i++] = headSize;
+      data[i++] = tanTailAngle;
 
       data[i++] = x1;
       data[i++] = y1;
@@ -140,6 +147,7 @@
       data[i++] = alpha;
       data[i++] = headType;
       data[i++] = headSize;
+      data[i++] = tanTailAngle;
 
       // Arrow head:
       data[i++] = x2;
@@ -156,6 +164,7 @@
       data[i++] = alpha;
       data[i++] = headType;
       data[i++] = headSize;
+      data[i++] = 0.0;
 
       data[i++] = x2;
       data[i++] = y2;
@@ -171,6 +180,7 @@
       data[i++] = alpha;
       data[i++] = headType;
       data[i++] = headSize;
+      data[i++] = 0.0;
 
       data[i++] = x2;
       data[i++] = y2;
@@ -186,6 +196,7 @@
       data[i++] = alpha;
       data[i++] = headType;
       data[i++] = headSize;
+      data[i++] = 0.0;
     },
     render: function(gl, program, data, params) {
       var buffer;
@@ -215,6 +226,8 @@
             gl.getAttribLocation(program, 'a_headType'),
           headSizeLocation =
             gl.getAttribLocation(program, 'a_headSize'),
+          tanEndAngleLocation =
+            gl.getAttribLocation(program, 'a_tanEndAngle'),
           resolutionLocation =
             gl.getUniformLocation(program, 'u_resolution'),
           matrixLocation =
@@ -272,6 +285,7 @@
       gl.enableVertexAttribArray(alphaLocation);
       gl.enableVertexAttribArray(headTypeLocation);
       gl.enableVertexAttribArray(headSizeLocation);
+      gl.enableVertexAttribArray(tanEndAngleLocation);
 
       gl.vertexAttribPointer(positionLocation1,
         2,
@@ -357,6 +371,13 @@
         this.ATTRIBUTES * Float32Array.BYTES_PER_ELEMENT,
         52
       );
+      gl.vertexAttribPointer(tanEndAngleLocation,
+        1,
+        gl.FLOAT,
+        false,
+        this.ATTRIBUTES * Float32Array.BYTES_PER_ELEMENT,
+        56
+      );
 
       gl.drawArrays(
         gl.TRIANGLES,
@@ -384,6 +405,7 @@
           'attribute float a_alpha;',
           'attribute float a_headType;',
           'attribute float a_headSize;',
+          'attribute float a_tanEndAngle;',
 
           'uniform vec2 u_resolution;',
           'uniform float u_ratio;',
@@ -404,11 +426,13 @@
             // Find the good point:
             'vec2 pos = normalize(a_pos2 - a_pos1);',
 
+            'mat2 tailRotateScale = mat2(1.0, a_tanEndAngle, -a_tanEndAngle, 1.0);', // BK: rotate by end_angle and scale (divide by cos(end_angle)) so that edge width stays the same
+
             'mat2 matrix = (1.0 - a_head) *',
               '(',
                 'a_minus * u_matrixHalfPiMinus +',
                 '(1.0 - a_minus) * u_matrixHalfPi',
-              ') + a_head * (',
+              ') * tailRotateScale + a_head * (',
                 'a_headPosition * u_matrixHalfPiMinus * 0.6 * 2.0 +', // * 2.0 to make the arrow twice as big (and use fragment shader to define shape)
                 '(a_headPosition * a_headPosition - 1.0) * mat2(2.0)', // mat2(2.0) instead of mat2(1.0) to make the arrow twice as big (and use fragment shader to define shape)
               ');',

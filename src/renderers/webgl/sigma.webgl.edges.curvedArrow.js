@@ -3,7 +3,7 @@
 
   sigma.utils.pkg('sigma.webgl.edges');
 
-  var SEGMENTS = 12;
+  var SEGMENTS = 18;
 
   var divide = function(x1, y1, x2, y2, cp) {
     var h = 1 / SEGMENTS,
@@ -11,16 +11,26 @@
         p = {
           x: x1,
           y: y1,
+          tanEndAngle: 0,
         },
+        dp,
         q,
+        dq,
         res = [],
-        getPoint;
+        getPoint,
+        getDerivative;
     if ('x' in cp) {
       getPoint = function(t) {
         return sigma.utils.getPointOnQuadraticCurve(t,
                                                     x1, y1,
                                                     x2, y2,
                                                     cp.x, cp.y);
+      };
+      getDerivative = function(t) {
+        return sigma.utils.getDerivativeOnQuadraticCurve(t,
+                                                         x1, y1,
+                                                         x2, y2,
+                                                         cp.x, cp.y);
       };
     }
     else {
@@ -34,18 +44,41 @@
                                                  cp.x2, cp.y2,
                                                  cp.x1, cp.y1);
       };
+      getDerivative = function(t) {
+        return sigma.utils.getDerivativeOnBezierCurve(t,
+                                                      x1, y1,
+                                                      x2, y2,
+                                                      cp.x2, cp.y2,
+                                                      cp.x1, cp.y1);
+      };
     }
+    dp = getDerivative(0);
     for (i = 1; i < SEGMENTS; ++i) {
       q = getPoint(i * h);
+      dq = getDerivative(i * h);
+      q.tanEndAngle = tanEndAngle(dp, dq);
       res.push([p, q]);
       p = q;
+      dp = dq;
     }
-    res.push([p,
-              {
-                x: x2,
-                y: y2,
-              }]);
+    res.push([
+        p,
+        {
+            x: x2,
+            y: y2,
+            tanEndAngle: 0,
+        },
+    ]);
     return res;
+  };
+
+  var tanEndAngle = function(p, q) {
+    // cross product / dot product
+    var tan_2 = (p.dx * q.dy - p.dy * q.dx) /
+        (p.dx * q.dx + p.dy * q.dy);
+    // tan_2 = 2 * tan / (1 - tan^2)
+    // so: tan = (sqrt(1 + tan_2^2) - 1) / tan_2, for angles close to 0
+    return (Math.sqrt(1 + tan_2 * tan_2) - 1) / tan_2;
   };
 
   sigma.webgl.edges.curvedArrow = {
@@ -120,7 +153,6 @@
             edg,
             src,
             tgt;
-
         for (j = 0; j < segments.length; ++j) {
           edg = {
             color: edge.color,
@@ -134,6 +166,8 @@
           tgt[prefix + 'x'] = segments[j][1].x;
           tgt[prefix + 'y'] = segments[j][1].y;
           tgt[prefix + 'size'] = 0;
+          edg.tan_tail_angle = -segments[j][0].tanEndAngle;
+          edg.tan_head_angle = segments[j][1].tanEndAngle;
           if (j === segments.length - 1) {
             //tgt[prefix + 'size'] = 0; //target[prefix + 'size'];
             // // following attributes needed for shapeSizeAdjustment
