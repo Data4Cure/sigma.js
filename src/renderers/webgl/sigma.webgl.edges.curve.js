@@ -17,7 +17,7 @@
         q,
         dq,
         res = [],
-        getPoint;
+        getPoint,
         getDerivative;
     if ('x' in cp) {
       getPoint = function(t) {
