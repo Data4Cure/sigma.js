@@ -77,29 +77,29 @@
         defs.appendChild(marker);
       }
 
-      var path = document.createElementNS(settings('xmlns'), 'path');
+      var epath = document.createElementNS(settings('xmlns'), 'path');
 
       // Attributes
-      path.setAttributeNS(null, 'data-edge-id', edge.id);
-      path.setAttributeNS(null, 'class', settings('classPrefix') + '-edge');
-      path.setAttributeNS(null, 'stroke', color);
-      path.setAttributeNS(null, 'marker-end',
-                          'url(#' + markers.byEdge[edge.id].id + ')');
+      epath.setAttributeNS(null, 'data-edge-id', edge.id);
+      epath.setAttributeNS(null, 'class', settings('classPrefix') + '-edge');
+      epath.setAttributeNS(null, 'stroke', color);
+      epath.setAttributeNS(null, 'marker-end',
+                           'url(#' + markers.byEdge[edge.id].id + ')');
 
-      return path;
+      return epath;
     },
 
     /**
      * SVG Element update.
      *
      * @param  {object}                   edge       The edge object.
-     * @param  {DOMElement}               path       The path DOM Element.
+     * @param  {DOMElement}               epath      The path DOM Element.
      * @param  {object}                   source     The source node object.
      * @param  {object}                   target     The target node object.
      * @param  {object}                   markers    The markers object.
      * @param  {configurable}             settings   The settings function.
      */
-    update: function(edge, path, source, target, settings, markers) {
+    update: function(edge, epath, source, target, settings, markers) {
       var prefix = settings('prefix') || '',
         size = edge[prefix + 'size'] || 1,
         tSize = target[prefix + 'size'],
@@ -152,9 +152,9 @@
       }
 
       // Updating attributes
-      path.setAttributeNS(null, 'stroke-width', size);
-      path.setAttributeNS(null, 'd', p);
-      path.setAttributeNS(null, 'fill', 'none');
+      epath.setAttributeNS(null, 'stroke-width', size);
+      epath.setAttributeNS(null, 'd', p);
+      epath.setAttributeNS(null, 'fill', 'none');
 
       // Need to devide length by size, because stroke-width (=size)
       // is the unit for the marker.
@@ -168,7 +168,7 @@
       path.setAttributeNS(null, 'd', path_d);
 
       // Showing
-      path.style.display = '';
+      epath.style.display = '';
 
       return this;
     }
