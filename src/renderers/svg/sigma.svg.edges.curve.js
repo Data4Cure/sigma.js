@@ -61,15 +61,29 @@
       path.setAttributeNS(null, 'stroke-width', edge[prefix + 'size'] || 1);
 
       // Control point
-      var cx = (source[prefix + 'x'] + target[prefix + 'x']) / 2 +
-        (target[prefix + 'y'] - source[prefix + 'y']) / 4,
-          cy = (source[prefix + 'y'] + target[prefix + 'y']) / 2 +
-        (source[prefix + 'x'] - target[prefix + 'x']) / 4;
+      var cp = (source.id === target.id) ?
+          sigma.utils.getSelfLoopControlPoints(source[prefix + 'x'],
+                                               source[prefix + 'y'],
+                                               source[prefix + 'size'],
+                                               edge) :
+          sigma.utils.getQuadraticControlPoint(source[prefix + 'x'],
+                                               source[prefix + 'y'],
+                                               target[prefix + 'x'],
+                                               target[prefix + 'y'],
+                                               edge);
 
       // Path
-      var p = 'M' + source[prefix + 'x'] + ',' + source[prefix + 'y'] + ' ' +
-              'Q' + cx + ',' + cy + ' ' +
-              target[prefix + 'x'] + ',' + target[prefix + 'y'];
+      var p;
+      if (source.id === target.id) {
+        p = 'M' + source[prefix + 'x'] + ',' + source[prefix + 'y'] + ' ' +
+          'C' + cp.x1 + ',' + cp.y1 + ' ' + cp.x2 + ',' + cp.y2 + ' ' +
+          target[prefix + 'x'] + ',' + target[prefix + 'y'];
+      }
+      else {
+        p = 'M' + source[prefix + 'x'] + ',' + source[prefix + 'y'] + ' ' +
+          'Q' + cp.x + ',' + cp.y + ' ' +
+          target[prefix + 'x'] + ',' + target[prefix + 'y'];
+      }
 
       // Updating attributes
       path.setAttributeNS(null, 'd', p);
