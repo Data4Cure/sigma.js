@@ -126,6 +126,18 @@
                     path_d_by_head_type.arrow)(marker_height_coef * markerHeight,
                                                aSize, size);
 
+      // Control point
+      var cp = (source.id === target.id) ?
+          sigma.utils.getSelfLoopControlPoints(sX,
+                                               sY,
+                                               source[prefix + 'size'],
+                                               edge) :
+          sigma.utils.getQuadraticControlPoint(sX,
+                                               sY,
+                                               tX,
+                                               tY,
+                                               edge);
+
       if (source.id === target.id) {
         d = Math.sqrt(Math.pow(tX - cp.x1, 2) + Math.pow(tY - cp.y1, 2));
         aX = cp.x1 + (tX - cp.x1) * (d - aSize - tSize) / d;
@@ -136,18 +148,6 @@
         aX = cp.x + (tX - cp.x) * (d - aSize - tSize) / d;
         aY = cp.y + (tY - cp.y) * (d - aSize - tSize) / d;
       }
-
-      // Control point
-      var cp = (source.id === target.id) ?
-          sigma.utils.getSelfLoopControlPoints(source[prefix + 'x'],
-                                               source[prefix + 'y'],
-                                               source[prefix + 'size'],
-                                               edge) :
-          sigma.utils.getQuadraticControlPoint(source[prefix + 'x'],
-                                               source[prefix + 'y'],
-                                               target[prefix + 'x'],
-                                               target[prefix + 'y'],
-                                               edge);
 
       // Path
       var p;
