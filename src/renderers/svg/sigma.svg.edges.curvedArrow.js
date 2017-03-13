@@ -153,7 +153,7 @@
       var p;
       if (source.id === target.id) {
         p = 'M' + source[prefix + 'x'] + ',' + source[prefix + 'y'] + ' ' +
-          'C' + cp.x1 + ',' + cp.y1 + ' ' + cp.x2 + ',' + cp.y2 + ' ' +
+          'C' + cp.x2 + ',' + cp.y2 + ' ' + cp.x1 + ',' + cp.y1 + ' ' +
           aX + ',' + aY;
       }
       else {
