@@ -14,13 +14,15 @@
    */
   sigma.webgl.edges.def = {
     POINTS: 6,
-    ATTRIBUTES: 8,
+    ATTRIBUTES: 9,
     addEdge: function(edge, source, target, data, i, prefix, settings) {
       var w = (edge[prefix + 'size'] || 1) / 2,
           x1 = source[prefix + 'x'],
           y1 = source[prefix + 'y'],
           x2 = target[prefix + 'x'],
           y2 = target[prefix + 'y'],
+          tanHeadAngle = edge.tan_head_angle || 0,
+          tanTailAngle = edge.tan_tail_angle || 0,
           color = edge.color;
 
       if (!color)
@@ -48,6 +50,7 @@
       data[i++] = 0.0;
       data[i++] = color;
       data[i++] = alpha;
+      data[i++] = tanTailAngle;
 
       data[i++] = x2;
       data[i++] = y2;
@@ -57,6 +60,7 @@
       data[i++] = 1.0;
       data[i++] = color;
       data[i++] = alpha;
+      data[i++] = tanHeadAngle;
 
       data[i++] = x2;
       data[i++] = y2;
@@ -66,6 +70,7 @@
       data[i++] = 0.0;
       data[i++] = color;
       data[i++] = alpha;
+      data[i++] = tanHeadAngle;
 
       data[i++] = x2;
       data[i++] = y2;
@@ -75,6 +80,7 @@
       data[i++] = 0.0;
       data[i++] = color;
       data[i++] = alpha;
+      data[i++] = tanHeadAngle;
 
       data[i++] = x1;
       data[i++] = y1;
@@ -84,6 +90,7 @@
       data[i++] = 1.0;
       data[i++] = color;
       data[i++] = alpha;
+      data[i++] = tanTailAngle;
 
       data[i++] = x1;
       data[i++] = y1;
@@ -93,6 +100,7 @@
       data[i++] = 0.0;
       data[i++] = color;
       data[i++] = alpha;
+      data[i++] = tanTailAngle;
     },
     render: function(gl, program, data, params) {
       var buffer;
@@ -110,6 +118,8 @@
             gl.getAttribLocation(program, 'a_thickness'),
           minusLocation =
             gl.getAttribLocation(program, 'a_minus'),
+          tanEndAngleLocation =
+            gl.getAttribLocation(program, 'a_tanEndAngle'),
           resolutionLocation =
             gl.getUniformLocation(program, 'u_resolution'),
           matrixLocation =
@@ -151,6 +161,7 @@
       gl.enableVertexAttribArray(positionLocation2);
       gl.enableVertexAttribArray(thicknessLocation);
       gl.enableVertexAttribArray(minusLocation);
+      gl.enableVertexAttribArray(tanEndAngleLocation);
 
       gl.vertexAttribPointer(positionLocation1,
         2,
@@ -194,6 +205,13 @@
         this.ATTRIBUTES * Float32Array.BYTES_PER_ELEMENT,
         28
       );
+      gl.vertexAttribPointer(tanEndAngleLocation,
+        1,
+        gl.FLOAT,
+        false,
+        this.ATTRIBUTES * Float32Array.BYTES_PER_ELEMENT,
+        32
+      );
 
       gl.drawArrays(
         gl.TRIANGLES,
@@ -215,6 +233,7 @@
           'attribute float a_minus;',
           'attribute float a_color;',
           'attribute float a_alpha;',
+          'attribute float a_tanEndAngle;',
 
           'uniform vec2 u_resolution;',
           'uniform float u_ratio;',
@@ -230,8 +249,10 @@
             'vec2 position = a_thickness * u_ratio *',
               'normalize(a_position2 - a_position1);',
 
-            'mat2 matrix = a_minus * u_matrixHalfPiMinus +',
-              '(1.0 - a_minus) * u_matrixHalfPi;',
+            'mat2 tailRotateScale = mat2(1.0, a_tanEndAngle, -a_tanEndAngle, 1.0);', // BK: rotate by end_angle and scale (divide by cos(end_angle)) so that edge width stays the same
+
+            'mat2 matrix = (a_minus * u_matrixHalfPiMinus +',
+              '(1.0 - a_minus) * u_matrixHalfPi) * tailRotateScale;',
 
             'position = matrix * position + a_position1;',
 

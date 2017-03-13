@@ -3,7 +3,7 @@
 
   sigma.utils.pkg('sigma.webgl.edges');
 
-  var SEGMENTS = 18;
+  var SEGMENTS = 32;
 
   var divide = function(x1, y1, x2, y2, cp) {
     var h = 1 / SEGMENTS,
@@ -153,6 +153,7 @@
             edg,
             src,
             tgt;
+
         for (j = 0; j < segments.length; ++j) {
           edg = {
             color: edge.color,
