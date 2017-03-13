@@ -227,10 +227,10 @@
                   source[prefix + 'y'],
                   aX,
                   aY,
-                  cp.x1,
-                  cp.y1,
                   cp.x2,
                   cp.y2,
+                  cp.x1,
+                  cp.y1,
                   Math.max(s, maxEpsilon)
                 )) {
                   insertEdge(selected, edge);
