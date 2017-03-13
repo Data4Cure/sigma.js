@@ -143,12 +143,12 @@
       if (source.id === target.id) {
         p = 'M' + source[prefix + 'x'] + ',' + source[prefix + 'y'] + ' ' +
           'C' + cp.x1 + ',' + cp.y1 + ' ' + cp.x2 + ',' + cp.y2 + ' ' +
-          target[prefix + 'x'] + ',' + target[prefix + 'y'];
+          aX + ',' + aY;
       }
       else {
         p = 'M' + source[prefix + 'x'] + ',' + source[prefix + 'y'] + ' ' +
           'Q' + cp.x + ',' + cp.y + ' ' +
-          target[prefix + 'x'] + ',' + target[prefix + 'y'];
+          aX + ',' + aY;
       }
 
       // Updating attributes
