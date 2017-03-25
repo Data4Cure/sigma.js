@@ -22,6 +22,26 @@
         captor,
         self = this;
 
+    var insideShape = {
+      'rectangle': function(dx, dy,
+                            size, node) {
+        var angle = node.angle,
+            rotate_radians = (node.rotate || 0) * Math.PI / 180,
+            cos_a = Math.cos(angle),
+            sin_a = Math.sin(angle),
+            cos_r = Math.cos(rotate_radians),
+            sin_r = Math.sin(rotate_radians),
+            rx = dx * cos_r - dy * sin_r,
+            ry = dx * sin_r + dy * cos_r;
+        return Math.abs(rx) < size * cos_a &&
+          Math.abs(ry) < size * sin_a;
+      },
+      'triangle': function(dx, dy,
+                           size, node) {
+        return true // TODO
+      }
+    }
+
     function getNodes(e) {
       if (e) {
         mX = 'x' in e.data ? e.data.x : mX;
@@ -48,7 +68,7 @@
             point.y
           );
 
-      if (nodes.length)
+      if (nodes.length) {
         for (i = 0, l = nodes.length; i < l; i++) {
           n = nodes[i];
           x = n[prefix + 'x'];
@@ -60,26 +80,52 @@
             modifiedX > x - s &&
             modifiedX < x + s &&
             modifiedY > y - s &&
-            modifiedY < y + s &&
-            Math.sqrt(
-              Math.pow(modifiedX - x, 2) +
-              Math.pow(modifiedY - y, 2)
-            ) < s
+            modifiedY < y + s
           ) {
-            // Insert the node:
-            inserted = false;
-
-            for (j = 0; j < selected.length; j++)
-              if (n.size > selected[j].size) {
-                selected.splice(j, 0, n);
-                inserted = true;
-                break;
-              }
-
-            if (!inserted)
-              selected.push(n);
+            var d2 = Math.pow(modifiedX - x, 2) +
+                Math.pow(modifiedY - y, 2);
+            if(
+                d2 < s * s &&
+                (insideShape[n.type] || function() { return true })(modifiedX - x,
+                                                                    modifiedY - y,
+                                                                    s, n)
+            ) {
+              // // Insert the node:
+              // inserted = false;
+              
+              // for (j = 0; j < selected.length; j++)
+              //   if (n.size > selected[j].size) {
+              //     selected.splice(j, 0, n);
+              //     inserted = true;
+              //     break;
+              //   }
+              
+              // if (!inserted)
+              //   selected.push(n);
+              selected.push({
+                i: i,
+                z: n.z || 0,
+                d2: d2,
+              });
+            }
           }
         }
+        // Originally sigma.js sorted decreasing by size
+        selected.sort(function(a, b) {
+          if (a.z !== b.z) {
+            return a.z - b.z
+          }
+          else if (a.d2 !== b.d2) {
+            return a.d2 - b.d2
+          }
+          else {
+            return a.i - b.i
+          }
+        })
+        for (i = 0, l = selected.length; i < l; i++) {
+          selected[i] = nodes[selected[i].i]
+        }
+      }
 
       return selected;
     }
