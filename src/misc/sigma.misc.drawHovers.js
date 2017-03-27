@@ -17,6 +17,7 @@
    */
   sigma.misc.drawHovers = function(prefix) {
     var self = this,
+        i,
         lastMouseMoveEvent,
         hoveredNodes = {},
         hoveredEdges = {};
@@ -36,9 +37,13 @@
 
     // BK: need to thave the current mouse position so that
     // the nearest node can be found for hovering
-    this.bind('mousemove', function(event) {
-      lastMouseMoveEvent = event
-    });
+    for (i = 0, l = this.captors.length; i < l; i++) {
+      if (this.captors[i] instanceof sigma.captors.mouse) {
+        this.captors[i].bind('mousemove', function(event) {
+          lastMouseMoveEvent = event
+        });
+      }
+    }
 
     this.bind('overEdge', function(event) {
       var edge = event.data.edge;
