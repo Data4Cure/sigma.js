@@ -27,13 +27,13 @@
       var node = event.data.node;
       if (!node.hidden && !node.no_hover) {
         hoveredNodes[node.id] = node;
-        draw();
+        //draw(); // BK: already called because of mousemove
       }
     });
 
     this.bind('outNode', function(event) {
       delete hoveredNodes[event.data.node.id];
-      draw();
+      //draw(); // BK: already called because of mousemove
     });
 
     // BK: need to thave the current mouse position so that
@@ -41,7 +41,8 @@
     for (i = 0, l = this.captors.length; i < l; i++) {
       if (this.captors[i] instanceof sigma.captors.mouse) {
         this.captors[i].bind('mousemove', function(event) {
-          lastMouseMoveEvent = event
+          lastMouseMoveEvent = event;
+          draw();
         });
       }
     }
@@ -50,13 +51,13 @@
       var edge = event.data.edge;
       if (!edge.hidden) {
         hoveredEdges[edge.id] = edge;
-        draw();
+        //draw(); // BK: already called because of mousemove
       }
     });
 
     this.bind('outEdge', function(event) {
       delete hoveredEdges[event.data.edge.id];
-      draw();
+      //draw(); // BK: already called because of mousemove
     });
 
     this.bind('render', function(event) {
