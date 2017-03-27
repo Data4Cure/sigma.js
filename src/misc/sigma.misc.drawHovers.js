@@ -77,8 +77,8 @@
           selected;
       for (k in hoveredNodes) {
         var z = hoveredNodes[k].z || 0,
-            dx = hoveredNodes[k].x - modifiedX,
-            dy = hoveredNodes[k].y - modifiedY,
+            dx = hoveredNodes[k][prefix + 'x'] - modifiedX,
+            dy = hoveredNodes[k][prefix + 'y'] - modifiedY,
             d2 = dx * dx + dy * dy;
         if (z < best_z) {
           best_z = z;
