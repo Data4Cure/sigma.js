@@ -18,6 +18,7 @@
   sigma.misc.drawHovers = function(prefix) {
     var self = this,
         i,
+        l,
         lastMouseMoveEvent,
         hoveredNodes = {},
         hoveredEdges = {};
