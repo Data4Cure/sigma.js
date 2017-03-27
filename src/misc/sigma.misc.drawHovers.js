@@ -17,6 +17,7 @@
    */
   sigma.misc.drawHovers = function(prefix) {
     var self = this,
+        lastMouseMoveEvent,
         hoveredNodes = {},
         hoveredEdges = {};
 
@@ -31,6 +32,12 @@
     this.bind('outNode', function(event) {
       delete hoveredNodes[event.data.node.id];
       draw();
+    });
+
+    // BK: need to thave the current mouse position so that
+    // the nearest node can be found for hovering
+    this.bind('mousemove', function(event) {
+      lastMouseMoveEvent = event
     });
 
     this.bind('overEdge', function(event) {
@@ -49,6 +56,38 @@
     this.bind('render', function(event) {
       draw();
     });
+
+
+    // BK: select node for hovering by looking at
+    // z coordinates and distances to the nodes
+    function selectHoveredNode() {
+      var mX = lastMouseMoveEvent.data.x,
+          mY = lastMouseMoveEvent.data.y,
+          modifiedX = mX + self.width / 2,
+          modifiedY = mY + self.height / 2,
+          best_z = Infinity, // in fact 1 is max
+          best_d2 = Infinity,
+          k,
+          selected;
+      for (k in hoveredNodes) {
+        var z = hoveredNodes[k].z || 0,
+            dx = hoveredNodes[k].x - modifiedX,
+            dy = hoveredNodes[k].y - modifiedY,
+            d2 = dx * dx + dy * dy;
+        if (z < best_z) {
+          best_z = z;
+          best_d2 = d2;
+          selected = k;
+        }
+        else if (z === best_z) {
+          if (d2 < best_d2) {
+            best_d2 = d2;
+            selected = k;
+          }
+        }
+      }
+      return selected
+    }
 
     function draw() {
 
@@ -76,7 +115,8 @@
         embedSettings('singleHover') &&
         Object.keys(hoveredNodes).length
       ) {
-        hoveredNode = hoveredNodes[Object.keys(hoveredNodes)[0]];
+        //hoveredNode = hoveredNodes[Object.keys(hoveredNodes)[0]];
+        hoveredNode = hoveredNodes[selectHoveredNode()];
         (
           nodeRenderers[hoveredNode.type] ||
           nodeRenderers[defaultNodeType] ||
