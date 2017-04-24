@@ -79,8 +79,8 @@
         sigma.webgl.edges.def.addEdge(edge,
                                       src, tgt,
                                       data,
-                                      (i * this.POINTS +
-                                       j * sigma.webgl.edges.def.POINTS) *
+                                      i +
+                                      j * sigma.webgl.edges.def.POINTS *
                                       this.ATTRIBUTES,
                                       prefix, settings);
       }
