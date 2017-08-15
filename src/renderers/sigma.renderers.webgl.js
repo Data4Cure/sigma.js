@@ -484,20 +484,22 @@
         this.camera.getRectangle(this.width, this.height)
       );
 
-      // BK: the following fragment is no longer necessary
-      // because we have already called applyView for all
-      // nodes and edges so that edge mouse events work.
-      // // Apply camera view to these nodes:
-      // this.camera.applyView(
-      //   undefined,
-      //   undefined,
-      //   {
-      //     nodes: a,
-      //     edges: [],
-      //     width: this.width,
-      //     height: this.height
-      //   }
-      // );
+      // BK: the following fragment is still necessary
+      // even though we have already called applyView for all
+      // nodes and edges so that edge mouse events work,
+      // because that call is debounced and might not have
+      // executed yet when the labels are drawn.
+      // Apply camera view to these nodes:
+      this.camera.applyView(
+        undefined,
+        undefined,
+        {
+          nodes: a,
+          edges: [],
+          width: this.width,
+          height: this.height
+        }
+      );
 
       o = function(key) {
         return self.settings({
