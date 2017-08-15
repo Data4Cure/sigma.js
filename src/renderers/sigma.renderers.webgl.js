@@ -243,8 +243,32 @@
     return this;
   };
 
+  function debounce(func, wait) {
+    var timeout;
+    return function() {
+      var that = this, args = arguments;
+      var later = function() {
+	timeout = null;
+	func.apply(that, args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
+  };
 
-
+  sigma.renderers.webgl.prototype.debouncedApplyView = debounce(function() {
+    // BK: Apply the camera's view to all nodes
+    // and edges so that edge mouse events can work:
+    this.camera.applyView(
+      undefined,
+      undefined,
+      {
+        width: this.width,
+        height: this.height
+      }
+    );
+  },
+                                                                250);
 
   /**
    * This method renders the graph. It basically calls each program (and
@@ -285,14 +309,7 @@
 
     // BK: Apply the camera's view to all nodes
     // and edges so that edge mouse events can work:
-    this.camera.applyView(
-      undefined,
-      undefined,
-      {
-        width: this.width,
-        height: this.height
-      }
-    );
+    this.debouncedApplyView();
 
     // Clear canvases:
     this.clear();
