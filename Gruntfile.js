@@ -60,10 +60,12 @@ module.exports = function(grunt) {
     'src/middlewares/sigma.middlewares.copy.js',
 
     // Miscellaneous:
+    'src/misc/sigma.misc.texturing.js',
     'src/misc/sigma.misc.animation.js',
     'src/misc/sigma.misc.bindEvents.js',
     'src/misc/sigma.misc.bindDOMEvents.js',
     'src/misc/sigma.misc.drawHovers.js'
+
   ];
 
   var npmJsFiles = coreJsFiles.slice(0);
