@@ -35,6 +35,7 @@ module.exports = function(grunt) {
     'src/renderers/webgl/sigma.webgl.nodes.equilateral.js',
     'src/renderers/webgl/sigma.webgl.nodes.rectangle.js',
     'src/renderers/webgl/sigma.webgl.nodes.triangle.js',
+    'src/renderers/webgl/sigma.webgl.nodes.trect.js',
     'src/renderers/webgl/sigma.webgl.edges.def.js',
     'src/renderers/webgl/sigma.webgl.edges.fast.js',
     'src/renderers/webgl/sigma.webgl.edges.arrow.js',
