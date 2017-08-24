@@ -44,6 +44,7 @@ module.exports = function(grunt) {
     'src/renderers/webgl/sigma.webgl.edges.curvedArrow.js',
     'src/renderers/webgl/sigma.webgl.edges.curvedArrowOld.js',
     'src/renderers/canvas/sigma.canvas.labels.def.js',
+    'src/renderers/canvas/sigma.canvas.labels.rectangle.js',
     'src/renderers/canvas/sigma.canvas.hovers.def.js',
     'src/renderers/canvas/sigma.canvas.nodes.def.js',
     'src/renderers/canvas/sigma.canvas.nodes.rectangle.js',
