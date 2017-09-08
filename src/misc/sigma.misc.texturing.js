@@ -8,10 +8,11 @@
   // }
 
   function TextureManager() {
-    this.gl_texture = undefined
-    this.gl_texture_size = undefined
-    this.textures = {}
-    this.needs_reloading = false
+    // this.gl_texture = undefined
+    // this.gl_texture_size = undefined
+    // this.textures = {}
+    // this.needs_reloading = false
+    this.clear()
   }
   TextureManager.prototype.add = function(t) {
     if (!(t.id in this.textures)) {
@@ -24,6 +25,12 @@
       this.pack()
       this.needs_reloading = true
     }
+  };
+  TextureManager.prototype.clear = function() {
+    this.gl_texture = undefined
+    this.gl_texture_size = undefined
+    this.textures = {}
+    this.needs_reloading = false
   };
   TextureManager.prototype.pack = function() {
     var packer = new GrowingPacker();
