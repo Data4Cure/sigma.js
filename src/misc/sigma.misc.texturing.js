@@ -43,6 +43,7 @@
     }
   };
   TextureManager.prototype.synchronize = function(gl) {
+    var that = this
     if (!this.needs_reloading) {
       return
     }
@@ -61,7 +62,7 @@
                   new Uint8Array(this.gl_texture_size.w * this.gl_texture_size.h * 4));
     //Object.values(this.textures).forEach(function(t) { // safari doesn't support Object.values
     Object.keys(this.textures).forEach(function(k) {
-      var t = this.textures[k]
+      var t = that.textures[k]
       gl.texSubImage2D(gl.TEXTURE_2D, 0,
                        t.fit.x, t.fit.y,
                        gl.RGBA, gl.UNSIGNED_BYTE, t.img);
