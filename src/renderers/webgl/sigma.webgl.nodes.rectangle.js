@@ -323,7 +323,7 @@
             //'vec2 m = gl_FragCoord.xy - center;',
             //'float diff = radius - sqrt(m.x * m.x + m.y * m.y);',
 
-            'if(any(lessThan(vBC, vec3(sin(angle)*BORDER_THICKNESS, 0.0, cos(angle)*BORDER_THICKNESS))) ||',
+            'if(any(lessThan(vBC, vec3(sin(angle)*BORDER_THICKNESS, -0.01, cos(angle)*BORDER_THICKNESS))) ||', // -0.01 because when 0.0 is used the artifacts on the diagonal show up
             '   any(greaterThan(vBC, vec3(1.0-sin(angle)*BORDER_THICKNESS, 1.0, 1.0-cos(angle)*BORDER_THICKNESS)))) {',
 	    'gl_FragColor = border_color;',
 	    '}',
