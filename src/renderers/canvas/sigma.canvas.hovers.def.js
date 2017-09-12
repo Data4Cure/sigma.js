@@ -7,6 +7,32 @@
   // Initialize packages:
   sigma.utils.pkg('sigma.canvas.hovers');
 
+  function rectangleBorder(node, context, settings) {
+    var prefix = settings('prefix') || '',
+        angle = node.angle,
+        size = node[prefix + 'size'],
+        rotate_radians = (node.rotate || 0) * Math.PI / 180,
+        x = node[prefix + 'x'],
+        y = node[prefix + 'y'],
+        //dx0 = size * Math.cos(angle - rotate_radians),
+        //dy0 = size * Math.sin(angle - rotate_radians),
+        dx1 = size * Math.cos(Math.PI - angle - rotate_radians),
+        dy1 = size * Math.sin(Math.PI - angle - rotate_radians),
+        //dx2 = size * Math.cos(Math.PI + angle - rotate_radians),
+        //dy2 = size * Math.sin(Math.PI + angle - rotate_radians),
+        dx3 = size * Math.cos(- angle - rotate_radians),
+        dy3 = size * Math.sin(- angle - rotate_radians);
+    context.shadowOffsetX = 0;
+    context.shadowOffsetY = 0;
+    context.shadowBlur = 16;
+    context.shadowColor = settings('labelHoverShadowColor');
+    context.beginPath();
+    context.lineWidth = 1
+    context.rect(x + dx1, y + dy1,
+                 dx3 + dx3, dy3 + dy3);
+    context.stroke();
+  };
+
   /**
    * This hover renderer will basically display the label with a background.
    *
@@ -15,6 +41,11 @@
    * @param  {configurable}             settings The settings function.
    */
   sigma.canvas.hovers.def = function(node, context, settings) {
+
+    if (node.label_placement === 'inside') {
+      return rectangleBorder(node, context, settings)
+    }
+
     var x,
         y,
         w,
