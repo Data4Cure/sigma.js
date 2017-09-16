@@ -335,7 +335,7 @@
           'varying vec2 center;',
           'varying float radius;',
           'varying float angle;',
-          'varying float border_thickness',
+          'varying float border_thickness;',
 
           'varying vec3 vBC;', // scaled barycentric coordinates
 
