@@ -401,7 +401,7 @@
                 // and therefore no computations can be done in addEdges and
                 // everything has to go to render and we need a list of edges
                 // (edgesUsed) in render.
-                var edges = this.edgeFloatArrays[k].edges,
+                var edges = edgeFloatArrays[k].edges,
                     edgesUsed = {},
                     jj;
 
@@ -489,7 +489,7 @@
               // and therefore no computations can be done in addEdges and
               // everything has to go to render and we need a list of edges
               // (edgesUsed) in render.
-              var edges = this.edgeFloatArrays[k].edges,
+              var edges = edgeFloatArrays[k].edges,
                   edgesUsed = {},
                   jj;
 
