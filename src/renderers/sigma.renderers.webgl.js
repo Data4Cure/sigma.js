@@ -64,14 +64,8 @@
     Object.defineProperty(this, 'edgePrograms', {
       value: {}
     });
-    Object.defineProperty(this, 'nodeLayers', {
+    Object.defineProperty(this, 'objLayers', {
       value: []
-    });
-    Object.defineProperty(this, 'edgeFloatArrays', {
-      value: {}
-    });
-    Object.defineProperty(this, 'edgeIndicesArrays', {
-      value: {}
     });
 
     // Initialize the DOM elements:
@@ -142,39 +136,23 @@
         defaultNodeType = this.settings(options, 'defaultNodeType');
 
     // Empty float arrays:
-    this.nodeLayers.length = 0
+    this.objLayers.length = 0
 
-    for (k in this.edgeFloatArrays)
-      delete this.edgeFloatArrays[k];
-
-    for (k in this.edgeIndicesArrays)
-      delete this.edgeIndicesArrays[k];
-
-    // Sort edges and nodes per types:
-    for (a = graph.edges(), i = 0, l = a.length; i < l; i++) {
-      type = a[i].type || defaultEdgeType;
-      k = (type && sigma.webgl.edges[type]) ? type : 'def';
-
-      if (!this.edgeFloatArrays[k])
-        this.edgeFloatArrays[k] = {
-          edges: []
-        };
-
-      this.edgeFloatArrays[k].edges.push(a[i]);
-    }
-
-    var nodeCompareZType = function(n1, n2) {
-        var z1 = n1.z || 0,
-            z2 = n2.z || 0;
-        if (z1 < z2) {
-            return 1 // Nodes need to be rendered in decreasing z order.
-        }
-        else if (z1 > z2) {
-            return -1
-        }
+    var objCompareZType = function(o1, o2) {
+      var z1 = o1.obj.z || 0,
+          z2 = o2.obj.z || 0;
+      if (z1 < z2) {
+        return 1 // Nodes need to be rendered in decreasing z order.
+      }
+      else if (z1 > z2) {
+        return -1
+      }
+      else if (o1.category !== o2.category) {
+        return o1.category === 'node' ? 1 : -1 // edges rendered before nodes
+      }
         else {
-            var t1 = n1.type || 'def',
-                t2 = n2.type || 'def';
+            var t1 = o1.obj.type || 'def',
+                t2 = o2.obj.type || 'def';
             if (t1 < t2) {
                 return -1;
             }
@@ -187,88 +165,107 @@
         }
     };
 
-    for (a = graph.nodes().sort(nodeCompareZType), i = 0, l = a.length;
-         i < l; i++) {
-      if (i === 0 || (a[i - 1].z || 0) !== (a[i].z || 0)) {
-        this.nodeLayers.push({})
+    for (a = graph.nodes().map(function(n) {
+      return { obj: n, category: 'node' }
+    })
+         .concat(graph.edges().map(function(e) {
+           return { obj: e, category: 'edge' }
+         }))
+         .sort(objCompareZType),
+         i = 0, l = a.length;
+         i < l;
+         i++) {
+      if (i === 0 ||
+          (a[i - 1].obj.z || 0) !== (a[i].obj.z || 0) ||
+          a[i - 1].category !== a[i].category) {
+        this.objLayers.push({
+          category: a[i].category,
+          floatArrays: {},
+          indicesArrays: {}, // needed only for edges
+        })
       }
-      var nodeFloatArrays = this.nodeLayers[this.nodeLayers.length - 1]
-      type = a[i].type || defaultNodeType;
-      k = (type && sigma.webgl.nodes[type]) ? type : 'def';
+      var floatArrays = this.objLayers[this.objLayers.length - 1].floatArrays,
+          type = a[i].obj.type || {
+            node: defaultNodeType,
+            edge: defaultEdgeType,
+          }[a[i].category],
+          k = (type && {
+            node: sigma.webgl.nodes,
+            edge: sigma.webgl.edges,
+          }[a[i].category][type]) ? type : 'def';
 
-      if (!nodeFloatArrays[k])
-        nodeFloatArrays[k] = {
-          nodes: []
-        };
-
-      nodeFloatArrays[k].nodes.push(a[i]);
+      if (!floatArrays[k]) {
+        floatArrays[k] = {};
+        floatArrays[k][{
+          node: 'nodes',
+          edge: 'edges',
+        }[a[i].category]] = [];
+      }
+      floatArrays[k][{
+          node: 'nodes',
+          edge: 'edges',
+      }[a[i].category]].push(a[i].obj);
     }
 
-    // Push edges:
-    for (k in this.edgeFloatArrays) {
-      renderer = sigma.webgl.edges[k];
-      a = this.edgeFloatArrays[k].edges;
-
-      // Creating the necessary arrays
-      this.edgeFloatArrays[k].array = new Float32Array(
-        a.length * renderer.POINTS * renderer.ATTRIBUTES
-      );
-
-      for (i = 0, l = a.length; i < l; i++) {
-
-        // Just check that the edge and both its extremities are visible:
-        if (
-          !a[i].hidden &&
-          !graph.nodes(a[i].source).hidden &&
-          !graph.nodes(a[i].target).hidden
-        )
-          renderer.addEdge(
-            a[i],
-            graph.nodes(a[i].source),
-            graph.nodes(a[i].target),
-            this.edgeFloatArrays[k].array,
-            i * renderer.POINTS * renderer.ATTRIBUTES,
-            options.prefix,
-            this.settings
-          );
-      }
-
-      if (typeof renderer.computeIndices === 'function')
-        this.edgeIndicesArrays[k] = renderer.computeIndices(
-          this.edgeFloatArrays[k].array
-        );
-    }
-
-    // Push nodes:
-    for (j in this.nodeLayers) {
-      var nodeFloatArrays = this.nodeLayers[j];
-      for (k in nodeFloatArrays) {
-        renderer = sigma.webgl.nodes[k];
-        a = nodeFloatArrays[k].nodes;
+    // Push edges and nodes:
+    for (j in this.objLayers) {
+      var floatArrays = this.objLayers[j].floatArrays;
+      for (k in floatArrays) {
+        renderer = {
+          node: sigma.webgl.nodes,
+          edge: sigma.webgl.edges,
+        }[this.objLayers[j].category][k];
+        a = floatArrays[k][{
+          node: 'nodes',
+          edge: 'edges',
+        }[this.objLayers[j].category]];
 
         // Creating the necessary arrays
-        nodeFloatArrays[k].array = new Float32Array(
+        floatArrays[k].array = new Float32Array(
           a.length * renderer.POINTS * renderer.ATTRIBUTES
         );
 
         for (i = 0, l = a.length; i < l; i++) {
-          if (!nodeFloatArrays[k].array)
-            nodeFloatArrays[k].array = new Float32Array(
+          if (!floatArrays[k].array)
+            floatArrays[k].array = new Float32Array(
               a.length * renderer.POINTS * renderer.ATTRIBUTES
             );
 
           // Just check that the edge and both its extremities are visible:
-          if (
-            !a[i].hidden
-          )
-            renderer.addNode(
-              a[i],
-              nodeFloatArrays[k].array,
-              i * renderer.POINTS * renderer.ATTRIBUTES,
-              options.prefix,
-              this.settings
-            );
+          if (this.objLayers[k].category === 'node') {
+            if (
+              !a[i].hidden
+            )
+              renderer.addNode(
+                a[i],
+                floatArrays[k].array,
+                i * renderer.POINTS * renderer.ATTRIBUTES,
+                options.prefix,
+                this.settings
+              );
+          }
+          else { // this.objLayers[k].category === 'edge'
+            if (
+              !a[i].hidden &&
+                !graph.nodes(a[i].source).hidden &&
+                !graph.nodes(a[i].target).hidden
+            )
+              renderer.addEdge(
+                a[i],
+                graph.nodes(a[i].source),
+                graph.nodes(a[i].target),
+                floatArrays[k].array,
+                i * renderer.POINTS * renderer.ATTRIBUTES,
+                options.prefix,
+                this.settings
+              );
+          }
         }
+
+        if (typeof renderer.computeIndices === 'function')
+          this.objLayers[j].indicesArrays[k] = renderer.computeIndices(
+            floatArrays[k].array
+          );
       }
     }
 
@@ -330,158 +327,165 @@
       if (conrad.hasJob(k))
         conrad.killJob(k);
 
-    if (drawEdges) {
-      if (this.settings(options, 'batchEdgesDrawing'))
-        (function() {
-          var a,
-              k,
-              i,
-              id,
-              job,
-              arr,
-              end,
-              start,
-              indices,
-              renderer,
-              batchSize,
-              currentProgram;
+    for (j in this.objLayers) {
 
-          id = 'edges_' + this.conradId;
-          batchSize = this.settings(options, 'webglEdgesBatchSize');
-          a = Object.keys(this.edgeFloatArrays);
+      if (this.objLayers[j].category === 'edge') {
+        if (drawEdges) {
+          if (this.settings(options, 'batchEdgesDrawing'))
+            (function() {
+              var a,
+                  k,
+                  i,
+                  id,
+                  job,
+                  arr,
+                  end,
+                  start,
+                  indices,
+                  renderer,
+                  batchSize,
+                  currentProgram;
 
-          if (!a.length)
-            return;
-          i = 0;
-          renderer = sigma.webgl.edges[a[i]];
-          arr = this.edgeFloatArrays[a[i]].array;
-          indices = this.edgeIndicesArrays[a[i]];
-          start = 0;
-          end = Math.min(
-            start + batchSize * renderer.POINTS,
-            arr.length / renderer.ATTRIBUTES
-          );
+              var edgeFloatArrays = this.objLayers[j].floatArrays;
 
-          job = function() {
+              id = 'edges_' + this.conradId;
+              batchSize = this.settings(options, 'webglEdgesBatchSize');
+              a = Object.keys(edgeFloatArrays);
+
+              if (!a.length)
+                return;
+              i = 0;
+              renderer = sigma.webgl.edges[a[i]];
+              arr = edgeFloatArrays[a[i]].array;
+              indices = this.objLayers[j].indicesArrays[a[i]];
+              start = 0;
+              end = Math.min(
+                start + batchSize * renderer.POINTS,
+                arr.length / renderer.ATTRIBUTES
+              );
+
+              job = function() {
+                // Check program:
+                if (!this.edgePrograms[a[i]])
+                  this.edgePrograms[a[i]] = renderer.initProgram(edgesGl);
+
+                if (start < end) {
+                  edgesGl.useProgram(this.edgePrograms[a[i]]);
+                  renderer.render(
+                    edgesGl,
+                    this.edgePrograms[a[i]],
+                    arr,
+                    {
+                      settings: this.settings,
+                      matrix: matrix,
+                      width: this.width,
+                      height: this.height,
+                      ratio: this.camera.ratio,
+                      scalingRatio: this.settings(
+                        options,
+                        'webglOversamplingRatio'
+                      ),
+                      start: start,
+                      count: end - start,
+                      indicesData: indices
+                    }
+                  );
+                }
+
+                // Catch job's end:
+                if (
+                  end >= arr.length / renderer.ATTRIBUTES &&
+                    i === a.length - 1
+                ) {
+                  delete this.jobs[id];
+                  return false;
+                }
+
+                if (end >= arr.length / renderer.ATTRIBUTES) {
+                  i++;
+                  arr = edgeFloatArrays[a[i]].array;
+                  renderer = sigma.webgl.edges[a[i]];
+                  start = 0;
+                  end = Math.min(
+                    start + batchSize * renderer.POINTS,
+                    arr.length / renderer.ATTRIBUTES
+                  );
+                } else {
+                  start = end;
+                  end = Math.min(
+                    start + batchSize * renderer.POINTS,
+                    arr.length / renderer.ATTRIBUTES
+                  );
+                }
+
+                return true;
+              };
+
+              this.jobs[id] = job;
+              conrad.addJob(id, job.bind(this));
+            }).call(this);
+          else {
+            for (k in edgeFloatArrays) {
+              renderer = sigma.webgl.edges[k];
+
+              // Check program:
+              if (!this.edgePrograms[k])
+                this.edgePrograms[k] = renderer.initProgram(edgesGl);
+
+              // Render
+              if (edgeFloatArrays[k]) {
+                edgesGl.useProgram(this.edgePrograms[k]);
+                renderer.render(
+                  edgesGl,
+                  this.edgePrograms[k],
+                  edgeFloatArrays[k].array,
+                  {
+                    settings: this.settings,
+                    matrix: matrix,
+                    width: this.width,
+                    height: this.height,
+                    ratio: this.camera.ratio,
+                    scalingRatio: this.settings(options, 'webglOversamplingRatio'),
+                    indicesData: this.objLayers[j].indicesArrays[k]
+                  }
+                );
+              }
+            }
+          }
+        }
+      }
+
+      else { // this.objLayers[j].category === 'node'
+        if (drawNodes) {
+          // Enable blending:
+          nodesGl.blendFunc(nodesGl.SRC_ALPHA, nodesGl.ONE_MINUS_SRC_ALPHA);
+          nodesGl.enable(nodesGl.BLEND);
+
+          var nodeFloatArrays = this.objLayers[j].floatArrays;
+          for (k in nodeFloatArrays) {
+            renderer = sigma.webgl.nodes[k];
+
             // Check program:
-            if (!this.edgePrograms[a[i]])
-              this.edgePrograms[a[i]] = renderer.initProgram(edgesGl);
+            if (!this.nodePrograms[k])
+              this.nodePrograms[k] = renderer.initProgram(nodesGl);
 
-            if (start < end) {
-              edgesGl.useProgram(this.edgePrograms[a[i]]);
+            // Render
+            if (nodeFloatArrays[k]) {
+              nodesGl.useProgram(this.nodePrograms[k]);
               renderer.render(
-                edgesGl,
-                this.edgePrograms[a[i]],
-                arr,
+                nodesGl,
+                this.nodePrograms[k],
+                nodeFloatArrays[k].array,
                 {
                   settings: this.settings,
                   matrix: matrix,
                   width: this.width,
                   height: this.height,
                   ratio: this.camera.ratio,
-                  scalingRatio: this.settings(
-                    options,
-                    'webglOversamplingRatio'
-                  ),
-                  start: start,
-                  count: end - start,
-                  indicesData: indices
+                  scalingRatio: this.settings(options, 'webglOversamplingRatio')
                 }
               );
             }
-
-            // Catch job's end:
-            if (
-              end >= arr.length / renderer.ATTRIBUTES &&
-              i === a.length - 1
-            ) {
-              delete this.jobs[id];
-              return false;
-            }
-
-            if (end >= arr.length / renderer.ATTRIBUTES) {
-              i++;
-              arr = this.edgeFloatArrays[a[i]].array;
-              renderer = sigma.webgl.edges[a[i]];
-              start = 0;
-              end = Math.min(
-                start + batchSize * renderer.POINTS,
-                arr.length / renderer.ATTRIBUTES
-              );
-            } else {
-              start = end;
-              end = Math.min(
-                start + batchSize * renderer.POINTS,
-                arr.length / renderer.ATTRIBUTES
-              );
-            }
-
-            return true;
-          };
-
-          this.jobs[id] = job;
-          conrad.addJob(id, job.bind(this));
-        }).call(this);
-      else {
-        for (k in this.edgeFloatArrays) {
-          renderer = sigma.webgl.edges[k];
-
-          // Check program:
-          if (!this.edgePrograms[k])
-            this.edgePrograms[k] = renderer.initProgram(edgesGl);
-
-          // Render
-          if (this.edgeFloatArrays[k]) {
-            edgesGl.useProgram(this.edgePrograms[k]);
-            renderer.render(
-              edgesGl,
-              this.edgePrograms[k],
-              this.edgeFloatArrays[k].array,
-              {
-                settings: this.settings,
-                matrix: matrix,
-                width: this.width,
-                height: this.height,
-                ratio: this.camera.ratio,
-                scalingRatio: this.settings(options, 'webglOversamplingRatio'),
-                indicesData: this.edgeIndicesArrays[k]
-              }
-            );
-          }
-        }
-      }
-    }
-
-    if (drawNodes) {
-      // Enable blending:
-      nodesGl.blendFunc(nodesGl.SRC_ALPHA, nodesGl.ONE_MINUS_SRC_ALPHA);
-      nodesGl.enable(nodesGl.BLEND);
-
-      for (j in this.nodeLayers) {
-        var nodeFloatArrays = this.nodeLayers[j];
-        for (k in nodeFloatArrays) {
-          renderer = sigma.webgl.nodes[k];
-
-          // Check program:
-          if (!this.nodePrograms[k])
-            this.nodePrograms[k] = renderer.initProgram(nodesGl);
-
-          // Render
-          if (nodeFloatArrays[k]) {
-            nodesGl.useProgram(this.nodePrograms[k]);
-            renderer.render(
-              nodesGl,
-              this.nodePrograms[k],
-              nodeFloatArrays[k].array,
-              {
-                settings: this.settings,
-                matrix: matrix,
-                width: this.width,
-                height: this.height,
-                ratio: this.camera.ratio,
-                scalingRatio: this.settings(options, 'webglOversamplingRatio')
-              }
-            );
           }
         }
       }
