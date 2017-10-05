@@ -232,7 +232,7 @@
             );
 
           // Just check that the edge and both its extremities are visible:
-          if (this.objLayers[k].category === 'node') {
+          if (this.objLayers[j].category === 'node') {
             if (
               !a[i].hidden
             )
@@ -244,7 +244,7 @@
                 this.settings
               );
           }
-          else { // this.objLayers[k].category === 'edge'
+          else { // this.objLayers[j].category === 'edge'
             if (
               !a[i].hidden &&
                 !graph.nodes(a[i].source).hidden &&
