@@ -475,6 +475,9 @@
               conrad.addJob(id, job.bind(this));
             }).call(this);
           else {
+
+            var edgeFloatArrays = this.objLayers[j].floatArrays;
+
             for (k in edgeFloatArrays) {
               renderer = sigma.webgl.edges[k];
 
