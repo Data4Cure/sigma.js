@@ -430,7 +430,6 @@
 
             for (k in edgeFloatArrays) {
               renderer = sigma.webgl.edges[k];
-              console.log('SIGMA 1', k, sigma.webgl.edges, this.edgePrograms)
 
               // Check program:
               if (!this.edgePrograms[k])
@@ -438,7 +437,6 @@
 
               // Render
               if (edgeFloatArrays[k]) {
-                console.log('SIGMA 2', k, this.edgePrograms, this.objLayers[j].indicesArrays)
                 edgesGl.useProgram(this.edgePrograms[k]);
                 renderer.render(
                   edgesGl,
