@@ -33,6 +33,33 @@
     context.stroke();
   };
 
+  function defBorder(node, context, settings) {
+    var prefix = settings('prefix') || '',
+        size = node[prefix + 'size'],
+        x = node[prefix + 'x'],
+        y = node[prefix + 'y'];
+    context.shadowOffsetX = 0;
+    context.shadowOffsetY = 0;
+    context.shadowBlur = 16;
+    context.shadowColor = settings('labelHoverShadowColor');
+    context.beginPath();
+    context.lineWidth = 1
+    context.arc(
+      x,
+      y,
+      size,
+      0,
+      Math.PI * 2,
+      true
+    );
+    context.stroke();
+  };
+
+  var highlighters = {
+    def: defBorder,
+    rectangle: rectangleBorder,
+  }
+
   /**
    * This hover renderer will basically display the label with a background.
    *
@@ -44,6 +71,9 @@
 
     if (node.label_placement === 'inside') {
       return rectangleBorder(node, context, settings)
+    }
+    if (node.highlight === 'outside') {
+      return (highlighters[node.type] || highlighters.def)(node, context, settings)
     }
 
     var x,

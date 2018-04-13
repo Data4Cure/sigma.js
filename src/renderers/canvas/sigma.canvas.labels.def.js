@@ -15,6 +15,11 @@
    * @param  {configurable}             settings The settings function.
    */
   sigma.canvas.labels.def = function(node, context, settings) {
+
+    if (node.label_placement) {
+      return sigma.canvas.labels.renderers[node.label_placement](node, context, settings)
+    }
+
     var fontSize,
         prefix = settings('prefix') || '',
         size = node[prefix + 'size'];
