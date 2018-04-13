@@ -61,6 +61,39 @@
 
   }
 
+  function findJustification(node,
+                             words,
+                             settings,
+                             context,
+                             fontSize,
+                             max_width,
+                             max_height,
+                             line_spacing) {
+    var just,
+        fontSizeLo = 0,
+        fontSizeHigh = fontSize
+    while (fontSizeHigh - fontSizeLo > 0.25) {
+      just = justifyLabel(node,
+                          words,
+                          function(line) {
+                            return context.measureText(line).width
+                          },
+                          settings,
+                          context,
+                          fontSize,
+                          max_width)
+      if (just.max_width > max_width ||
+          just.line_height * just.lines.length + line_spacing * (just.lines.length - 1) > max_height) {
+        fontSizeHigh = fontSize
+      }
+      else {
+        fontSizeLo = fontSize
+      }
+      fontSize = 0.5 * (fontSizeLo + fontSizeHigh)
+    }
+    return just
+  }
+
   function drawLabelInside(node, context, settings) {
     var fontSize,
         prefix = settings('prefix') || '',
@@ -92,28 +125,14 @@
 
     var line_spacing = 0
 
-    var just,
-        fontSizeLo = 0,
-        fontSizeHigh = fontSize
-    while (fontSizeHigh - fontSizeLo > 0.25) {
-      just = justifyLabel(node,
-                          words,
-                          function(line) {
-                            return context.measureText(line).width
-                          },
-                          settings,
-                          context,
-                          fontSize,
-                          max_width)
-      if (just.max_width > max_width ||
-          just.line_height * just.lines.length + line_spacing * (just.lines.length - 1) > max_height) {
-        fontSizeHigh = fontSize
-      }
-      else {
-        fontSizeLo = fontSize
-      }
-      fontSize = 0.5 * (fontSizeLo + fontSizeHigh)
-    }
+    var just = findJustification(node,
+                                 words,
+                                 settings,
+                                 context,
+                                 fontSize,
+                                 max_width,
+                                 max_height,
+                                 line_spacing)
 
     var y = node[prefix + 'y'] +
         just.line_height - // fillText takes the coordinates of the lower left corner of the text
@@ -129,9 +148,65 @@
     })
   }
 
-  var renderers = {
+  function drawLabelOutside(node, context, settings) {
+    var fontSize,
+        prefix = settings('prefix') || '',
+        size = node[prefix + 'size'],
+        max_width = 2 * size * (node.angle === undefined ? 1 : Math.cos(node.angle)),
+        max_height = 2 * size * (node.angle === undefined ? 1 : Math.sin(node.angle)), // for rectangle
+        horiz_offset = max_width * 0.25; // affects space between the label and node
+
+    max_width = 0.9 * max_width
+    max_height = 0.8 * max_height // leave some padding
+
+    if (size < settings('labelThreshold'))
+      return;
+
+    var attr = 'hover_label'
+
+    if (!node[attr] || typeof node[attr] !== 'string')
+      return;
+
+    fontSize = (settings('labelSize') === 'fixed') ?
+      settings('defaultLabelSize') :
+      settings('labelSizeRatio') * size * 26 / node.size;
+      //settings('labelSizeRatio') * size;
+
+    var words = node[attr].split(/\s+/g)
+
+    context.fillStyle = (settings('labelColor') === 'node') ?
+      (node.color || settings('defaultNodeColor')) :
+      settings('defaultLabelColor');
+
+    var line_spacing = 0
+
+    var just = findJustification(node,
+                                 words,
+                                 settings,
+                                 context,
+                                 fontSize,
+                                 max_width,
+                                 max_height,
+                                 line_spacing)
+
+    var y = node[prefix + 'y'] +
+        just.line_height - // fillText takes the coordinates of the lower left corner of the text
+        just.fontSize / 6 -
+        (just.line_height * just.lines.length + line_spacing * (just.lines.length - 1)) / 2
+    just.lines.forEach(function(d) {
+      context.fillText(
+        d.line,
+        Math.round(node[prefix + 'x'] + horiz_offset + just.max_width - d.width / 2),
+        Math.round(y)
+      )
+      y += just.line_height + line_spacing
+    })
+  }
+
+  sigma.canvas.labels.renderers = {
     undefined: sigma.canvas.labels.def,
     inside: drawLabelInside,
+    outside: drawLabelOutside,
   }
 
   /**
@@ -142,6 +217,6 @@
    * @param  {configurable}             settings The settings function.
    */
   sigma.canvas.labels.rectangle = function(node, context, settings) {
-    return renderers[node.label_placement](node, context, settings)
+    return sigma.canvas.labels.renderers[node.label_placement](node, context, settings)
   };
 }).call(this);
