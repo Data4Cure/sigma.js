@@ -55,6 +55,22 @@
     context.stroke();
   };
 
+  function labelBorder(node, context, settings) {
+    context.shadowOffsetX = 0;
+    context.shadowOffsetY = 0;
+    context.shadowBlur = 16;
+    context.shadowColor = settings('labelHoverShadowColor');
+    context.beginPath();
+    context.lineWidth = 1
+    context.rect(
+      node._label_bbox.x,
+      node._label_bbox.y,
+      node._label_bbox.w,
+      node._label_bbox.h
+    );
+    context.stroke();
+  }
+
   var highlighters = {
     def: defBorder,
     rectangle: rectangleBorder,
@@ -73,6 +89,9 @@
       return rectangleBorder(node, context, settings)
     }
     if (node.highlight === 'outside') {
+      if (node._label_bbox) {
+        labelBorder(node, context, settings)
+      }
       return (highlighters[node.type] || highlighters.def)(node, context, settings)
     }
 

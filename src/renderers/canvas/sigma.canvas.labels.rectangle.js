@@ -152,15 +152,19 @@
     var fontSize,
         prefix = settings('prefix') || '',
         size = node[prefix + 'size'],
+        labelSizeRatio = node.labelSizeRatio || settings('labelSizeRatio') || 1,
         max_width = 2 * size * (node.angle === undefined ? 1 : Math.cos(node.angle)),
         max_height = 2 * size * (node.angle === undefined ? 1 : Math.sin(node.angle)), // for rectangle
-        horiz_offset = max_width * 0.25; // affects space between the label and node
+        //horiz_offset = max_width * 0.25; // affects space between the label and node
+        horiz_offset = max_width * 0.5;
 
-    max_width = 0.9 * max_width
-    max_height = 0.8 * max_height // leave some padding
+    max_width = 0.9 * max_width * labelSizeRatio
+    max_height = 0.8 * max_height * labelSizeRatio // leave some padding
 
-    if (size < settings('labelThreshold'))
+    if (size < settings('labelThreshold')) {
+      node._label_bbox = undefined
       return;
+    }
 
     var attr = 'hover_label'
 
@@ -193,14 +197,25 @@
         just.line_height - // fillText takes the coordinates of the lower left corner of the text
         just.fontSize / 6 -
         (just.line_height * just.lines.length + line_spacing * (just.lines.length - 1)) / 2
+    var horiz_bbox_margin = 0.05 * just.max_width
+    var bottom_bbox_margin = 0.3 * just.line_height
+    var horiz_offset_2 = 0.15 * just.max_width
+    var label_bbox = {
+      x: node[prefix + 'x'] + horiz_offset + horiz_offset_2 - horiz_bbox_margin,
+      y: y - just.line_height,
+      w: just.max_width + 2 * horiz_bbox_margin,
+    }
     just.lines.forEach(function(d) {
       context.fillText(
         d.line,
-        Math.round(node[prefix + 'x'] + horiz_offset + just.max_width - d.width / 2),
+        //Math.round(node[prefix + 'x'] + horiz_offset + just.max_width - d.width / 2),
+        Math.round(node[prefix + 'x'] + horiz_offset + horiz_offset_2 + just.max_width / 2 - d.width / 2),
         Math.round(y)
       )
       y += just.line_height + line_spacing
     })
+    label_bbox.h = y - just.line_height - label_bbox.y + bottom_bbox_margin
+    node._label_bbox = label_bbox
   }
 
   sigma.canvas.labels.renderers = {
