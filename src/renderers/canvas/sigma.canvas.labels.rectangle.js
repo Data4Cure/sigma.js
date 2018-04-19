@@ -94,14 +94,17 @@
     return just
   }
 
-  function renderJustification(node, prefix, just, line_spacing, context, horiz_offset) {
+  function renderJustification(node, prefix, just, line_spacing, context, horiz_offset, horiz_spacing) {
     var y = node[prefix + 'y'] +
         just.line_height - // fillText takes the coordinates of the lower left corner of the text
         just.fontSize / 6 -
         (just.line_height * just.lines.length + line_spacing * (just.lines.length - 1)) / 2
     // var horiz_bbox_margin = 0.05 * just.max_width
     // var bottom_bbox_margin = 0.3 * just.line_height
-    var horiz_offset_2 = 0.15 * just.max_width
+    if(horiz_spacing === undefined) {
+      horiz_spacing = 0.15
+    }
+    var horiz_offset_2 = horiz_spacing * just.max_width
     // var label_bbox = {
     //   x: node[prefix + 'x'] + horiz_offset + horiz_offset_2 - horiz_bbox_margin,
     //   y: y - just.line_height,
@@ -255,10 +258,67 @@
 
   }
 
+  function drawLabelOutside2(node, context, settings, shadow) {
+    var fontSize,
+        prefix = settings('prefix') || '',
+        size = node[prefix + 'size'],
+        labelSizeRatio = node.labelSizeRatio || settings('labelSizeRatio') || 1,
+        max_width = size * node.label_width_ratio,
+        horiz_offset = size * (node.angle === undefined ? 1 : Math.cos(node.angle));
+
+    if (size < settings('labelThreshold') && !shadow) {
+      // node._label_bbox = undefined
+      // node._just = undefined
+      return;
+    }
+
+    var attr = 'hover_label'
+
+    if (!node[attr] || typeof node[attr] !== 'string')
+      return;
+
+    fontSize = (settings('labelSize') === 'fixed') ?
+      settings('defaultLabelSize') :
+      labelSizeRatio * size;
+
+    var words = node[attr].split(/\s+/g)
+
+    context.fillStyle = (settings('labelColor') === 'node') ?
+      (node.color || settings('defaultNodeColor')) :
+      settings('defaultLabelColor');
+
+    if(shadow) {
+      context.shadowOffsetX = 0;
+      context.shadowOffsetY = 0;
+      context.shadowBlur = 16;
+      context.shadowColor = settings('labelHoverShadowColor');
+    }
+
+    var just = justifyLabel(
+      node,
+      words,
+      function(line) {
+        return context.measureText(line).width
+      },
+      settings,
+      context,
+      fontSize,
+      max_width
+    )
+
+    var line_spacing = 0
+
+    var horiz_spacing = 0.03
+
+    renderJustification(node, prefix, just, line_spacing, context, horiz_offset, horiz_spacing)
+
+  }
+
   sigma.canvas.labels.renderers = {
     undefined: sigma.canvas.labels.def,
     inside: drawLabelInside,
     outside: drawLabelOutside,
+    outside2: drawLabelOutside2,
   }
 
   /**
