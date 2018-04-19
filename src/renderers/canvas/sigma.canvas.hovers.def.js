@@ -88,11 +88,11 @@
     if (node.label_placement === 'inside') {
       return rectangleBorder(node, context, settings)
     }
-    if (node.highlight === 'outside') {
+    if (node.highlight.startsWith('outside')) {
       // if (node._label_bbox) {
       //   labelBorder(node, context, settings)
       // }
-      sigma.canvas.labels.renderers.outside(node, context, settings, true)
+      sigma.canvas.labels.renderers[node.highlight](node, context, settings, true)
       return (highlighters[node.type] || highlighters.def)(node, context, settings)
     }
 
