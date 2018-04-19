@@ -88,7 +88,7 @@
     if (node.label_placement === 'inside') {
       return rectangleBorder(node, context, settings)
     }
-    if (node.highlight.startsWith('outside')) {
+    if (node.highlight && node.highlight.startsWith('outside')) {
       // if (node._label_bbox) {
       //   labelBorder(node, context, settings)
       // }
