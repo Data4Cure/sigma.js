@@ -185,12 +185,13 @@
         max_width = 2 * size * (node.angle === undefined ? 1 : Math.cos(node.angle)),
         max_height = 2 * size * (node.angle === undefined ? 1 : Math.sin(node.angle)), // for rectangle
         //horiz_offset = max_width * 0.25; // affects space between the label and node
-        horiz_offset = max_width * 0.5;
+        horiz_offset = max_width * 0.5,
+        labelThreshold = node.labelThreshold === undefined ? settings('labelThreshold') : node.labelThreshold;
 
     max_width = 0.9 * max_width * labelSizeRatio
     max_height = 0.8 * max_height * labelSizeRatio // leave some padding
 
-    if (size < settings('labelThreshold') && !shadow) {
+    if (size < labelThreshold && !shadow) {
       // node._label_bbox = undefined
       // node._just = undefined
       return;
@@ -264,9 +265,11 @@
         size = node[prefix + 'size'],
         labelSizeRatio = node.labelSizeRatio || settings('labelSizeRatio') || 1,
         max_width = size * node.label_width_ratio,
-        horiz_offset = size * (node.angle === undefined ? 1 : Math.cos(node.angle));
+        horiz_offset = size * (node.angle === undefined ? 1 : Math.cos(node.angle)),
+        labelThreshold = node.labelThreshold === undefined ? settings('labelThreshold') : node.labelThreshold;
 
-    if (size < settings('labelThreshold') && !shadow) {
+
+    if (size < labelThreshold && node.&& !shadow) {
       // node._label_bbox = undefined
       // node._just = undefined
       return;
