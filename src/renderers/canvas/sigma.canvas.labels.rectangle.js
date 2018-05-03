@@ -269,7 +269,7 @@
         labelThreshold = node.labelThreshold === undefined ? settings('labelThreshold') : node.labelThreshold;
 
 
-    if (size < labelThreshold && node.&& !shadow) {
+    if (size < labelThreshold && !shadow) {
       // node._label_bbox = undefined
       // node._just = undefined
       return;
