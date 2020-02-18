@@ -7,6 +7,8 @@
   // Initialize packages:
   sigma.utils.pkg('sigma.canvas.labels');
 
+  // TODO get rid of this and use sigma.misc.justify.justifyLabel
+  // ('export' it first from that module)
   function justifyLabel(node, words, measureWidth, settings, context,
                         fontSize, max_width) {
 
@@ -61,6 +63,7 @@
 
   }
 
+  // TODO get rid of this and use sigma.misc.justify.findJustification
   function findJustification(node,
                              words,
                              settings,
