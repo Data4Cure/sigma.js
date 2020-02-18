@@ -59,13 +59,21 @@
       if (!settings('freeStyle')) {
         rect.setAttributeNS(
           null, 'fill', node.color || settings('defaultNodeColor'));
-        rect.setAttributeNS(
-          null, 'stroke', node.border_color || node.color || settings('defaultNodeColor'));
         // svg border is drawn both inside and outside of the rectangle
         // so the effect is slightly different than in webgl
         // https://stackoverflow.com/questions/7241393/can-you-control-how-an-svgs-stroke-width-is-drawn
+        // rect.setAttributeNS(
+        //   null, 'stroke', node.border_color || node.color || settings('defaultNodeColor'));
+        // rect.setAttributeNS(
+        //   null, 'stroke-width', node[prefix + 'size'] * border_thickness * 0.5);
+        const w = node[prefix + 'size'] * border_thickness * 0.5
+        const c = node.border_color || node.color || settings('defaultNodeColor')
         rect.setAttributeNS(
-          null, 'stroke-width', node[prefix + 'size'] * border_thickness * 0.5);
+          null, 'style',
+          'outline-color: ' + c +
+            '; outline-style: solid; outline-width: ' + w +
+            'px; outline-offset: -' + w + 'px;'
+        )
       }
 
       // Showing
