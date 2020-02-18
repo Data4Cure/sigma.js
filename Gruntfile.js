@@ -68,6 +68,7 @@ module.exports = function(grunt) {
     'src/renderers/svg/sigma.svg.edges.arrow.js',
     'src/renderers/svg/sigma.svg.edges.curvedArrow.js',
     'src/renderers/svg/sigma.svg.labels.def.js',
+    'src/renderers/svg/sigma.svg.labels.rectangle.js',
     'src/renderers/svg/sigma.svg.hovers.def.js',
 
     // Middlewares:
@@ -79,8 +80,8 @@ module.exports = function(grunt) {
     'src/misc/sigma.misc.animation.js',
     'src/misc/sigma.misc.bindEvents.js',
     'src/misc/sigma.misc.bindDOMEvents.js',
-    'src/misc/sigma.misc.drawHovers.js'
-
+    'src/misc/sigma.misc.drawHovers.js',
+    'src/misc/sigma.misc.justify.js'
   ];
 
   var npmJsFiles = coreJsFiles.slice(0);
