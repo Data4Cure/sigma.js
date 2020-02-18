@@ -154,14 +154,24 @@
 
     var line_spacing = 0
 
-    var just = findJustification(node,
-                                 words,
-                                 settings,
-                                 context,
-                                 fontSize,
-                                 max_width,
-                                 max_height,
-                                 line_spacing)
+    function makeMeasureWidth(fontSize, settings) {
+      context.font = (settings('fontStyle') ? settings('fontStyle') + ' ' : '') +
+        fontSize + 'px ' + settings('font');
+      return function(line) {
+        return context.measureText(line).width
+      }
+    }
+
+    var just = sigma.misc.justify.findJustification(
+      node,
+      words,
+      settings,
+      makeMeasureWidth,
+      fontSize,
+      max_width,
+      max_height,
+      line_spacing
+    )
 
     var y = node[prefix + 'y'] +
         just.line_height - // fillText takes the coordinates of the lower left corner of the text

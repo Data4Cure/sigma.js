@@ -19,6 +19,13 @@
      * @param  {configurable}             settings   The settings function.
      */
     create: function(node, settings) {
+
+      if (node.label_placement) {
+        return sigma.svg.labels.renderers[node.label_placement].create(
+          node, settings
+        )
+      }
+
       var prefix = settings('prefix') || '',
           size = node[prefix + 'size'],
           text = document.createElementNS(settings('xmlns'), 'text');
@@ -51,6 +58,14 @@
      * @param  {configurable}             settings The settings function.
      */
     update: function(node, text, settings) {
+
+      if (node.label_placement) {
+        sigma.svg.labels.renderers[node.label_placement].update(
+          node, text, settings
+        )
+        return this
+      }
+
       var prefix = settings('prefix') || '',
           size = node[prefix + 'size'];
 
