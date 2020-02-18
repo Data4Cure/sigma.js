@@ -62,6 +62,7 @@ module.exports = function(grunt) {
     'src/renderers/svg/sigma.svg.nodes.def.js',
     'src/renderers/svg/sigma.svg.nodes.rectangle.js',
     'src/renderers/svg/sigma.svg.nodes.triangle.js',
+    'src/renderers/svg/sigma.svg.nodes.trect.js',
     'src/renderers/svg/sigma.svg.edges.def.js',
     'src/renderers/svg/sigma.svg.edges.curve.js',
     'src/renderers/svg/sigma.svg.edges.arrow.js',
